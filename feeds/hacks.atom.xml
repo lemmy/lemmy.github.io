@@ -1,0 +1,982 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>l e m m s t e r . d e - hacks</title><link href="http://www.lemmster.de/" rel="alternate"></link><link href="http://www.lemmster.de/feeds/hacks.atom.xml" rel="self"></link><id>http://www.lemmster.de/</id><updated>2014-06-09T15:27:16+02:00</updated><entry><title>Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04</title><link href="http://www.lemmster.de/cross-compile-kernel-module-samsung-nx300-ubnut-14.04.html" rel="alternate"></link><published>2014-06-09T15:27:16+02:00</published><updated>2014-06-09T15:27:16+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2014-06-09:/cross-compile-kernel-module-samsung-nx300-ubnut-14.04.html</id><summary type="html">&lt;p&gt;Manually download ’NX300 1.4 NX300.zip’ from &lt;a href="http://opensource.samsung.com/reception/receptionSub.do?method=sub&amp;amp;sub=F&amp;amp;searchValue=nx300"&gt;http://opensource.samsung.com/reception/receptionSub.do?method=sub&amp;amp;sub=F&amp;amp;searchValue=nx300&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Extract nx300.zip and nested nx300.tar.gz&lt;/span&gt;
+root@melanogaster:/tmp/# unzip nx300.zip &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; tar xfz nx300.tar.gz
+
+&lt;span class="c1"&gt;# Install necessary packages&lt;/span&gt;
+root@melanogaster:/tmp/# apt-get install gcc-arm-linux-gnueabi u-boot-tools …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Manually download ’NX300 1.4 NX300.zip’ from &lt;a href="http://opensource.samsung.com/reception/receptionSub.do?method=sub&amp;amp;sub=F&amp;amp;searchValue=nx300"&gt;http://opensource.samsung.com/reception/receptionSub.do?method=sub&amp;amp;sub=F&amp;amp;searchValue=nx300&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Extract nx300.zip and nested nx300.tar.gz&lt;/span&gt;
+root@melanogaster:/tmp/# unzip nx300.zip &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; tar xfz nx300.tar.gz
+
+&lt;span class="c1"&gt;# Install necessary packages&lt;/span&gt;
+root@melanogaster:/tmp/# apt-get install gcc-arm-linux-gnueabi u-boot-tools libncurses5-dev
+
+&lt;span class="c1"&gt;# Create symlinks to gcc-arm-linux-gnueabi binaries because Makefiles refer to arm-none-linux...&lt;/span&gt;
+&lt;span class="c1"&gt;# See http://stackoverflow.com/a/13798214 for background info&lt;/span&gt;
+root@melanogaster:/tmp/# &lt;span class="k"&gt;for&lt;/span&gt; f in /usr/bin/arm-linux-gnueabi-*&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$f&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nv"&gt;BASE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;basename &lt;span class="nv"&gt;$f&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ln -s &lt;span class="nv"&gt;$f&lt;/span&gt; /usr/local/bin/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;BASE&lt;/span&gt;&lt;span class="p"&gt;/arm-linux/arm-none-linux&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;done&lt;/span&gt;
+
+root@melanogaster:/tmp/TIZEN/build# make nx300_config &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make
+&lt;span class="o"&gt;[&lt;/span&gt;...&lt;span class="o"&gt;]&lt;/span&gt;
+
+root@melanogaster:/tmp/TIZEN/build# &lt;span class="nb"&gt;cd&lt;/span&gt; ../packages/linux
+root@melanogaster:/tmp/TIZEN/packages/linux# make menuconfig 
+&lt;span class="c1"&gt;## 1. Set ext2 to be compiled as module &amp;quot;&amp;lt;M&amp;gt;&amp;quot;&lt;/span&gt;
+&lt;span class="c1"&gt;## 2. Set CONFIG_LOCALVERSION=&amp;quot;+&amp;quot; to make the module&amp;#39;s &amp;#39;vermagic&amp;#39; (see modinfo /path/to/compiled/ext2.ko) match the nx300&amp;#39;s in .config (thx to http://www.cnx-software.com/2012/09/11/building-kernel-modules-for-allwinner-a10-devices-android/)&lt;/span&gt;
+
+root@melanogaster:/tmp/TIZEN/packages/linux# make &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make modules
+&lt;span class="o"&gt;[&lt;/span&gt;...&lt;span class="o"&gt;]&lt;/span&gt;
+
+root@melanogaster:/tmp/TIZEN/packages/linux# find . -iname *.ko
+./drivers/video/backlight/backlight.ko
+./drivers/video/backlight/generic_bl.ko
+./drivers/net/wireless/ath/ath.ko
+./drivers/net/wireless/ath/ath6kl/ath6kl_sdio.ko
+./drivers/usb/gadget/g_ffs.ko
+./fs/ext2/ext2.ko
+
+&lt;span class="c1"&gt;# Copy ext2.ko to nx300&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Auto backup files from the Samsung NX300 camera in the background</title><link href="http://www.lemmster.de/auto-backup-from-nx300-via-ftp.html" rel="alternate"></link><published>2014-06-07T21:16:16+02:00</published><updated>2014-06-07T21:16:16+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2014-06-07:/auto-backup-from-nx300-via-ftp.html</id><summary type="html">&lt;p&gt;This would not have been possible without &lt;a href="http://op-co.de/blog/posts/rooting_the_nx300/"&gt;Georg Lukas' work&lt;/a&gt;!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Always-On wifi&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Connect the camera to the wifi the regular way (for me only 2.4ghz wifi worked to automatically connect)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Find the corresponding settings file in /mnt/ubi1/data/var/lib/connman/&lt;span&gt;*&lt;/span&gt;/settings (note down the folder name for …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;This would not have been possible without &lt;a href="http://op-co.de/blog/posts/rooting_the_nx300/"&gt;Georg Lukas' work&lt;/a&gt;!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Always-On wifi&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Connect the camera to the wifi the regular way (for me only 2.4ghz wifi worked to automatically connect)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Find the corresponding settings file in /mnt/ubi1/data/var/lib/connman/&lt;span&gt;*&lt;/span&gt;/settings (note down the folder name for the connection you automatically want to connect to)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create the wpa_supplicant.conf file in /mnt/mmc/:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nx300:/mnt/mmc# cat /tmp/wpa_supplicant.conf 
+ctrl_interface=DIR=/var/run/wifi
+device_name=NX300-CAMERA
+manufacturer=SAMSUNG
+model_name=NX300
+model_number=RAE011112-00CS
+serial_number=XXXXXXXXXX
+config_methods=physical_display virtual_push_button keypad
+country=NL
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Append the following to autoexec.sh&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Always on wifi
+cp /mnt/mmc/wpa_supplicant.conf /tmp/
+/usr/bin/wlan.sh start NL 0x8210 &amp;gt;&amp;gt; /mnt/mmc/wifi.log 2&amp;gt;&amp;amp;1
+/usr/sbin/connmand -W nl80211 -r
+/usr/sbin/net-config 
+sleep 2
+#dbus-send --system --type=method_call --print-reply --dest=net.connman / net.connman.Manager.GetServices|grep service &amp;gt;&amp;gt; /mnt/mmc/wifi.log 2&amp;gt;&amp;amp;1 
+dbus-send --system --type=method_call --print-reply --dest=net.connman /net/connman/service/wifi_a0219572b25b_7777772e6c656d6d737465722e6465_managed_psk net.connman.Service.Connect &amp;gt;&amp;gt; /mnt/mmc/wifi.log 2&amp;gt;&amp;amp;1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;FTPd (started via inetd)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Make inetd start ftpd automatically by appending the following to autoexec.sh:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Create inetd config file that activates ftpd
+echo &amp;quot;21 stream tcp nowait root ftpd /usr/sbin/ftpd /mnt/mmc/DCIM/&amp;quot; &amp;gt; /mnt/mmc/inetd.conf
+# start inetd (in background) that spawns ftpd on demand
+/usr/sbin/inetd /mnt/mmc/inetd.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;On a remote host periodically poll (less elegant) for new files (if the camera is on-line). The second line purges the mirrored files from the camera so that they do not get downloaded again if deleted from the backup:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;while&lt;/span&gt; &lt;span class="nt"&gt;true&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;do&lt;/span&gt; &lt;span class="nt"&gt;sleep&lt;/span&gt; &lt;span class="nt"&gt;5&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nt"&gt;ping&lt;/span&gt; &lt;span class="nt"&gt;-q&lt;/span&gt; &lt;span class="nt"&gt;-c&lt;/span&gt; &lt;span class="nt"&gt;3&lt;/span&gt; &lt;span class="nt"&gt;nx300&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;dev&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nt"&gt;null&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nt"&gt;wget&lt;/span&gt; &lt;span class="nt"&gt;-q&lt;/span&gt; &lt;span class="nt"&gt;-m&lt;/span&gt; &lt;span class="nt"&gt;ftp&lt;/span&gt;&lt;span class="o"&gt;://&lt;/span&gt;&lt;span class="nt"&gt;nx300&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;done&lt;/span&gt;
+&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;sleep&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;echo&lt;/span&gt; &lt;span class="nt"&gt;-e&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;cd /mnt/mmc/DCIM/100Photo/ &amp;amp;&amp;amp; rm SAM_0158.JPG SAM_0159.JPG&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="nt"&gt;nc&lt;/span&gt; &lt;span class="nt"&gt;-q&lt;/span&gt; &lt;span class="nt"&gt;5&lt;/span&gt; &lt;span class="nt"&gt;nx300&lt;/span&gt; &lt;span class="nt"&gt;23&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If you additionally want to only mirror files that are newer than a sentinel file (e.g. because you might want to be allowed to delete files locally without re-mirroring the file again), run:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;## Mirrors files from the nx300 samsung camera to the local machine. The set of files mirrored is the subset of files newer than the given sentinel.&lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+&lt;span class="c1"&gt;## License see http://unlicense.org/&lt;/span&gt;
+&lt;span class="c1"&gt;##&lt;/span&gt;
+
+&lt;span class="c1"&gt;## mirrorers the files from the camera stored in the 100PHOTO/ folder int the local 100PHOTO/ folder&lt;/span&gt;
+lftp nx300 -e &lt;span class="s2"&gt;&amp;quot;set ftp:use-feat off; mirror --newer-than=100PHOTO/.sentinel 100PHOTO 100PHOTO; quit&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;## Keep the last (newest) mirrored file at a sentinel.&lt;/span&gt;
+&lt;span class="c1"&gt;## (Do not just store the name of the file because the original file can be touched (e.g. modified by an image editing program) on the local end&lt;/span&gt;
+cp -a 100PHOTO/&lt;span class="sb"&gt;`&lt;/span&gt;ls -tp 100PHOTO/ &lt;span class="p"&gt;|&lt;/span&gt; grep -v /$ &lt;span class="p"&gt;|&lt;/span&gt; head -1&lt;span class="sb"&gt;`&lt;/span&gt; 100PHOTO/.sentinel
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;However, I have found that ftpd/lftpd do not correctly preserve the ctime/mtime/... when transfering the file. Thus, the sentinal approach does not work reliably.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;inotifywait&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Download following squeeze (oldstable) armel deb packages from packages.debian.org:&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://packages.debian.org/squeeze/libinotifytools0"&gt;https://packages.debian.org/squeeze/libinotifytools0&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://packages.debian.org/squeeze/inotify-tools"&gt;https://packages.debian.org/squeeze/inotify-tools&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://www.g-loaded.eu/2008/01/28/how-to-extract-rpm-or-deb-packages/"&gt;Extract the data bits of both .deb files with 'ar p &lt;em&gt;notify&lt;/em&gt; data.tar.gz | tar zx'&lt;/a&gt; and flatten libinotifytools.so.0, libinotifytools.so.0.4.1 inotifywait and inotifywatch from the resulting usr/* to /mnt/mmc &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Start /mnt/mmc/mirror.sh via /mnt/mmc/autoexec.sh&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="c1"&gt;## make sure to find libinotify in current directory            &lt;/span&gt;
+&lt;span class="nv"&gt;LD_LIBRARY_PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/mnt/mmc/:&lt;span class="nv"&gt;$LD_LIBRARY_PATH&lt;/span&gt;
+
+&lt;span class="c1"&gt;## directory to watch for images&lt;/span&gt;
+&lt;span class="nv"&gt;DIR&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/mnt/mmc/DCIM/100PHOTO
+
+&lt;span class="c1"&gt;## target to ftpput files to&lt;/span&gt;
+&lt;span class="nv"&gt;TARGET&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;strawberry
+
+&lt;span class="c1"&gt;## watch for new files and immediately copy to remote and delete afterwards&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nv"&gt;F&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;/mnt/mmc/inotifywait -e create &lt;span class="nv"&gt;$DIR&lt;/span&gt; --format %f .&lt;span class="k"&gt;)&lt;/span&gt;
+   &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt; ftpput &lt;span class="nv"&gt;$TARGET&lt;/span&gt; /incoming/&lt;span class="nv"&gt;$F&lt;/span&gt; &lt;span class="nv"&gt;$DIR&lt;/span&gt;/&lt;span class="nv"&gt;$F&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm &lt;span class="nv"&gt;$DIR&lt;/span&gt;/&lt;span class="nv"&gt;$F&lt;/span&gt; &lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Install vsftpd on a raspberry pi&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;apt-get install vsftpd &amp;amp;&amp;amp; mkdir -p /var/ftp/incoming &amp;amp;&amp;amp; chown root:root /var/ftp &amp;amp;&amp;amp; chown ftp:ftp /var/ftp/incoming&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Add anon_upload_enable=YES, write_enable=YES, anonymous_enable=YES, anon_root=/var/ftp and anon_umask=022 to /etc/vsftpd and restart vsftpd&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The final autoexe.sh looks like:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="nv"&gt;TARGET&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;strawberry
+
+mkdir -p /dev/pts
+mount -t devpts none /dev/pts
+
+&lt;span class="c1"&gt;# Start telnet server&lt;/span&gt;
+telnetd -l /bin/bash -F &amp;gt; /mnt/mmc/telnetd.log &lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Create inetd config file that activates ftpd&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;21 stream tcp nowait root ftpd /usr/sbin/ftpd /mnt/mmc/DCIM/&amp;quot;&lt;/span&gt; &amp;gt; /mnt/mmc/inetd.conf
+
+&lt;span class="c1"&gt;# start inetd (in background) that spawns ftpd on demand&lt;/span&gt;
+/usr/sbin/inetd /mnt/mmc/inetd.conf
+
+&lt;span class="c1"&gt;# automatically start wifi&lt;/span&gt;
+cp /mnt/mmc/wpa_supplicant.conf /tmp/
+/usr/bin/wlan.sh start NL 0x8210
+/usr/sbin/connmand -W nl80211 -r
+/usr/sbin/net-config
+sleep &lt;span class="m"&gt;2&lt;/span&gt;
+dbus-send --system --type&lt;span class="o"&gt;=&lt;/span&gt;method_call --print-reply --dest&lt;span class="o"&gt;=&lt;/span&gt;net.connman /net/connman/service/wifi_a0219572b25b_7777772e6c656d6d737465722e6465_managed_psk net.connman.Service.Connect
+
+&lt;span class="c1"&gt;# start mirror.sh&lt;/span&gt;
+&lt;span class="c1"&gt;# (TODO: inline the mirror.sh script?)&lt;/span&gt;
+/mnt/mmc/mirror.sh &amp;gt; /mnt/mmc/mirror.log &lt;span class="p"&gt;&amp;amp;&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+
+&lt;span class="c1"&gt;# copy any file the mirror.sh script might have missed in previous runs&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; f in /mnt/mmc/DCIM/100PHOTO/*.JPG&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nv"&gt;file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;basename &lt;span class="nv"&gt;$f&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; ftpput &lt;span class="nv"&gt;$TARGET&lt;/span&gt; incoming/&lt;span class="nv"&gt;$file&lt;/span&gt; &lt;span class="nv"&gt;$f&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm &lt;span class="nv"&gt;$f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;/li&gt;
+&lt;/ul&gt;</content></entry><entry><title>Quick'n'dirty twitter2xmbc hack to show #tatort related tweets on Sunday night</title><link href="http://www.lemmster.de/quickndirty-twitter2xbmc-hack-to-show-tatort-related-tweets-on-sunday-night.html" rel="alternate"></link><published>2013-11-27T21:24:16+01:00</published><updated>2013-11-27T21:24:16+01:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-11-27:/quickndirty-twitter2xbmc-hack-to-show-tatort-related-tweets-on-sunday-night.html</id><summary type="html">&lt;p&gt;Download ttytter (command line twitter client):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Get recent version of ttytter (old versions fail to auth)
+wget http://www.floodgap.com/software/ttytter/ttytter.txt -O /usr/local/bin/ttytter &amp;amp;&amp;amp; chmod +x /usr/local/bin/ttytter
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create the following script:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10 …&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</summary><content type="html">&lt;p&gt;Download ttytter (command line twitter client):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Get recent version of ttytter (old versions fail to auth)
+wget http://www.floodgap.com/software/ttytter/ttytter.txt -O /usr/local/bin/ttytter &amp;amp;&amp;amp; chmod +x /usr/local/bin/ttytter
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create the following script:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Get list of search result&lt;/span&gt;
+&lt;span class="nv"&gt;TWEET&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;ttytter -runcommand&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/search #tatort&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt; tail -1 &lt;span class="p"&gt;|&lt;/span&gt; python -c &lt;span class="s1"&gt;&amp;#39;import json,sys; print json.dumps(sys.stdin.read())&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Prepare json request&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;{\&amp;quot;id\&amp;quot;:1,\&amp;quot;jsonrpc\&amp;quot;:\&amp;quot;2.0\&amp;quot;,\&amp;quot;method\&amp;quot;:\&amp;quot;GUI.ShowNotification\&amp;quot;,\&amp;quot;params\&amp;quot;:{\&amp;quot;title\&amp;quot;:\&amp;quot;Tatort\&amp;quot;,\&amp;quot;displaytime\&amp;quot;:20000,\&amp;quot;message\&amp;quot;:TWEET}}&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;s/TWEET/&amp;#39;&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$TWEET&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/g&amp;#39;&lt;/span&gt; &amp;gt; /tmp/tmp.json
+
+&lt;span class="c1"&gt;# Send request&lt;/span&gt;
+curl -u xbmc:xbmc -H &lt;span class="s2"&gt;&amp;quot;Accept: application/json&amp;quot;&lt;/span&gt; -H &lt;span class="s2"&gt;&amp;quot;Content-type: application/json&amp;quot;&lt;/span&gt; -X POST --data @/tmp/tmp.json http://localhost:8080/jsonrpc
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Btw. it is trivial to read the currently playing title from xbmc via curl as well to adapt to whatever one watches.&lt;/p&gt;</content></entry><entry><title>LyX export to markdown</title><link href="http://www.lemmster.de/lyx-export-to-markdown.html" rel="alternate"></link><published>2013-06-23T09:43:02+02:00</published><updated>2013-06-23T09:43:02+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-23:/lyx-export-to-markdown.html</id><summary type="html">&lt;p&gt;Command line (Lyx &amp;gt; Markdown)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lyx --export latex file.lyx
+pandoc --no-wrap -f latex -t markdown file.tex &amp;gt; file.md
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Command line (Markdown &amp;gt; Lyx)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pandoc --no-wrap -f markdown -t latex file.md &amp;gt; file.tex &amp;amp;&amp;amp; tex2lyx
+file.tex &amp;amp;&amp;amp; lyx file.lyx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;(--no-wrap makes sure we don't screw up e.g. \hrefs by …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Command line (Lyx &amp;gt; Markdown)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;lyx --export latex file.lyx
+pandoc --no-wrap -f latex -t markdown file.tex &amp;gt; file.md
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Command line (Markdown &amp;gt; Lyx)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pandoc --no-wrap -f markdown -t latex file.md &amp;gt; file.tex &amp;amp;&amp;amp; tex2lyx
+file.tex &amp;amp;&amp;amp; lyx file.lyx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;(--no-wrap makes sure we don't screw up e.g. \hrefs by spanning them
+over multiple lines)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install pandoc lyx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://www.lemmster.de/uploads/FileFormats.png"&gt;&lt;img alt="FileFormats" src="http://www.lemmster.de/uploads/FileFormats-300x234.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pandoc --no-wrap -f latex -t markdown -o $$o $$i
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;(might need extra whitespace at end)&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.lemmster.de/uploads/Converters.png"&gt;&lt;img alt="Converters" src="http://www.lemmster.de/uploads/Converters-300x234.png"&gt;&lt;/a&gt;&lt;/p&gt;</content></entry><entry><title>Build and run eyeD3 from source on Debian|Ubuntu with virtualenv</title><link href="http://www.lemmster.de/build-eyed3-from-source-on-debianubuntu.html" rel="alternate"></link><published>2013-06-22T13:52:17+02:00</published><updated>2013-06-22T13:52:17+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-22:/build-eyed3-from-source-on-debianubuntu.html</id><summary type="html">&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+sudo apt-get install python-virtualenv virtualenvwrapper mercurial
+
+&lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/src/
+hg clone https://lemmster@bitbucket.org/lemmster/eyed3
+
+&lt;span class="c1"&gt;# Change virtualenvwrapper.sh in mkenv.sh …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</summary><content type="html">&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+sudo apt-get install python-virtualenv virtualenvwrapper mercurial
+
+&lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/src/
+hg clone https://lemmster@bitbucket.org/lemmster/eyed3
+
+&lt;span class="c1"&gt;# Change virtualenvwrapper.sh in mkenv.sh to align with debian|ubuntu&lt;/span&gt;
+&lt;span class="c1"&gt;# (http://askubuntu.com/questions/251378/where-is-virtualenvwrapper-sh)&lt;/span&gt;
+sed -i.bak &lt;span class="s1"&gt;&amp;#39;s/\/usr\/bin\/virtualenvwrapper.sh/\/etc\/bash_completion.d\/virtualenvwrapper/g&amp;#39;&lt;/span&gt; mkenv.sh
+
+&lt;span class="c1"&gt;# make virtualenvwrapper install into current directory instead of $HOME&lt;/span&gt;
+&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;WORKON_HOME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;/.virtualenvs
+
+&lt;span class="c1"&gt;# Create an virtual environment for eyeD3&lt;/span&gt;
+mkenv.sh
+
+&lt;span class="c1"&gt;# Add workon to path&lt;/span&gt;
+&lt;span class="nb"&gt;source&lt;/span&gt; /etc/bash_completion.d/virtualenvwrapper
+&lt;span class="c1"&gt;# Switch to newly created eyeD3 virtual environment&lt;/span&gt;
+workon eyeD3
+&lt;span class="c1"&gt;# Run tests (creates info.py from info.py.in automatically)&lt;/span&gt;
+paver &lt;span class="nb"&gt;test&lt;/span&gt;
+&lt;span class="c1"&gt;# run current version of eyeD3&lt;/span&gt;
+eyeD3 --help
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;See also http://eyed3.nicfit.net/installation.html&lt;/p&gt;</content></entry><entry><title>Network bonding (wlan &amp; eth) on linux ubuntu</title><link href="http://www.lemmster.de/network-bonding-wlan-eth-on-linux-ubuntu.html" rel="alternate"></link><published>2013-06-21T09:04:25+02:00</published><updated>2013-06-21T09:04:25+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-21:/network-bonding-wlan-eth-on-linux-ubuntu.html</id><summary type="html">&lt;p&gt;When we moved into our new apartment, we renewed all wires which included proper cat7 in all rooms. So lets take advantage of it... :)&lt;/p&gt;
+&lt;p&gt;My primary machine is a laptop that I carry around in the house a lot. This breaks open network connections, due to the IP change when …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When we moved into our new apartment, we renewed all wires which included proper cat7 in all rooms. So lets take advantage of it... :)&lt;/p&gt;
+&lt;p&gt;My primary machine is a laptop that I carry around in the house a lot. This breaks open network connections, due to the IP change when NetworkManager switches from the wired interface to the wireless. To not interrupt existing network connections though, it's vital that the machine's IP stays the same regardless of whether it is hooked up with the wired or wireless. This is where network bonding comes into play. It binds both physical devices wlan and eth into a logical one with a single IP address assigned (by remote DHCP). The kernel then takes care of activating the proper device depending on the wired link state (cable connected).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install ifenslave
+
+me@foo:/etc/NetworkManager $ cat NetworkManager.conf
+&lt;span class="o"&gt;[&lt;/span&gt;main&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;plugins&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;ifupdown,keyfile
+&lt;span class="nv"&gt;dns&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dnsmasq
+&lt;span class="o"&gt;[&lt;/span&gt;ifupdown&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;managed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;keyfile&lt;span class="o"&gt;]&lt;/span&gt;
+unmanaged-devices&lt;span class="o"&gt;=&lt;/span&gt;mac:00:23:ab:cd:ef:14
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;"unmanaged-devices" tells NetworkManager to leave the bonding device alone and not interfere with it. It refers to the hw address (mac) of the wifi interface.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;me@foo:/etc/network $ cat interfaces
+&lt;span class="c1"&gt;# Bonding for eth0 and wlan0 at home&lt;/span&gt;
+auto lo
+iface lo inet loopback
+
+&lt;span class="c1"&gt;# Do not receive dhcp on eth0&lt;/span&gt;
+auto eth0
+iface eth0 inet manual
+bond-master bond0
+bond-primary eth0
+
+&lt;span class="c1"&gt;# Manually connect wireless to AP&lt;/span&gt;
+&lt;span class="c1"&gt;#auto wlan0&lt;/span&gt;
+iface wlan0 inet manual
+wpa-ssid &lt;span class="s2"&gt;&amp;quot;YOUR_SSID_HERE&amp;quot;&lt;/span&gt;
+wpa-psk YOUR_WPAKEY_HERE
+bond-master bond0
+
+&lt;span class="c1"&gt;# Request dhcp ip for bonded interface&lt;/span&gt;
+iface bond0 inet dhcp
+bond-mode active-backup
+bond-miimon &lt;span class="m"&gt;100&lt;/span&gt;
+bond-slaves none
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Due to issues, wlan0 is brought up via 'ifup wlan0' in /etc/rc.local.
+Happy bonding (state can be observed via (cat /proc/net/bonding/bond0)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;me@foo:/ $ cat /proc/net/bonding/bond0
+Ethernet Channel Bonding Driver: v3.7.1 &lt;span class="o"&gt;(&lt;/span&gt;April &lt;span class="m"&gt;27&lt;/span&gt;, &lt;span class="m"&gt;2011&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+Bonding Mode: fault-tolerance &lt;span class="o"&gt;(&lt;/span&gt;active-backup&lt;span class="o"&gt;)&lt;/span&gt;
+Primary Slave: eth0 &lt;span class="o"&gt;(&lt;/span&gt;primary_reselect always&lt;span class="o"&gt;)&lt;/span&gt;
+Currently Active Slave: eth0
+MII Status: up
+MII Polling Interval &lt;span class="o"&gt;(&lt;/span&gt;ms&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;100&lt;/span&gt;
+Up Delay &lt;span class="o"&gt;(&lt;/span&gt;ms&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;0&lt;/span&gt;
+Down Delay &lt;span class="o"&gt;(&lt;/span&gt;ms&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;0&lt;/span&gt;
+
+Slave Interface: eth0
+MII Status: up
+Speed: &lt;span class="m"&gt;1000&lt;/span&gt; Mbps
+Duplex: full
+Link Failure Count: &lt;span class="m"&gt;0&lt;/span&gt;
+Permanent HW addr: &lt;span class="m"&gt;00&lt;/span&gt;:23:ab:cd:ef:13
+Slave queue ID: &lt;span class="m"&gt;0&lt;/span&gt;
+
+Slave Interface: wlan0
+MII Status: up
+Speed: Unknown
+Duplex: Unknown
+Link Failure Count: &lt;span class="m"&gt;0&lt;/span&gt;
+Permanent HW addr: &lt;span class="m"&gt;00&lt;/span&gt;:23:ab:cd:ef:14
+Slave queue ID: &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If one happens to install dropbear on Ubuntu 12.10 with an encrypted disk, network is set to come up as part of initramfs (to remotely unlock the disks). This causes ethX to get an IP address long before bonding has a chance to enslave the device. Removing dropbear and manually running "update-initramfs -u" fixed this issue for me.&lt;/p&gt;</content></entry><entry><title>github issues with ghi and multiple users</title><link href="http://www.lemmster.de/ghi-with-multiple-users.html" rel="alternate"></link><published>2013-06-17T16:24:13+02:00</published><updated>2013-06-17T16:24:13+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-17:/ghi-with-multiple-users.html</id><summary type="html">&lt;p&gt;I have recently started to use &lt;a href="https://github.com/stephencelis/ghi"&gt;ghi&lt;/a&gt; - a command line github issues client. Out of the box it only supports a single github account. Personally I like to separate my private from work related coding though. Thus adding two aliases to ~/.bashrc allows me to quickly switch from one account …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have recently started to use &lt;a href="https://github.com/stephencelis/ghi"&gt;ghi&lt;/a&gt; - a command line github issues client. Out of the box it only supports a single github account. Personally I like to separate my private from work related coding though. Thus adding two aliases to ~/.bashrc allows me to quickly switch from one account to the other (a task that is really tedious in the browser):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# aliases for ghi (github client)&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; ghi-USER-A&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;GHI_TOKEN=&amp;quot;A git oauth token&amp;quot; &amp;amp;&amp;amp; /opt/ghi&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;alias&lt;/span&gt; ghi-USER-B&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;GHI_TOKEN=&amp;quot;B git oauth token&amp;quot; &amp;amp;&amp;amp; /opt/ghi&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Btw. one gets the hashes from running ghi without GHI_TOKEN set and no [ghi] block in ~/.gitconfig.&lt;/p&gt;</content></entry><entry><title>Check Jenkins for running executors ("busyExecutors") remotely via curl</title><link href="http://www.lemmster.de/check-jenkins-for-running-executors-remotely-via-curl.html" rel="alternate"></link><published>2013-06-17T07:37:06+02:00</published><updated>2013-06-17T07:37:06+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-17:/check-jenkins-for-running-executors-remotely-via-curl.html</id><summary type="html">&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -s http://localhost/api/json?depth&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; python -c &lt;span class="s1"&gt;&amp;#39;import json,sys;obj=json.load(sys.stdin);print obj[&amp;quot;assignedLabels&amp;quot;][0][&amp;quot;busyExecutors&amp;quot;]&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -s http://localhost/api/json?depth&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; python -c &lt;span class="s1"&gt;&amp;#39;import json,sys;obj=json.load(sys.stdin);print obj[&amp;quot;assignedLabels&amp;quot;][0][&amp;quot;busyExecutors&amp;quot;]&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Custom Twitter timeline rss feed after v1 API retirement</title><link href="http://www.lemmster.de/custom-twitter-timeline-rss-feed-after-v1-api-retirement.html" rel="alternate"></link><published>2013-06-15T16:29:34+02:00</published><updated>2013-06-15T16:29:34+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-15:/custom-twitter-timeline-rss-feed-after-v1-api-retirement.html</id><summary type="html">&lt;p&gt;So Twitter has decided to retire its v1 API, breaking everybody's timeline rss feeds (which I happened to use for my blog). Fortunately my twitter client (znc on top of bitblee) logs all my tweets to a text file so create my own rss feed is almost trivial (I haven't …&lt;/p&gt;</summary><content type="html">&lt;p&gt;So Twitter has decided to retire its v1 API, breaking everybody's timeline rss feeds (which I happened to use for my blog). Fortunately my twitter client (znc on top of bitblee) logs all my tweets to a text file so create my own rss feed is almost trivial (I haven't bothered to correctly link my tweets though. I plan to eventually migrate away from twitter anyway).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;grep -h &lt;span class="s1"&gt;&amp;#39;&amp;lt;markus&amp;gt;&amp;#39;&lt;/span&gt; .znc/users/markus/moddata/log/&lt;span class="se"&gt;\#&lt;/span&gt;twitter_lemmster_*.log &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; foo.tmp &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; tac foo.tmp &lt;span class="p"&gt;|&lt;/span&gt; head -3 &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;s/&amp;lt;markus&amp;gt; //g&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+~/bin/lines2rss.sh &lt;span class="s1"&gt;&amp;#39;tweets&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://www.lemmster.de&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;whatever&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; /var/www/tweets.xml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;line2rss.sh:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; ?&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;rss version=&amp;quot;2.0&amp;quot; xmlns:atom=&amp;quot;http://www.w3.org/2005/Atom&amp;quot; xmlns:dc=&amp;quot;http://purl.org/dc/elements/1.1/&amp;quot;&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;channel&amp;gt;&amp;lt;title&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;/title&amp;gt;&amp;lt;link&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;/link&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;description&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$3&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;/description&amp;gt;&amp;lt;language&amp;gt;en&amp;lt;/language&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;lastBuildDate&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;date -R&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;/lastBuildDate&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;pubDate&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;date -R&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;/pubDate&amp;gt;&amp;#39;&lt;/span&gt;
+
+&lt;span class="nv"&gt;i&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read&lt;/span&gt; line &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="nb"&gt;let&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;i += 1&amp;quot;&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;item&amp;gt;&amp;lt;title&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;/title&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;guid&amp;gt;`echo &lt;/span&gt;&lt;span class="nv"&gt;$line&lt;/span&gt;&lt;span class="s2"&gt; | md5sum | cut -f 1 -d &amp;#39; &amp;#39;`&amp;lt;/guid&amp;gt;&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;pubDate&amp;gt;&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;date -d &lt;span class="s2"&gt;&amp;quot;-&lt;/span&gt;&lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="s2"&gt; min&amp;quot;&lt;/span&gt; -R&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;/pubDate&amp;gt;&amp;lt;/item&amp;gt;&amp;#39;&lt;/span&gt;
+
+&lt;span class="k"&gt;done&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;/channel&amp;gt;&amp;lt;/rss&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content></entry><entry><title>Free and paid for Raspberry Pi hosting/colocation</title><link href="http://www.lemmster.de/free-and-paid-for-raspberry-pi-hosting.html" rel="alternate"></link><published>2013-06-15T13:37:18+02:00</published><updated>2013-06-15T13:37:18+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-15:/free-and-paid-for-raspberry-pi-hosting.html</id><summary type="html">&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Austria: http://www.edis.at/de/server/colocation/oesterreich/raspberrypi/ (send in - hosting for free)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Netherlands****: http://www.webhostingtalk.com/showthread.php?t=1247549 (send in or buy a Pi - IPv6 hosting for free, IPv4 ~2,5€)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sweden: https://fsdata.se/server/raspberry-pi-colocation/ (send in - hosting for free, only Swedish …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Austria: http://www.edis.at/de/server/colocation/oesterreich/raspberrypi/ (send in - hosting for free)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Netherlands****: http://www.webhostingtalk.com/showthread.php?t=1247549 (send in or buy a Pi - IPv6 hosting for free, IPv4 ~2,5€)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sweden: https://fsdata.se/server/raspberry-pi-colocation/ (send in - hosting for free, only Swedish customers accepted)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Netherlands: http://raspberrycolocation.com/home/ (send in or buy a Pi (takes ~90 days), hosting for free)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Belgium: http://www.fusa.be/en/hosting/special_colocation (send in, 15€ setup, 1,5€ monthly)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Australia: http://www.micron21.com/raspberrypi-colocation.php (send in, $10 IPv4 + data plan starting at $20)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;UK: http://www.retrosnub.co.uk/raspberrycolo (send in, hosting £2,50/month)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;http://shop.pi3g.com/ sells  ready to use Pis and delivers them to PCExtreme directly.&lt;/p&gt;</content></entry><entry><title>Call freetz' wake on lan (wol) via curl</title><link href="http://www.lemmster.de/call-freetz-wake-on-lan-wol-via-curl.html" rel="alternate"></link><published>2013-06-04T17:35:17+02:00</published><updated>2013-06-04T17:35:17+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-04:/call-freetz-wake-on-lan-wol-via-curl.html</id><summary type="html">&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -d &lt;span class="s2"&gt;&amp;quot;mac=AB:CD:EF:12:34:56*&amp;amp;interf;=lan&amp;quot;&lt;/span&gt; http://fritz.box:84/cgi-bin/wake.cgi
+&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -d &lt;span class="s2"&gt;&amp;quot;mac=AB:CD:EF:12:34:56*&amp;amp;interf;=lan&amp;quot;&lt;/span&gt; http://fritz.box:84/cgi-bin/wake.cgi
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>scanbuttond on fritz 7390</title><link href="http://www.lemmster.de/scanbuttond-on-fritz-7390.html" rel="alternate"></link><published>2013-06-03T08:33:14+02:00</published><updated>2013-06-03T08:33:14+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-03:/scanbuttond-on-fritz-7390.html</id><summary type="html">&lt;p&gt;A recent &lt;a href="https://github.com/olistudent/freetz/commit/ac4707b3c543a211c94fb0cf1965cd94c11a20d2"&gt;commit&lt;/a&gt; integrates my pull request to incorporate &lt;a href="http://scanbuttond.sourceforge.net/"&gt;scanbuttond&lt;/a&gt; into &lt;a href="http://freetz.org/"&gt;freetz&lt;/a&gt;, a custom firmware for Fritz Box 7390. scanbuttond's job description is, to trigger a script whenever a button is pressed on a scanner. This is all I need in order to turn my 7390 and an old (three …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A recent &lt;a href="https://github.com/olistudent/freetz/commit/ac4707b3c543a211c94fb0cf1965cd94c11a20d2"&gt;commit&lt;/a&gt; integrates my pull request to incorporate &lt;a href="http://scanbuttond.sourceforge.net/"&gt;scanbuttond&lt;/a&gt; into &lt;a href="http://freetz.org/"&gt;freetz&lt;/a&gt;, a custom firmware for Fritz Box 7390. scanbuttond's job description is, to trigger a script whenever a button is pressed on a scanner. This is all I need in order to turn my 7390 and an old (three button) USB scanner into an always on snail mail to email converter (think paperless office). Once a freetz image with scanbuttond &amp;amp; sane for your scanner model has been backed, “sane-find-scanner” is uncommented in the upper box on the &lt;a href="http://fritz.box:81/cgi-bin/conf/scanbuttond"&gt;freetz webfrontend&lt;/a&gt;. The script below is pasted into the lower “Script for button” box (adapt the email addresses EMAIL_* accordingly). If you find that you cannot paste it directly, insert the script into /mod/etc/conf/scanbuttond.cfg via ssh/telnet.&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="nv"&gt;TMPFILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;scan.pnm&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;LOCKFILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/media/ftp/tmp/copy.lock&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;RECEIPIENT_FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/media/ftp/tmp/receipient.txt&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;MODE_FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/media/ftp/tmp/mode.txt&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;PAGE_NUM_FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/var/media/ftp/tmp/page_num.txt&amp;quot;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# to in notification mails (mapped to button A and B)&lt;/span&gt;
+&lt;span class="nv"&gt;EMAIL_A&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;email1@example.com
+&lt;span class="nv"&gt;EMAIL_B&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;email2@example.com
+
+&lt;span class="c1"&gt;# from header in notification mails&lt;/span&gt;
+&lt;span class="nv"&gt;EMAIL_FROM&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;scanner@example.com
+
+&lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="nv"&gt;$1&lt;/span&gt; in
+    &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="c1"&gt;# Set color mode to &amp;quot;gray&amp;quot; and exit&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -e &lt;span class="nv"&gt;$MODE_FILE&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+                 logger &lt;span class="s2"&gt;&amp;quot;button 1 has been pressed on &lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;, setting color mode&amp;quot;&lt;/span&gt;
+                 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Color&amp;quot;&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$MODE_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+                &lt;span class="k"&gt;fi&lt;/span&gt;
+
+                &lt;span class="c1"&gt;# Set receipient to EMAIL_A and exit&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -e &lt;span class="nv"&gt;$RECEIPIENT_FILE&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+                 logger &lt;span class="s2"&gt;&amp;quot;button 1 has been pressed on &lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;, setting receiver&amp;quot;&lt;/span&gt;
+                 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$EMAIL_A&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$RECEIPIENT_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+                &lt;span class="k"&gt;fi&lt;/span&gt;
+                &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="c1"&gt;# Set color mode to &amp;quot;Color&amp;quot;&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -e &lt;span class="nv"&gt;$MODE_FILE&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+                 logger &lt;span class="s2"&gt;&amp;quot;button 2 has been pressed on &lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;, setting color mode&amp;quot;&lt;/span&gt;
+                 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Gray&amp;quot;&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$MODE_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+                &lt;span class="k"&gt;fi&lt;/span&gt;
+
+                &lt;span class="c1"&gt;# Set receipient to EMAIL_B and exit&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; ! -e &lt;span class="nv"&gt;$RECEIPIENT_FILE&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+                 logger &lt;span class="s2"&gt;&amp;quot;button 2 has been pressed on &lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;, setting receiver&amp;quot;&lt;/span&gt;
+                 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$EMAIL_B&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$RECEIPIENT_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+                &lt;span class="k"&gt;fi&lt;/span&gt;
+
+                logger &lt;span class="s2"&gt;&amp;quot;button 1 has been pressed on &lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; ! mkdir -p &lt;span class="nv"&gt;$LOCKFILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+                 logger &lt;span class="s2"&gt;&amp;quot;Error: scanning already in progress for &lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+                 &lt;span class="nb"&gt;exit&lt;/span&gt;
+                &lt;span class="k"&gt;fi&lt;/span&gt;
+
+                mkdir -p /var/media/ftp/tmp/scans
+
+                &lt;span class="c1"&gt;# Find out last page number and increment or initialize to 0&lt;/span&gt;
+                &lt;span class="nb"&gt;test&lt;/span&gt; ! -e &lt;span class="nv"&gt;$PAGE_NUM_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$PAGE_NUM_FILE&lt;/span&gt;
+                &lt;span class="nv"&gt;PAGE_NUM&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;cat &lt;span class="nv"&gt;$PAGE_NUM_FILE&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+                &lt;span class="nb"&gt;let&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;PAGE_NUM += 1&amp;quot;&lt;/span&gt;
+                &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$PAGE_NUM&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$PAGE_NUM_FILE&lt;/span&gt;
+
+                logger &lt;span class="s2"&gt;&amp;quot;Starting to scan document&amp;quot;&lt;/span&gt;
+                &lt;span class="nv"&gt;SCAN_OPTIONS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;--resolution 600 --contrast 10 --brightness 0 --format=pnm&amp;quot;&lt;/span&gt;
+                scanimage --verbose --device-name &lt;span class="nv"&gt;$2&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+                          --mode Gray -x &lt;span class="m"&gt;210&lt;/span&gt; -y &lt;span class="m"&gt;297&lt;/span&gt; &lt;span class="nv"&gt;$SCAN_OPTIONS&lt;/span&gt; &amp;gt; /var/media/ftp/tmp/scans/&lt;span class="nv"&gt;$PAGE_NUM$TMPFILE&lt;/span&gt;
+
+                &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Releasing lock file&amp;quot;&lt;/span&gt;
+                rm -rf &lt;span class="nv"&gt;$LOCKFILE&lt;/span&gt;
+                &lt;span class="p"&gt;;;&lt;/span&gt;
+        &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                &lt;span class="c1"&gt;# convert each page to pdf&lt;/span&gt;
+                &lt;span class="k"&gt;for&lt;/span&gt; f in &lt;span class="sb"&gt;`&lt;/span&gt;find /var/media/ftp/tmp/scans/*.pnm&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+                 logger &lt;span class="s2"&gt;&amp;quot;Converting pnm documents to jpg&amp;quot;&lt;/span&gt;
+                 pnmtojpeg --quality &lt;span class="m"&gt;25&lt;/span&gt; &lt;span class="nv"&gt;$f&lt;/span&gt; &amp;gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;f&lt;/span&gt;&lt;span class="p"&gt;/pnm/jpg&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+                 &lt;span class="nv"&gt;FILES&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$FILES&lt;/span&gt;,&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;f&lt;/span&gt;&lt;span class="p"&gt;/pnm/jpg&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+                &lt;span class="k"&gt;done&lt;/span&gt;
+
+        &lt;span class="c1"&gt;# Archive pnm files&lt;/span&gt;
+                logger &lt;span class="s2"&gt;&amp;quot;Archiving pnm documents&amp;quot;&lt;/span&gt;
+        &lt;span class="nv"&gt;NOW&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;date +%s&lt;span class="sb"&gt;`&lt;/span&gt;
+        mkdir -p /var/media/ftp/scans/&lt;span class="nv"&gt;$NOW&lt;/span&gt;
+        mv /var/media/ftp/tmp/scans/*.pnm /var/media/ftp/scans/&lt;span class="nv"&gt;$NOW&lt;/span&gt;
+
+                &lt;span class="c1"&gt;# send final concatenated pdf page to receipient&lt;/span&gt;
+                &lt;span class="nv"&gt;RECEIPIENT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;cat &lt;span class="nv"&gt;$RECEIPIENT_FILE&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+                logger &lt;span class="s2"&gt;&amp;quot;Sending document to &lt;/span&gt;&lt;span class="nv"&gt;$RECEIPIENT&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; sftp://fritz.box/var/media/ftp/scans/&lt;span class="nv"&gt;$NOW&lt;/span&gt; &amp;gt; /var/media/ftp/tmp/body.txt
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;for i in \`ls\`; do cd \$i &amp;amp;&amp;amp; pnm2pdf.sh &amp;amp;&amp;amp; cd ..; done&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /var/media/ftp/tmp/body.txt
+        mailer -s Scan -f &lt;span class="nv"&gt;$EMAIL_FROM&lt;/span&gt; -t &lt;span class="nv"&gt;$RECEIPIENT&lt;/span&gt; -i /var/media/ftp/tmp/body.txt -d &lt;span class="nv"&gt;$FILES&lt;/span&gt;
+
+                logger &lt;span class="s2"&gt;&amp;quot;Cleaning up intermediate files&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;test&lt;/span&gt; -e /var/media/ftp/tmp/body.txt &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm /var/media/ftp/tmp/body.txt
+                &lt;span class="nb"&gt;test&lt;/span&gt; -e &lt;span class="nv"&gt;$MODE_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm &lt;span class="nv"&gt;$MODE_FILE&lt;/span&gt;
+                &lt;span class="nb"&gt;test&lt;/span&gt; -e &lt;span class="nv"&gt;$RECEIPIENT_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm &lt;span class="nv"&gt;$RECEIPIENT_FILE&lt;/span&gt;
+                &lt;span class="nb"&gt;test&lt;/span&gt; -e &lt;span class="nv"&gt;$PAGE_NUM_FILE&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm &lt;span class="nv"&gt;$PAGE_NUM_FILE&lt;/span&gt;
+                &lt;span class="nb"&gt;test&lt;/span&gt; -d /var/media/ftp/tmp/scans/ &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; rm -rf /var/media/ftp/tmp/scans/
+                &lt;span class="p"&gt;;;&lt;/span&gt;
+&lt;span class="k"&gt;esac&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;The following finite state machine/automata shows how the buttons are programmed:&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.lemmster.de/uploads/scanbuttond.png"&gt;&lt;img alt="scanbuttond" src="http://www.lemmster.de/uploads/scanbuttond.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you occasionally find yourself forgetting to press the end button (#3) after the last page has been scanned, using cron to periodically check for stale tmp/ folders does the job for you. Assuming crond is part of your freetz image, just add a the following line on the &lt;a href="http://fritz.box:81/cgi-bin/file/mod/crontab"&gt;crond webfrontend&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;*/45 * * * * if [ `find /var/media/ftp/tmp/scans/ \
+  -iname *.pnm -type f -mmin +15  2&amp;gt;/dev/null | wc -l` -gt 0 ]; \
+  then /var/mod/etc/scanbuttond/buttonpressed.sh 3; fi
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Multiple locations for openssh's AuthorizedKeysFile useful in combination with encrypted home dirs (ecryptfs)</title><link href="http://www.lemmster.de/multiple-locations-for-opensshs-authorizedkeysfile-useful-in-combination-with-encrypted-home-dirs-ecryptfs.html" rel="alternate"></link><published>2013-06-02T10:56:01+02:00</published><updated>2013-06-02T10:56:01+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-02:/multiple-locations-for-opensshs-authorizedkeysfile-useful-in-combination-with-encrypted-home-dirs-ecryptfs.html</id><summary type="html">&lt;p&gt;When using disk encryption (e.g. ecryptfs) to protect your private home dir data, ssh pubkey authentication breaks as a side effect. It breaks for obvious reasons though. Your authorized_keys file lives in ~/.ssh/ which is intentionally encrypted when you are not logged in.&lt;/p&gt;
+&lt;p&gt;A trivial change to still allow …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using disk encryption (e.g. ecryptfs) to protect your private home dir data, ssh pubkey authentication breaks as a side effect. It breaks for obvious reasons though. Your authorized_keys file lives in ~/.ssh/ which is intentionally encrypted when you are not logged in.&lt;/p&gt;
+&lt;p&gt;A trivial change to still allow password less/free logins, is to add a second authorized_keys file location to /etc/ssh/sshd_config. Just add/change AuthorizedKeysFile to point to '%h/.ssh/authorized_keys /etc/ssh/%u/authorized_keys'. This makes ssh first look into ~/.ssh/ and fall back to /etc/ssh/~/ if no valid authorized_keys file can be found (make sure to chown ownership of the latter to the login user).&lt;/p&gt;</content></entry><entry><title>Remotely check if XBMC (&gt;=Frodo) is playing content with curl</title><link href="http://www.lemmster.de/remotely-check-if-xbmc-frodo-is-playing-content-with-curl.html" rel="alternate"></link><published>2013-06-01T08:30:51+02:00</published><updated>2013-06-01T08:30:51+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-06-01:/remotely-check-if-xbmc-frodo-is-playing-content-with-curl.html</id><summary type="html">&lt;p&gt;&lt;a href="http://www.xbmc.org/"&gt;XBMC&lt;/a&gt; exposes a &lt;a href="http://wiki.xbmc.org/index.php?title=JSON-RPC_API/v4"&gt;JSON API&lt;/a&gt; that allows you to query its status and remotely control it. I need the API to check if XBMC is currently playing content (manifesting itself in a running player) and if not, automatically shut down the living room pc to save energy. Fortunately, the API …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://www.xbmc.org/"&gt;XBMC&lt;/a&gt; exposes a &lt;a href="http://wiki.xbmc.org/index.php?title=JSON-RPC_API/v4"&gt;JSON API&lt;/a&gt; that allows you to query its status and remotely control it. I need the API to check if XBMC is currently playing content (manifesting itself in a running player) and if not, automatically shut down the living room pc to save energy. Fortunately, the API comes with the &lt;a href="http://wiki.xbmc.org/index.php?title=JSON-RPC_API/v4#Player.GetActivePlayers"&gt;Player.GetActivePlayers&lt;/a&gt; call. As the name indicates, it returns the currently active players meaning no players no activity and thus the machine can shut down. Combining curl with a few simple python parsing returns a number for active players.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl -s -u xbmc:xbmc -X POST -H &lt;span class="s2"&gt;&amp;quot;Content-Type: application/json&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-d &lt;span class="s1"&gt;&amp;#39;{&amp;quot;jsonrpc&amp;quot;: &amp;quot;2.0&amp;quot;, &amp;quot;method&amp;quot;: &amp;quot;Player.GetActivePlayers&amp;quot;, &amp;quot;id&amp;quot;: 1}&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+http://localhost:8080/jsonrpc &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+python -c &lt;span class="s1"&gt;&amp;#39;import json,sys;obj=json.load(sys.stdin);print len(obj[&amp;quot;result&amp;quot;])&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Monitor AVM fritz box 7390 with Munin</title><link href="http://www.lemmster.de/monitor-avm-fritz-box-7390-with-munin.html" rel="alternate"></link><published>2013-05-23T12:31:29+02:00</published><updated>2013-05-23T12:31:29+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-05-23:/monitor-avm-fritz-box-7390-with-munin.html</id><summary type="html">&lt;p&gt;These days it apparently has become important again to monitor how much traffic one uses. Otherwise you might end up with pre-internet-era link speed (thanks to capital t here in Germany). So lets configure a (running) munin instance to monitor the bandwidth usage of your AVM fritz box (7390).&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Download …&lt;/p&gt;&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;p&gt;These days it apparently has become important again to monitor how much traffic one uses. Otherwise you might end up with pre-internet-era link speed (thanks to capital t here in Germany). So lets configure a (running) munin instance to monitor the bandwidth usage of your AVM fritz box (7390).&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Download avm-fritzbox-wan-traffic from &lt;a href="https://github.com/munin-monitoring/contrib/blob/master/plugins/network/avm-fritzbox-wan-traffic"&gt;github&lt;/a&gt; or &lt;a href="http://munin-monitoring.org/browser/munin-contrib/plugins/network/avm-fritzbox-wan-traffic"&gt;munin-monitoring&lt;/a&gt; directly&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;You might have to change '$host' to something resolvable&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Move avm-fritzbox-wan-traffic to e.g. /usr/local/share/munin/plugins/&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;apt-get install php (if it ain't installed yet)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ln -s /usr/local/share/munin/plugins/avm-fritzbox-wan-traffic /etc/munin/plugins/avm-fritzfox-wan-traffic&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Add “[avm-fritzbox-wan-traffic] \ user nobody” to /etc/munin/plugins-conf.d/munin-node&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Restart munin-node with “service munin-node restart”&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;If you happen to run freetz, make sure upnp does not get removed (“Removal patches” &amp;gt; “Remove UPnP (igdd/upnp)” and “Other patches” &amp;gt; “Disable igd/upnp”)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</content></entry><entry><title>Audiobooks2Podcast</title><link href="http://www.lemmster.de/audiobooks2podcast.html" rel="alternate"></link><published>2013-05-20T17:37:09+02:00</published><updated>2013-05-20T17:37:09+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-05-20:/audiobooks2podcast.html</id><summary type="html">&lt;p&gt;As an audiobook addict I have always hated the way audiobook mp3s are handled by the various players. This is because I get my fix from the local public library that rents countless audiobooks pressed on this legacy technology called CDs. Ripping audio CDs to mp3 isn't a problem (it …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As an audiobook addict I have always hated the way audiobook mp3s are handled by the various players. This is because I get my fix from the local public library that rents countless audiobooks pressed on this legacy technology called CDs. Ripping audio CDs to mp3 isn't a problem (it is just annoying), but none of the various mp3 players seems to play the various tracks in correct order. Some seem to use the file name while others read the ID3 track name or any permutation of tags. With a single computer, one can adapt and tag mp3s to whatever the player of choice does. But with today's device proliferation, this becomes hell.
+This morning however it occurred to me, that an mp3 player is just the wrong tool to play converted audiobooks. What fits better is a podcast player that is written to play hour long content. One only has to bridge the technology gap that exists between a podcast (single media file) and a ripped audiobook (directory of several small mp3s).Below is a list of bullet point items that outline how I do this on Ubuntu &amp;gt;=12.10 and a Raspberry Pi serving the media.&lt;/p&gt;
+&lt;h2&gt;1 Converting audiobook cds to podcast-like mp3s with &lt;a href="http://code.google.com/p/abcde/"&gt;abcde&lt;/a&gt;&lt;/h2&gt;
+&lt;h3&gt;1.1 Prerequisites&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;'apt-get install abcde cd-discid cdparanoia libao4 libmusicbrainz-discid-perl libwebservice-musicbrainz-perl libxml-libxml-perl normalize-audio mkcue id3v2 lame –no-install-recommends'&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;'pip install –upgrade eyeD3' (want eyeD3 &amp;gt; 0.7.1 with &lt;a href="https://bitbucket.org/nicfit/eyed3/issue/5/"&gt;CHAP support&lt;/a&gt;)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;https://bitbucket.org/nicfit/eyed3/pull-request/3&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Alternatively grep the source from my &lt;a href="https://bitbucket.org/lemmster/eyed3"&gt;git repo directly&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;abcde4ab.sh (abcde for audiobooks)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;wget -O /usr/local/bin/abcde4ab.sh http://www.lemmster.de/uploads/abcde4ab.sh&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;1.2 Convert all cds to single mp3 tracks with chapters&lt;/h3&gt;
+&lt;p&gt;Converting an audiobook consisting out of n CDs is as simple as running 'abcde4ab.sh “Artist name” “Audiobook name” totalNumberOfCds'. E.g. to convert Treasure Island by Robert Louis Stevenson on 10 CDs, the command line is 'adbcd4ab.sh “Robert Louis Stevenson” “Treasure Island” 10'. It will output ten single mp3 files with ID3v2 chapters for each individual cd track and other tag tracks accordingly. The ID3 titles are optimized for display in an RSS feed (dircaster).&lt;/p&gt;
+&lt;h2&gt;2 Serving converted audiobooks as podcasts&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://www.dircaster.org/"&gt;dircaster&lt;/a&gt;on e.g. a RPi&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;'apt-get install lighttpd php5-cgi &amp;amp;&amp;amp; lighttpd-enable-mod fastcgi-php'&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;'wget -O dircaster.zip http://www.dircaster.org/DirCasterV09j.zip &amp;amp;&amp;amp; unzip dircaster.zip'&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;'vi config_inc.php'&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Copy your audiobooks from step 1.2 to the media/ folder&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;3 Client&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://github.com/danieloeh/AntennaPod"&gt;AntennaPod&lt;/a&gt; is a good choice for an Android client. It supports ID3v2 chapters out of the box.&lt;/p&gt;</content></entry><entry><title>Roundcube (0.3.1-6) and lighttpd on Debian Squeeze (immediate logout after login)</title><link href="http://www.lemmster.de/roundcube-0-3-1-6-and-lighttpd-on-debian-squeeze-immediate-logout-after-login.html" rel="alternate"></link><published>2013-05-19T14:27:29+02:00</published><updated>2013-05-19T14:27:29+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-05-19:/roundcube-0-3-1-6-and-lighttpd-on-debian-squeeze-immediate-logout-after-login.html</id><summary type="html">&lt;p&gt;If you experince immediate logouts after successfully loging into roundcube, you have to follow the advice in /usr/share/doc/roundcube-code/NEWS.debian.gz and turn suhosin.session.enrypt off [1]. If you do not want to turn it off globally, it can easily be done for roundcube only:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/etc …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;If you experince immediate logouts after successfully loging into roundcube, you have to follow the advice in /usr/share/doc/roundcube-code/NEWS.debian.gz and turn suhosin.session.enrypt off [1]. If you do not want to turn it off globally, it can easily be done for roundcube only:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/etc/php5/cgi/conf.d# cat roundcube.ini
+&lt;span class="p"&gt;;&lt;/span&gt; see /usr/share/doc/roundcube-code/NEWS.debian.gz
+&lt;span class="o"&gt;[&lt;/span&gt;suhosin&lt;span class="o"&gt;]&lt;/span&gt;
+suhosin.session.encrypt &lt;span class="o"&gt;=&lt;/span&gt; off
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;[1] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=549428&lt;/p&gt;</content></entry><entry><title>Export to docbook xml with LyX (on Ubuntu 12.10)</title><link href="http://www.lemmster.de/export-to-docbook-xml-with-lyx-on-ubuntu-12-10.html" rel="alternate"></link><published>2013-02-26T16:00:27+01:00</published><updated>2013-02-26T16:00:27+01:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-02-26:/export-to-docbook-xml-with-lyx-on-ubuntu-12-10.html</id><summary type="html">&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Install LyX as well as the dependencies need to author docbook in LyX&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;apt-get install docbook-dsssl sgmltools-lite jade docbook docbook-xml lyx jadetex&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;It is commonly written on the web to tell LyX where to find the docbook catalogs by explicitly exporting SGML_CATALOG_FILES. This turned out to be not needed on …&lt;/p&gt;&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Install LyX as well as the dependencies need to author docbook in LyX&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;apt-get install docbook-dsssl sgmltools-lite jade docbook docbook-xml lyx jadetex&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;It is commonly written on the web to tell LyX where to find the docbook catalogs by explicitly exporting SGML_CATALOG_FILES. This turned out to be not needed on Ubuntu and in fact caused sgmltools to fail if set (IOError: Couldn't resolve pubid ["-//SGMLtools//DOCUMENT Docbook Style Sheet for w3m Text//EN"]).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Start LyX and hit Tools⇒Reconfigure followed by a LyX restart&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;At this stage create a new document foo.lyx and change the document class to “Docbook articel (SGML)”&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Document =&amp;gt; Settings =&amp;gt; Document class&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Save the document and check the DVI preview (CTRL+R)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Export =&amp;gt; Docbook (XML) exports foo.lyx to foo.xml which is valid docbook xml&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</content></entry><entry><title>Permanently remove dropbox client from autostart on Gnome</title><link href="http://www.lemmster.de/permanently-remove-dropbox-client-from-autostarting-on-gnome.html" rel="alternate"></link><published>2013-01-29T10:04:26+01:00</published><updated>2013-01-29T10:04:26+01:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2013-01-29:/permanently-remove-dropbox-client-from-autostarting-on-gnome.html</id><summary type="html">&lt;p&gt;Dropbox Inc. seems to think that I want its client to start automatically, always! Even if I manually remove the dropbox entry from startup applications or turn it off, it will be "magically" re-added/-enabled simply by running the dropbox client once. Well, I still prefer to stay in control …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Dropbox Inc. seems to think that I want its client to start automatically, always! Even if I manually remove the dropbox entry from startup applications or turn it off, it will be "magically" re-added/-enabled simply by running the dropbox client once. Well, I still prefer to stay in control of my computers (rather than the other way around) and thus keep dropbox out of autostart with a stupid &lt;strong&gt;"sudo chown root:root ~/.config/autostart/dropbox.desktop"&lt;/strong&gt;. Done!&lt;/p&gt;
+&lt;p&gt;Btw. this considerably helps reduce battery drain while being mobile.&lt;/p&gt;</content></entry><entry><title>Generate QR for Wifi network with qrencode on command line</title><link href="http://www.lemmster.de/generate-qr-for-wifi-network-with-qrencode-on-command-line.html" rel="alternate"></link><published>2012-03-04T13:11:43+01:00</published><updated>2012-03-04T13:11:43+01:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2012-03-04:/generate-qr-for-wifi-network-with-qrencode-on-command-line.html</id><summary type="html">&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;WIFI:S:aSSID;T:WPA;P:aPassword;;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; qrencode -o wifi.png -s &lt;span class="m"&gt;10&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;WIFI:S:aSSID;T:WPA;P:aPassword;;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; qrencode -o wifi.png -s &lt;span class="m"&gt;10&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>debian etch + exim4 + greylistd + spf</title><link href="http://www.lemmster.de/debian-etch-exim4-greylistd-spf.html" rel="alternate"></link><published>2007-05-19T09:53:14+02:00</published><updated>2007-05-19T09:53:14+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2007-05-19:/debian-etch-exim4-greylistd-spf.html</id><summary type="html">&lt;p&gt;Today I've spent some time implementing &lt;a href="http://greylisting.org/"&gt;greylisting&lt;/a&gt; on our smtp server continuing my endless fight against &lt;a href="http://en.wikipedia.org/wiki/E-mail_spam"&gt;UCE (spam)&lt;/a&gt;. Setting this up is as easy as running "aptitude install greylistd" and adding to the exim.conf:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;defer  
+&lt;span class="nv"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;$sender_host_address&lt;/span&gt; is not yet authorized to deliver &lt;span class="se"&gt;\ &lt;/span&gt; 
+mail from &amp;lt;&lt;span class="nv"&gt;$sender_address&lt;/span&gt;&amp;gt; to &amp;lt;&lt;span class="nv"&gt;$local_part&lt;/span&gt;@&lt;span class="nv"&gt;$domain …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Today I've spent some time implementing &lt;a href="http://greylisting.org/"&gt;greylisting&lt;/a&gt; on our smtp server continuing my endless fight against &lt;a href="http://en.wikipedia.org/wiki/E-mail_spam"&gt;UCE (spam)&lt;/a&gt;. Setting this up is as easy as running "aptitude install greylistd" and adding to the exim.conf:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;defer  
+&lt;span class="nv"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;$sender_host_address&lt;/span&gt; is not yet authorized to deliver &lt;span class="se"&gt;\ &lt;/span&gt; 
+mail from &amp;lt;&lt;span class="nv"&gt;$sender_address&lt;/span&gt;&amp;gt; to &amp;lt;&lt;span class="nv"&gt;$local_part&lt;/span&gt;@&lt;span class="nv"&gt;$domain&lt;/span&gt;&amp;gt;. &lt;span class="se"&gt;\ &lt;/span&gt; 
+Please try later.  
+&lt;span class="nv"&gt;log_message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; greylisted.  
+!senders &lt;span class="o"&gt;=&lt;/span&gt; :  
+!hosts &lt;span class="o"&gt;=&lt;/span&gt; : +relay_from_hosts : &lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; exists {/etc/greylistd/whitelist-hosts&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="o"&gt;{&lt;/span&gt;/etc/greylistd/whitelist-hosts&lt;span class="o"&gt;}{}}&lt;/span&gt; : &lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; exists {/var/lib/greylistd/whitelist-hosts&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="o"&gt;{&lt;/span&gt;/var/lib/greylistd/whitelist-hosts&lt;span class="o"&gt;}{}}&lt;/span&gt;  
+!authenticated &lt;span class="o"&gt;=&lt;/span&gt; *  
+!acl &lt;span class="o"&gt;=&lt;/span&gt; acl_check_spf  
+&lt;span class="nv"&gt;domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; +local_domains : +relay_to_domains  
+&lt;span class="nv"&gt;verify&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; recipient/callout&lt;span class="o"&gt;=&lt;/span&gt;20s,use_sender,defer_ok  
+&lt;span class="nv"&gt;condition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;readsocket&lt;/span&gt;&lt;span class="p"&gt;{/var/run/greylistd/socket&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="o"&gt;{&lt;/span&gt;--grey &lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="nv"&gt;$sender_host_address&lt;/span&gt; &lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="nv"&gt;$sender_address&lt;/span&gt; &lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="nv"&gt;$local_part&lt;/span&gt;@&lt;span class="nv"&gt;$domain&lt;/span&gt;&lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="o"&gt;{&lt;/span&gt;5s&lt;span class="o"&gt;}{}{&lt;/span&gt;false&lt;span class="o"&gt;}}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;But greylisting comes with one drawback that bugs me. It requires senders of legitimate mail to retry after some amount of time. This wouldn't be a problem with sane smtp servers but with potentially misconfigured servers, we can't be sure of it.  &lt;/p&gt;
+&lt;p&gt;Therefore I whitelist a broad range of well known smtp servers for which I assume that they will always send legitimate mail. But maintaining a whitelist is tedious and takes a lot of effort (for postfix &lt;a href="http://oc-co.org/p2pwl/"&gt;p2pwl&lt;/a&gt; exists as a solution). That's why I decided to also whitelist hosts for which a &lt;a href="http://www.openspf.org/"&gt;SPF&lt;/a&gt; check passes. Even though its not yet widely used it reduces the chance to greylist especially big/high traffic smtp servers (I assume that those hosts return a valid SPF record).  &lt;/p&gt;
+&lt;p&gt;Unfortunately &lt;a href="http://exim.org/"&gt;exim4&lt;/a&gt; doesn't come with spf enabled in &lt;a href="http://www.debian.org/News/2007/20070408"&gt;debian etch&lt;/a&gt; for &lt;a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=377034"&gt;various reasons,&lt;/a&gt; why it is necessary to do the spf check manually with &lt;a href="http://packages.qa.debian.org/libmail-spf-query-perl"&gt;libmail-spf-query-perl&lt;/a&gt; which is available via apt. The upstream example which is included doesn't serve this use case though. So I had to create my own:  &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;acl_check_spf:
+
+accept  
+&lt;span class="nv"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; X-mkce.de-SPF: SPF check succeeded  
+&lt;span class="nv"&gt;log_message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;SPF&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="nv"&gt;$sender_host_address&lt;/span&gt; is allowed to send mail from &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; def:&lt;/span&gt;&lt;span class="nv"&gt;sender_address_domain&lt;/span&gt;&lt;span class="p"&gt; {&lt;/span&gt;&lt;span class="nv"&gt;$sender_address_domain&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="nv"&gt;$sender_helo_name&lt;/span&gt;&lt;span class="o"&gt;}}&lt;/span&gt;.   
+&lt;span class="nv"&gt;condition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;run&lt;/span&gt;&lt;span class="p"&gt;{/usr/bin/spfquery --ip &lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$sender_host_address&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="p"&gt; --mail-from &lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$sender_address&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="p"&gt; --helo &lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$sender_helo_name&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; eq {&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;yes&lt;span class="o"&gt;}{&lt;/span&gt;no&lt;span class="o"&gt;}}}}&lt;/span&gt;
+
+warn  
+&lt;span class="nv"&gt;log_message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;SPF&lt;span class="o"&gt;]&lt;/span&gt; Temporary DNS error &lt;span class="k"&gt;while&lt;/span&gt; checking SPF record.  
+&lt;span class="nv"&gt;condition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; eq {&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;yes&lt;span class="o"&gt;}{&lt;/span&gt;no&lt;span class="o"&gt;}}&lt;/span&gt;
+
+warn  
+&lt;span class="nv"&gt;log_message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;SPF&lt;span class="o"&gt;]&lt;/span&gt; SPF check negative with &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; eq {&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;fail&lt;span class="o"&gt;}{&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; eq {&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;softfail&lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="se"&gt;\ &lt;/span&gt; 
+&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; eq {&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;neutral&lt;span class="o"&gt;}{&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; eq {&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;unknown&lt;span class="o"&gt;}{&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; eq {&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;none&lt;span class="o"&gt;}{&lt;/span&gt;error&lt;span class="o"&gt;}}}}}}}}}}&lt;/span&gt;  
+&lt;span class="nv"&gt;condition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; &amp;lt;={&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;yes&lt;span class="o"&gt;}{&lt;/span&gt;no&lt;span class="o"&gt;}}&lt;/span&gt;
+
+warn  
+&lt;span class="nv"&gt;log_message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;SPF&lt;span class="o"&gt;]&lt;/span&gt; Unexpected error in SPF check.  
+&lt;span class="nv"&gt;condition&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;if&lt;/span&gt;&lt;span class="p"&gt; &amp;gt;{&lt;/span&gt;&lt;span class="nv"&gt;$runrc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="o"&gt;}{&lt;/span&gt;yes&lt;span class="o"&gt;}{&lt;/span&gt;no&lt;span class="o"&gt;}}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I'll monitor my logfiles closely the next days, but even after a couple of hours the result looks promising.  &lt;/p&gt;
+&lt;p&gt;May this piece of information help somebody else. :-)&lt;/p&gt;</content></entry><entry><title>ip_conntrack_tcp_be_liberal</title><link href="http://www.lemmster.de/ip_conntrack_tcp_be_liberal.html" rel="alternate"></link><published>2005-09-23T12:02:04+02:00</published><updated>2005-09-23T12:02:04+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2005-09-23:/ip_conntrack_tcp_be_liberal.html</id><summary type="html">&lt;p&gt;von beginn an bestand ein problem mit haengenden verbindungen in den xen domainen. ssh oder ftp verbindungen brachen gelegentlich ab, ohne einen hinweis in den logfiles zu hinterlassen. nachdem ich am heutigen vormittag das problem dann genauer untersucht habe und probleme mit der glibc ausschliessen konnte, richtete ich mein augenmerk …&lt;/p&gt;</summary><content type="html">&lt;p&gt;von beginn an bestand ein problem mit haengenden verbindungen in den xen domainen. ssh oder ftp verbindungen brachen gelegentlich ab, ohne einen hinweis in den logfiles zu hinterlassen. nachdem ich am heutigen vormittag das problem dann genauer untersucht habe und probleme mit der glibc ausschliessen konnte, richtete ich mein augenmerk auf die firewall. und tatsaechlich verschwand das problem, wenn iptables nicht im spiel war.
+also befragte ich wieder google und fand einen hinweis auf ip_conntrack_tcp_be_liberal. ab dem 2.6.9 kernel scheint neuer code fuer das tcp window handling hinzu gekommen zu sein, der sich leider nicht mit iptables vertraegt. wenn diese funktion im kernel abgeschaltet ist, arbeitet das system wieder fehlerfrei. :)&lt;/p&gt;</content></entry></feed>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Buckminster rmap to p2 (composite) repository metadata - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="ECF has been using an rmap to b3aggr xslt stylesheet for a while now, and today I needed a similar stylesheet to convert to p2 composite repositories (single sourcing repositories feed from Buckminster to the p2 director). It takes an rmap and spits out composite repository metadata referring to all …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Buckminster rmap to p2 (composite) repository metadata</h1>
+		
+<div class="metadata">
+  <time datetime="2013-05-22T15:50:30+02:00" pubdate>Wed 22 May 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>ECF has been using an <a href="http://git.eclipse.org/c/ecf/org.eclipse.ecf.git/tree/releng/org.eclipse.ecf.releng.bm/rmap2b3aggr.xsl">rmap to b3aggr</a> xslt stylesheet for a while now, and today I needed a similar stylesheet to convert to p2 composite repositories (single sourcing repositories feed from Buckminster to the p2 director). It takes an rmap and spits out composite repository metadata referring to all http:// and ftp:// provider uris in the rmap. For an example check out this <a href="https://raw.github.com/kuppe/epp.packages/master/features/org.eclipse.epp.allpackages.feature/epp.rmap">rmap</a> and the <a href="http://download.vogella.com/p2/M-MASTER-voclipse/workspace/p2repo/">generated metadata</a>. As a generator use</p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;standard&quot;</span><span class="nt">&gt;</span>xsltproc --stringparam timestamp $((`date +%s * 1000)) --stringparam 
+repository file:///a/local/p2/repo/ rmap2compositeRepository.xsl my.rmap<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p>In case anybody else needs it, here is the xslt stylesheet:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="k">&lt;xsl:stylesheet</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span>
+    <span class="na">xmlns:xsl=</span><span class="s">&quot;http://www.w3.org/1999/XSL/Transform&quot;</span>
+    <span class="na">xmlns:bm=</span><span class="s">&quot;http://www.eclipse.org/buckminster/RMap-1.0&quot;</span><span class="nt">&gt;</span>
+    <span class="k">&lt;xsl:output</span> <span class="na">method=</span><span class="s">&quot;xml&quot;</span> <span class="na">indent=</span><span class="s">&quot;yes&quot;</span> <span class="na">encoding=</span><span class="s">&quot;UTF-8&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="k">&lt;xsl:strip-space</span> <span class="na">elements=</span><span class="s">&quot;*&quot;</span><span class="nt">/&gt;</span>
+
+    <span class="c">&lt;!-- overwrite via parameters --&gt;</span>
+    <span class="k">&lt;xsl:param</span> <span class="na">name=</span><span class="s">&quot;repository&quot;</span><span class="nt">&gt;</span>file:///dev/null<span class="k">&lt;/xsl:param&gt;</span>
+    <span class="k">&lt;xsl:param</span> <span class="na">name=</span><span class="s">&quot;title&quot;</span><span class="nt">&gt;</span>vogella Packages Repository<span class="k">&lt;/xsl:param&gt;</span>
+    <span class="k">&lt;xsl:param</span> <span class="na">name=</span><span class="s">&quot;timestamp&quot;</span><span class="nt">&gt;</span>13691573970000<span class="k">&lt;/xsl:param&gt;</span>
+    <span class="k">&lt;xsl:param</span> <span class="na">name=</span><span class="s">&quot;type&quot;</span><span class="nt">&gt;</span>org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository<span class="k">&lt;/xsl:param&gt;</span>
+
+    <span class="k">&lt;xsl:template</span> <span class="na">match=</span><span class="s">&quot;bm:provider&quot;</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!-- only accept public http|ftp repositories --&gt;</span>
+        <span class="k">&lt;xsl:if</span> <span class="na">test=</span><span class="s">&quot;starts-with(bm:uri/@format, &#39;http://&#39;) or starts-with(bm:uri/@format, &#39;ftp://&#39;)&quot;</span><span class="nt">&gt;</span>
+
+                <span class="c">&lt;!-- remove dangling ?importType=binary --&gt;</span>
+                <span class="k">&lt;xsl:choose</span><span class="nt">&gt;</span>
+                        <span class="k">&lt;xsl:when</span> <span class="na">test=</span><span class="s">&quot;contains(bm:uri/@format, &#39;?importType=binary&#39;)&quot;</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">&quot;{substring-before(bm:uri/@format, &#39;?importType=binary&#39;)}&quot;</span><span class="nt">/&gt;</span>
+                        <span class="k">&lt;/xsl:when&gt;</span>
+                        <span class="k">&lt;xsl:otherwise</span><span class="nt">&gt;</span>
+                            <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">&quot;{bm:uri/@format}&quot;</span><span class="nt">/&gt;</span>
+                        <span class="k">&lt;/xsl:otherwise&gt;</span>
+                <span class="k">&lt;/xsl:choose&gt;</span>
+        <span class="k">&lt;/xsl:if&gt;</span>
+    <span class="k">&lt;/xsl:template&gt;</span>
+
+    <span class="k">&lt;xsl:template</span> <span class="na">match=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>
+
+            <span class="nt">&lt;repository</span> <span class="na">name=</span><span class="s">&#39;&amp;quot;{$title}&amp;quot;&#39;</span> <span class="na">type=</span><span class="s">&#39;{$type}&#39;</span> <span class="na">version=</span><span class="s">&#39;1.0.0&#39;</span><span class="nt">&gt;</span>
+
+              <span class="nt">&lt;properties</span> <span class="na">size=</span><span class="s">&#39;2&#39;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#39;p2.compressed&#39;</span> <span class="na">value=</span><span class="s">&#39;true&#39;</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#39;p2.timestamp&#39;</span> <span class="na">value=</span><span class="s">&#39;{$timestamp}&#39;</span><span class="nt">/&gt;</span>
+              <span class="nt">&lt;/properties&gt;</span>
+              <span class="nt">&lt;children&gt;</span>
+                <span class="nt">&lt;child</span> <span class="na">location=</span><span class="s">&#39;{$repository}&#39;</span><span class="nt">/&gt;</span>
+                <span class="c">&lt;!-- match all the child nodes of the template match=/ node --&gt;</span>
+                <span class="k">&lt;xsl:apply-templates</span><span class="nt">/&gt;</span>
+              <span class="nt">&lt;/children&gt;</span>
+            <span class="nt">&lt;/repository&gt;</span>
+
+    <span class="k">&lt;/xsl:template&gt;</span>
+
+<span class="k">&lt;/xsl:stylesheet&gt;</span>
+</pre></div>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

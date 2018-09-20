@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Non-restorable views - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="Yesterday I was hit with the requirement to not restore/set to be hidden certain views after workbench restart. Unfortunately this isn't supported in the current (latest) incarnation of the org.eclipse.ui.views EP, though it shouldn't be too hard to extend the EP schema. But since changing org …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Non-restorable views</h1>
+		
+<div class="metadata">
+  <time datetime="2008-01-18T13:42:51+01:00" pubdate>Fri 18 January 2008</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>Yesterday I was hit with the requirement to not restore/set to be hidden certain views after workbench restart. Unfortunately this isn't supported in the current (latest) incarnation of the <em><a href="http://help.eclipse.org/help33/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/views/package-summary.html">org.eclipse.ui.views</a></em> EP, though it shouldn't be too hard to extend the EP schema. But since changing <em>org.eclipse.ui</em> code isn't a short term solution anyway, I reverted to a poor mans version of an EP (btw. thanks to pwebster for inspiration). Basically the RCP checks for a given substring in all secondary ids of open ViewReferences in the <a href="http://help.eclipse.org/help33/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/application/WorkbenchWindowAdvisor.html"><em>WorkbenchWindowAdvisor#postWindowCreate</em></a> startup hook. The implementation is pretty much straight forward:</p>
+<div class="highlight"><pre><span></span>// do not restore certain views whose secondary view ID contains &quot;NO_RESTORE&quot;
+IWorkbenchPage[] pages = getWindowConfigurer().getWindow().getPages();
+for(int i = 0; i &lt; pages.length; i++) {
+    IWorkbenchPage workbenchPage = pages[i];
+    IViewReference[] viewReferences = workbenchPage.getViewReferences();
+    for(int j = 0; j &lt; viewReferences.length; j++) {
+        IViewReference viewReference = viewReferences[j];
+        String secondaryId = viewReference.getSecondaryId();
+        if(secondaryId != null &amp;&amp; secondaryId.contains(&quot;NO_RESTORE&quot;)) {
+            workbenchPage.hideView(viewReference);
+        }
+    }
+}
+</pre></div>
+
+
+<p>To define a view to be non-restorable is done by concatenating "NO_RESTORE" into the secondary view id string.</p>
+<p>Hard coding the view id in <em>WorkbenchWindow#postWindowCreate</em> is a bad alternative, because it unnecessarily separates the view properties from the bundle hosting the view. Also it makes the RCP bundle specific for certain views. It's IMO simply the wrong location. Personally I find this functionality important enough to be included, so I've create <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=215797">Bug #215797</a>. If you agree, please give it a vote.</p>
+<p>The next item on my todo list, is to get rid of unwanted "Show View" shortcuts, because leaning back waiting for 3.4 to hit the road unfortunately isn't an option. :(</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

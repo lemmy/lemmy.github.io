@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Audiobooks2Podcast - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="As an audiobook addict I have always hated the way audiobook mp3s are handled by the various players. This is because I get my fix from the local public library that rents countless audiobooks pressed on this legacy technology called CDs. Ripping audio CDs to mp3 isn't a problem (it …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Audiobooks2Podcast</h1>
+		
+<div class="metadata">
+  <time datetime="2013-05-20T17:37:09+02:00" pubdate>Mon 20 May 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>As an audiobook addict I have always hated the way audiobook mp3s are handled by the various players. This is because I get my fix from the local public library that rents countless audiobooks pressed on this legacy technology called CDs. Ripping audio CDs to mp3 isn't a problem (it is just annoying), but none of the various mp3 players seems to play the various tracks in correct order. Some seem to use the file name while others read the ID3 track name or any permutation of tags. With a single computer, one can adapt and tag mp3s to whatever the player of choice does. But with today's device proliferation, this becomes hell.
+This morning however it occurred to me, that an mp3 player is just the wrong tool to play converted audiobooks. What fits better is a podcast player that is written to play hour long content. One only has to bridge the technology gap that exists between a podcast (single media file) and a ripped audiobook (directory of several small mp3s).Below is a list of bullet point items that outline how I do this on Ubuntu &gt;=12.10 and a Raspberry Pi serving the media.</p>
+<h2>1 Converting audiobook cds to podcast-like mp3s with <a href="http://code.google.com/p/abcde/">abcde</a></h2>
+<h3>1.1 Prerequisites</h3>
+<ul>
+<li>
+<p>'apt-get install abcde cd-discid cdparanoia libao4 libmusicbrainz-discid-perl libwebservice-musicbrainz-perl libxml-libxml-perl normalize-audio mkcue id3v2 lame –no-install-recommends'</p>
+</li>
+<li>
+<p>'pip install –upgrade eyeD3' (want eyeD3 &gt; 0.7.1 with <a href="https://bitbucket.org/nicfit/eyed3/issue/5/">CHAP support</a>)</p>
+<ul>
+<li>
+<p>https://bitbucket.org/nicfit/eyed3/pull-request/3</p>
+</li>
+<li>
+<p>Alternatively grep the source from my <a href="https://bitbucket.org/lemmster/eyed3">git repo directly</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>abcde4ab.sh (abcde for audiobooks)</p>
+<ul>
+<li>wget -O /usr/local/bin/abcde4ab.sh http://www.lemmster.de/uploads/abcde4ab.sh</li>
+</ul>
+</li>
+</ul>
+<h3>1.2 Convert all cds to single mp3 tracks with chapters</h3>
+<p>Converting an audiobook consisting out of n CDs is as simple as running 'abcde4ab.sh “Artist name” “Audiobook name” totalNumberOfCds'. E.g. to convert Treasure Island by Robert Louis Stevenson on 10 CDs, the command line is 'adbcd4ab.sh “Robert Louis Stevenson” “Treasure Island” 10'. It will output ten single mp3 files with ID3v2 chapters for each individual cd track and other tag tracks accordingly. The ID3 titles are optimized for display in an RSS feed (dircaster).</p>
+<h2>2 Serving converted audiobooks as podcasts</h2>
+<ul>
+<li>
+<p><a href="http://www.dircaster.org/">dircaster</a>on e.g. a RPi</p>
+<ul>
+<li>
+<p>'apt-get install lighttpd php5-cgi &amp;&amp; lighttpd-enable-mod fastcgi-php'</p>
+</li>
+<li>
+<p>'wget -O dircaster.zip http://www.dircaster.org/DirCasterV09j.zip &amp;&amp; unzip dircaster.zip'</p>
+</li>
+<li>
+<p>'vi config_inc.php'</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Copy your audiobooks from step 1.2 to the media/ folder</p>
+</li>
+</ul>
+<h2>3 Client</h2>
+<p><a href="https://github.com/danieloeh/AntennaPod">AntennaPod</a> is a good choice for an Android client. It supports ID3v2 chapters out of the box.</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

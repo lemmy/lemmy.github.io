@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Network bonding (wlan & eth) on linux ubuntu - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="When we moved into our new apartment, we renewed all wires which included proper cat7 in all rooms. So lets take advantage of it... :) My primary machine is a laptop that I carry around in the house a lot. This breaks open network connections, due to the IP change when …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Network bonding (wlan & eth) on linux ubuntu</h1>
+		
+<div class="metadata">
+  <time datetime="2013-06-21T09:04:25+02:00" pubdate>Fri 21 June 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>When we moved into our new apartment, we renewed all wires which included proper cat7 in all rooms. So lets take advantage of it... :)</p>
+<p>My primary machine is a laptop that I carry around in the house a lot. This breaks open network connections, due to the IP change when NetworkManager switches from the wired interface to the wireless. To not interrupt existing network connections though, it's vital that the machine's IP stays the same regardless of whether it is hooked up with the wired or wireless. This is where network bonding comes into play. It binds both physical devices wlan and eth into a logical one with a single IP address assigned (by remote DHCP). The kernel then takes care of activating the proper device depending on the wired link state (cable connected).</p>
+<div class="highlight"><pre><span></span>apt-get install ifenslave
+
+me@foo:/etc/NetworkManager $ cat NetworkManager.conf
+<span class="o">[</span>main<span class="o">]</span>
+<span class="nv">plugins</span><span class="o">=</span>ifupdown,keyfile
+<span class="nv">dns</span><span class="o">=</span>dnsmasq
+<span class="o">[</span>ifupdown<span class="o">]</span>
+<span class="nv">managed</span><span class="o">=</span><span class="nb">false</span>
+<span class="o">[</span>keyfile<span class="o">]</span>
+unmanaged-devices<span class="o">=</span>mac:00:23:ab:cd:ef:14
+</pre></div>
+
+
+<p>"unmanaged-devices" tells NetworkManager to leave the bonding device alone and not interfere with it. It refers to the hw address (mac) of the wifi interface.</p>
+<div class="highlight"><pre><span></span>me@foo:/etc/network $ cat interfaces
+<span class="c1"># Bonding for eth0 and wlan0 at home</span>
+auto lo
+iface lo inet loopback
+
+<span class="c1"># Do not receive dhcp on eth0</span>
+auto eth0
+iface eth0 inet manual
+bond-master bond0
+bond-primary eth0
+
+<span class="c1"># Manually connect wireless to AP</span>
+<span class="c1">#auto wlan0</span>
+iface wlan0 inet manual
+wpa-ssid <span class="s2">&quot;YOUR_SSID_HERE&quot;</span>
+wpa-psk YOUR_WPAKEY_HERE
+bond-master bond0
+
+<span class="c1"># Request dhcp ip for bonded interface</span>
+iface bond0 inet dhcp
+bond-mode active-backup
+bond-miimon <span class="m">100</span>
+bond-slaves none
+</pre></div>
+
+
+<p>Due to issues, wlan0 is brought up via 'ifup wlan0' in /etc/rc.local.
+Happy bonding (state can be observed via (cat /proc/net/bonding/bond0)</p>
+<div class="highlight"><pre><span></span>me@foo:/ $ cat /proc/net/bonding/bond0
+Ethernet Channel Bonding Driver: v3.7.1 <span class="o">(</span>April <span class="m">27</span>, <span class="m">2011</span><span class="o">)</span>
+
+Bonding Mode: fault-tolerance <span class="o">(</span>active-backup<span class="o">)</span>
+Primary Slave: eth0 <span class="o">(</span>primary_reselect always<span class="o">)</span>
+Currently Active Slave: eth0
+MII Status: up
+MII Polling Interval <span class="o">(</span>ms<span class="o">)</span>: <span class="m">100</span>
+Up Delay <span class="o">(</span>ms<span class="o">)</span>: <span class="m">0</span>
+Down Delay <span class="o">(</span>ms<span class="o">)</span>: <span class="m">0</span>
+
+Slave Interface: eth0
+MII Status: up
+Speed: <span class="m">1000</span> Mbps
+Duplex: full
+Link Failure Count: <span class="m">0</span>
+Permanent HW addr: <span class="m">00</span>:23:ab:cd:ef:13
+Slave queue ID: <span class="m">0</span>
+
+Slave Interface: wlan0
+MII Status: up
+Speed: Unknown
+Duplex: Unknown
+Link Failure Count: <span class="m">0</span>
+Permanent HW addr: <span class="m">00</span>:23:ab:cd:ef:14
+Slave queue ID: <span class="m">0</span>
+</pre></div>
+
+
+<p>If one happens to install dropbear on Ubuntu 12.10 with an encrypted disk, network is set to come up as part of initramfs (to remotely unlock the disks). This causes ethX to get an IP address long before bonding has a chance to enslave the device. Removing dropbear and manually running "update-initramfs -u" fixed this issue for me.</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>(Squid) proxy and p2 - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="If you happen to run a (local) proxy underneath you continuous build server, you might be a little bit surprised to learn that caching does show its full potential. E.g. if you look at your squid access log files they will look similar to: 214 188.40.71.70 …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>(Squid) proxy and p2</h1>
+		
+<div class="metadata">
+  <time datetime="2013-05-31T18:09:49+02:00" pubdate>Fri 31 May 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>If you happen to run a (local) proxy underneath you continuous build server, you might be a little bit surprised to learn that caching does show its full potential. E.g. if you look at your squid access log files they will look similar to:</p>
+<div class="highlight"><pre><span></span>214 188.40.71.70 TCP_REFRESH_UNMODIFIED/200 44988 GET http://download.eclipse.org/releases/kepler/201305310900/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar.pack.gz - DIRECT/198.41.30.199 application/x-gzip 1370018697.496
+222 188.40.71.70 TCP_REFRESH_UNMODIFIED/200 50531 GET http://download.eclipse.org/releases/kepler/201305310900/plugins/org.eclipse.equinox.preferences_3.5.100.v20130422-1538.jar.pack.gz - DIRECT/198.41.30.199 application/x-gzip 1370018697.513
+</pre></div>
+
+
+<p>This essentially says that you don't hit the local cache, but want the content reloaded. What you normally want to see though, are cache hits manifesting in TCP_MEM_HIT statements.</p>
+<div class="highlight"><pre><span></span>0 188.40.71.70 TCP_MEM_HIT/200 77323 GET http://download.eclipse.org/releases/kepler/201305310900/plugins/org.objectweb.asm_3.3.1.v201105211655.jar.pack.gz - NONE/- application/x-gzip 1370018314.277      
+2 188.40.71.70 TCP_MEM_HIT/200 473229 GET http://download.eclipse.org/releases/kepler/201305310900/plugins/org.objectweb.asm.source_3.3.1.v201105211655.jar.pack.gz - NONE/- application/x-gzip 1370018314.406
+</pre></div>
+
+
+<p>The <a href="https://bugs.eclipse.org/249990">underlying problem/fix</a> has not been fully diagnosed yet, but configuring squid to ignore reload requests for certain file types fixes the symptoms (an OSGi bundle carries its version number in its name, thus caching this type of files should not result in reading stale content). Just add the following <a href="http://www.squid-cache.org/Doc/config/refresh_pattern/">refresh_pattern</a> to the squid proxy that is supposed to speed up your builds.</p>
+<div class="highlight"><pre><span></span>/etc/squid/squid.conf
+refresh_pattern -i _[0-9v.-]+\.jar(\.pack\.gz)?$ 480 20% 4320 ignore-no-cache ignore-no-store override-expire override-lastmod ignore-reload
+</pre></div>
+
+
+<p>Below you see the cache stats for squid and all is green. :)</p>
+<p><a href="http://www.lemmster.de/uploads/squid_requests-day.png"><img alt="squid_requests-day" src="http://www.lemmster.de/uploads/squid_requests-day.png"></a></p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

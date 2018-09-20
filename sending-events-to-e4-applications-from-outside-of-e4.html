@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Sending events to e4 applications from outside of e4 - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="e4 uses an event bus to let different pieces (e.g. parts) of an e4 application communicate. Architecturally, this leads to low coupling (doubleplusgood) due to the fact that the various pieces only need to know the event topics (String constants), which are ideally defined centrally in a common bundle …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Sending events to e4 applications from outside of e4</h1>
+		
+<div class="metadata">
+  <time datetime="2013-06-24T09:05:41+02:00" pubdate>Mon 24 June 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>e4 uses an event bus to let different pieces (e.g. parts) of an e4 application communicate. Architecturally, this leads to low coupling (doubleplusgood) due to the fact that the various pieces only need to know the event topics (String constants), which are ideally defined centrally in a common bundle. If you happen to never leave the e4 application realm you are lucky and can stop reading here.
+For the rest of us though - who face the requirement to send e4 application events outside of e4 - the problem is that e4 does not use the org.osgi.service.event.EventAdmin directly. It comes with its own org.eclipse.e4.core.services.events.IEventBroker. This alone would not pose an unsolvable problem (one could simply get the IEventBroker instead of EventAdmin from OSGi), but IEventBroker does not get registered with the OSGi service registry (see bug #<a href="https://bugs.eclipse.org/391097">391097</a>). Luckily for us, the e4 team - even though they decided against reusing the OSGi org.osgi.service.event.EventAdmin directly - implemented IEventBroker as a wrapper around EventAdmin. So in order to send an event to e4, one simply has to get/lookup the OSGi EventAdmin from the OSGi service register (either programmatically or with DS).</p>
+<p>If one's use case also requires sending a payload along with the event, the Dictionary/Map of org.osgi.service.event.Event has to contain the element under the special key org.eclipse.e4.core.services.events.IEventBroker.DATA.</p>
+<div class="highlight"><pre><span></span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;();</span>
+<span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">IEventBroker</span><span class="o">.</span><span class="na">DATA</span><span class="o">,</span> <span class="n">payload</span><span class="o">);</span>
+
+<span class="n">Event</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Event</span><span class="o">(</span><span class="n">MyE4EventConstants</span><span class="o">.</span><span class="na">TOPIC_SOME_TOPIC</span><span class="o">,</span> <span class="n">map</span><span class="o">);</span>
+
+<span class="n">ServiceReference</span><span class="o">&lt;</span><span class="n">EventAdmin</span><span class="o">&gt;</span> <span class="n">serviceReference</span> <span class="o">=</span> 
+    <span class="n">context</span><span class="o">.</span><span class="na">getServiceReference</span><span class="o">(</span><span class="n">EventAdmin</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">EventAdmin</span> <span class="n">ea</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getService</span><span class="o">(</span><span class="n">serviceReference</span><span class="o">);</span>
+<span class="n">ea</span><span class="o">.</span><span class="na">postEvent</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+</pre></div>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

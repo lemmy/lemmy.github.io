@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Markus A. Kuppe - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<link rel="top" href="#" /><link href='../theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="../theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="../pages/gpg.html">gpg</a>
+-			  <a href="../pages/impressum.html">impressum</a>
+-			  <a href="../pages/publications.html">publications</a>
+-			  <a href="../pages/resume.html">resume</a>
+	      </nav>
+		<a href=".." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+
+<h1>Posts published by: Markus A. Kuppe</h1>
+
+<article class="summary">
+<div class="metadata">
+  <time datetime="2013-03-01T15:06:31+01:00" pubdate>Fri 01 March 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/eclipse.html">eclipse</a>
+</div>  <div>
+    <h2>
+      <a href="../receive-e-mail-notifications-when-jenkin-plug-in-updates-are-available-2.html" rel="bookmark" title="Permalink to Receive E-Mail notifications when Jenkins plug-in updates are available">Receive E-Mail notifications when Jenkins plug-in updates are available</a>
+    </h2>
+    <p><ul>
+<li>
+<p>Install <a href="https://wiki.jenkins-ci.org/display/JENKINS/Groovy+plugin">Groovy script plug-in</a> via Jenkin UpdateCenter</p>
+</li>
+<li>
+<p>Create a new Jenkins job and name it e.g. zPluginCheck</p>
+<ul>
+<li>
+<p>Set to “Build periodically” with a reasonable schedule (once a day?!)</p>
+</li>
+<li>
+<p>Add “E-Mail notification” as a post build action</p>
+</li>
+<li>
+<p>Add an “Execute system Groovy script” build step:</p>
+<div class="highlight"><pre><span></span><span class="c1">// Explicitly checking for updates works …</span></pre></div></li></ul></li></ul></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2013-02-26T16:00:27+01:00" pubdate>Tue 26 February 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/hacks.html">hacks</a>
+</div>  <div>
+    <h2>
+      <a href="../export-to-docbook-xml-with-lyx-on-ubuntu-12-10.html" rel="bookmark" title="Permalink to Export to docbook xml with LyX (on Ubuntu 12.10)">Export to docbook xml with LyX (on Ubuntu 12.10)</a>
+    </h2>
+    <p><ol>
+<li>
+<p>Install LyX as well as the dependencies need to author docbook in LyX</p>
+<ol>
+<li>apt-get install docbook-dsssl sgmltools-lite jade docbook docbook-xml lyx jadetex</li>
+</ol>
+</li>
+<li>
+<p>It is commonly written on the web to tell LyX where to find the docbook catalogs by explicitly exporting SGML_CATALOG_FILES. This turned out to be not needed on …</p></li></ol></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2013-01-29T10:04:26+01:00" pubdate>Tue 29 January 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/hacks.html">hacks</a>
+</div>  <div>
+    <h2>
+      <a href="../permanently-remove-dropbox-client-from-autostarting-on-gnome.html" rel="bookmark" title="Permalink to Permanently remove dropbox client from autostart on Gnome">Permanently remove dropbox client from autostart on Gnome</a>
+    </h2>
+    <p><p>Dropbox Inc. seems to think that I want its client to start automatically, always! Even if I manually remove the dropbox entry from startup applications or turn it off, it will be "magically" re-added/-enabled simply by running the dropbox client once. Well, I still prefer to stay in control …</p></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2012-03-04T13:11:43+01:00" pubdate>Sun 04 March 2012</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/hacks.html">hacks</a>
+</div>  <div>
+    <h2>
+      <a href="../generate-qr-for-wifi-network-with-qrencode-on-command-line.html" rel="bookmark" title="Permalink to Generate QR for Wifi network with qrencode on command line">Generate QR for Wifi network with qrencode on command line</a>
+    </h2>
+    <p><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;WIFI:S:aSSID;T:WPA;P:aPassword;;&quot;</span> <span class="p">|</span> qrencode -o wifi.png -s <span class="m">10</span>
+</pre></div></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2010-11-13T07:10:16+01:00" pubdate>Sat 13 November 2010</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/eclipse.html">eclipse</a>
+</div>  <div>
+    <h2>
+      <a href="../mylyn-commit-message-templates-for-egit-with-gitlyn-hack.html" rel="bookmark" title="Permalink to 'Mylyn commit message templates for EGit with Gitlyn (hack) '">'Mylyn commit message templates for EGit with Gitlyn (hack) '</a>
+    </h2>
+    <p><p>As long as we are waiting for Mylyn commit message templates to appear in EGit (<a href="https://bugs.eclipse.org/329515">see bug #329515</a>), I have hacked an AspectJ/Equinox weaving based bundle that injects the current commit template into the EGit dialog. This is certainly something that breaks the second the CommitDialog implementation changes, but …</p></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2010-07-08T09:44:01+02:00" pubdate>Thu 08 July 2010</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/eclipse.html">eclipse</a>
+</div>  <div>
+    <h2>
+      <a href="../wontfix-run-junit-plug-in-tests-on-a-non-equinox-framework.html" rel="bookmark" title="Permalink to 'WONTFIX: Run JUnit Plug-in tests on a non-Equinox framework'">'WONTFIX: Run JUnit Plug-in tests on a non-Equinox framework'</a>
+    </h2>
+    <p><p>In case you want to make sure your code is interoperable between different OSGi frameworks, you will be interested in <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=319089">bug #319089</a>. It is about enhancing the JUnit Plug-in Launch config to support more than just Equinox as an OSGi framework.</p>
+<p>Unfortunately the PDE team has deemed non-Equinox frameworks not …</p></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2010-05-29T09:06:10+02:00" pubdate>Sat 29 May 2010</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/eclipse.html">eclipse</a>
+</div>  <div>
+    <h2>
+      <a href="../do-not-ask-what-the-committer-reps-can-do-for-you-ask-what-you-can-do-for-the-committer-reps.html" rel="bookmark" title="Permalink to Do not ask what the committer reps can do for you, ask what you can do for the committer reps">Do not ask what the committer reps can do for you, ask what you can do for the committer reps</a>
+    </h2>
+    <p><p>In a <a href="http://industrial-tsi-wim.blogspot.com/2010/05/opinion-class-of-projects.html">recent blog post by Wim</a>, he asked how the Eclipse Foundation (EF) can help solve the tragedy of the commons problem and <a href="https://bugs.eclipse.org/313479">bug #313479</a> follows up on this direction by requesting the EF to support individual projects do fund-raising (think Friends of Eclipse at the project level). The …</p></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2010-02-16T22:08:56+01:00" pubdate>Tue 16 February 2010</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/eclipse.html">eclipse</a>
+</div>  <div>
+    <h2>
+      <a href="../java-keytool-and-custom-certs.html" rel="bookmark" title="Permalink to Java keytool and custom certs">Java keytool and custom certs</a>
+    </h2>
+    <p><p>When upgrading a JDK, install custom CAs by running "keytool -import -trustcacerts -alias OSU -file /path/to/ca.crt -keystore ${jre.home}/lib/security/cacerts". Default password is "changeit"</p></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2009-05-25T09:35:35+02:00" pubdate>Mon 25 May 2009</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/eclipse.html">eclipse</a>
+</div>  <div>
+    <h2>
+      <a href="../distributed-osgi-the-ecf-way-at-democamp-hamburg.html" rel="bookmark" title="Permalink to Distributed OSGi - The ECF way at DemoCamp Hamburg">Distributed OSGi - The ECF way at DemoCamp Hamburg</a>
+    </h2>
+    <p><p>Following up on our presentations given at EclipseCon earlier this year [1][2], I will do a talk on ECF's implementation of distributed OSGi/RFC119 later today at the local <a href="http://wiki.eclipse.org/Eclipse_DemoCamps_Galileo_2009/Hamburg">Galileo DemoCamp  here in Hamburg</a>.
+Make sure to show up in case you are in the area. Not just to …</p></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2009-02-19T12:32:44+01:00" pubdate>Thu 19 February 2009</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/eclipse.html">eclipse</a>
+</div>  <div>
+    <h2>
+      <a href="../git-anybody-not-so-fast.html" rel="bookmark" title="Permalink to Git anybody? - not so fast">Git anybody? - not so fast</a>
+    </h2>
+    <p><p>Git appears to gain <a href="http://douggaff.blogspot.com/2009/02/eclipse-board-of-directors.html">a lot</a> <a href="https://bugs.eclipse.org/257706">momentum</a> as the DVCS for Eclipse <a href="http://www.lunar-ocean.com/the-bpmn-modeler-is-hosted-on-github-fork-it-today/">recently.</a> Even our benevolent dictator <a href="http://dev.eclipse.org/blogs/mike/">Mike M.</a> deemed it important enough to <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=257706#c63">comment on <em>the</em> Git bug</a>. ;-) 
+While I am a strong supporter of Git myself (mostly because I lack experience with Mercurial, bzr, Darcs), we should take …</p></p>
+  </div>
+</article>
+<div class="pagination">
+            <a href="../author/markus-a-kuppe3.html">&laquo;</a>
+    Page 4 / 7
+        <a href="../author/markus-a-kuppe5.html">&raquo;</a>
+</div>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="../category/eclipse.html">eclipse</a></li>
+	              <li ><a href="../category/hacks.html">hacks</a></li>
+	              <li ><a href="../category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>debian etch + exim4 + greylistd + spf - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="Today I've spent some time implementing greylisting on our smtp server continuing my endless fight against UCE (spam). Setting this up is as easy as running "aptitude install greylistd" and adding to the exim.conf: defer message = $sender_host_address is not yet authorized to deliver \ mail from <$sender_address> to <$local_part@$domain …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>debian etch + exim4 + greylistd + spf</h1>
+		
+<div class="metadata">
+  <time datetime="2007-05-19T09:53:14+02:00" pubdate>Sat 19 May 2007</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>Today I've spent some time implementing <a href="http://greylisting.org/">greylisting</a> on our smtp server continuing my endless fight against <a href="http://en.wikipedia.org/wiki/E-mail_spam">UCE (spam)</a>. Setting this up is as easy as running "aptitude install greylistd" and adding to the exim.conf:  </p>
+<div class="highlight"><pre><span></span>defer  
+<span class="nv">message</span> <span class="o">=</span> <span class="nv">$sender_host_address</span> is not yet authorized to deliver <span class="se">\ </span> 
+mail from &lt;<span class="nv">$sender_address</span>&gt; to &lt;<span class="nv">$local_part</span>@<span class="nv">$domain</span>&gt;. <span class="se">\ </span> 
+Please try later.  
+<span class="nv">log_message</span> <span class="o">=</span> greylisted.  
+!senders <span class="o">=</span> :  
+!hosts <span class="o">=</span> : +relay_from_hosts : <span class="se">\ </span> 
+<span class="si">${</span><span class="nv">if</span><span class="p"> exists {/etc/greylistd/whitelist-hosts</span><span class="si">}</span><span class="se">\ </span> 
+<span class="o">{</span>/etc/greylistd/whitelist-hosts<span class="o">}{}}</span> : <span class="se">\ </span> 
+<span class="si">${</span><span class="nv">if</span><span class="p"> exists {/var/lib/greylistd/whitelist-hosts</span><span class="si">}</span><span class="se">\ </span> 
+<span class="o">{</span>/var/lib/greylistd/whitelist-hosts<span class="o">}{}}</span>  
+!authenticated <span class="o">=</span> *  
+!acl <span class="o">=</span> acl_check_spf  
+<span class="nv">domains</span> <span class="o">=</span> +local_domains : +relay_to_domains  
+<span class="nv">verify</span> <span class="o">=</span> recipient/callout<span class="o">=</span>20s,use_sender,defer_ok  
+<span class="nv">condition</span> <span class="o">=</span> <span class="si">${</span><span class="nv">readsocket</span><span class="p">{/var/run/greylistd/socket</span><span class="si">}</span><span class="se">\ </span> 
+<span class="o">{</span>--grey <span class="se">\ </span> 
+<span class="nv">$sender_host_address</span> <span class="se">\ </span> 
+<span class="nv">$sender_address</span> <span class="se">\ </span> 
+<span class="nv">$local_part</span>@<span class="nv">$domain</span><span class="o">}</span><span class="se">\ </span> 
+<span class="o">{</span>5s<span class="o">}{}{</span>false<span class="o">}}</span>
+</pre></div>
+
+
+<p>But greylisting comes with one drawback that bugs me. It requires senders of legitimate mail to retry after some amount of time. This wouldn't be a problem with sane smtp servers but with potentially misconfigured servers, we can't be sure of it.  </p>
+<p>Therefore I whitelist a broad range of well known smtp servers for which I assume that they will always send legitimate mail. But maintaining a whitelist is tedious and takes a lot of effort (for postfix <a href="http://oc-co.org/p2pwl/">p2pwl</a> exists as a solution). That's why I decided to also whitelist hosts for which a <a href="http://www.openspf.org/">SPF</a> check passes. Even though its not yet widely used it reduces the chance to greylist especially big/high traffic smtp servers (I assume that those hosts return a valid SPF record).  </p>
+<p>Unfortunately <a href="http://exim.org/">exim4</a> doesn't come with spf enabled in <a href="http://www.debian.org/News/2007/20070408">debian etch</a> for <a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=377034">various reasons,</a> why it is necessary to do the spf check manually with <a href="http://packages.qa.debian.org/libmail-spf-query-perl">libmail-spf-query-perl</a> which is available via apt. The upstream example which is included doesn't serve this use case though. So I had to create my own:  </p>
+<div class="highlight"><pre><span></span>acl_check_spf:
+
+accept  
+<span class="nv">message</span> <span class="o">=</span> X-mkce.de-SPF: SPF check succeeded  
+<span class="nv">log_message</span> <span class="o">=</span> <span class="o">[</span>SPF<span class="o">]</span> <span class="nv">$sender_host_address</span> is allowed to send mail from <span class="si">${</span><span class="nv">if</span><span class="p"> def:</span><span class="nv">sender_address_domain</span><span class="p"> {</span><span class="nv">$sender_address_domain</span><span class="si">}</span><span class="o">{</span><span class="nv">$sender_helo_name</span><span class="o">}}</span>.   
+<span class="nv">condition</span> <span class="o">=</span> <span class="si">${</span><span class="nv">run</span><span class="p">{/usr/bin/spfquery --ip </span><span class="se">\&quot;</span><span class="nv">$sender_host_address</span><span class="se">\&quot;</span><span class="p"> --mail-from </span><span class="se">\&quot;</span><span class="nv">$sender_address</span><span class="se">\&quot;</span><span class="p"> --helo </span><span class="se">\&quot;</span><span class="nv">$sender_helo_name</span><span class="se">\&quot;</span><span class="si">}</span><span class="se">\ </span> 
+<span class="o">{</span><span class="si">${</span><span class="nv">if</span><span class="p"> eq {</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">0</span><span class="o">}{</span>yes<span class="o">}{</span>no<span class="o">}}}}</span>
+
+warn  
+<span class="nv">log_message</span> <span class="o">=</span> <span class="o">[</span>SPF<span class="o">]</span> Temporary DNS error <span class="k">while</span> checking SPF record.  
+<span class="nv">condition</span> <span class="o">=</span> <span class="si">${</span><span class="nv">if</span><span class="p"> eq {</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">5</span><span class="o">}{</span>yes<span class="o">}{</span>no<span class="o">}}</span>
+
+warn  
+<span class="nv">log_message</span> <span class="o">=</span> <span class="o">[</span>SPF<span class="o">]</span> SPF check negative with <span class="si">${</span><span class="nv">if</span><span class="p"> eq {</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">1</span><span class="o">}{</span>fail<span class="o">}{</span><span class="si">${</span><span class="nv">if</span><span class="p"> eq {</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">2</span><span class="o">}{</span>softfail<span class="o">}</span><span class="se">\ </span> 
+<span class="o">{</span><span class="si">${</span><span class="nv">if</span><span class="p"> eq {</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">3</span><span class="o">}{</span>neutral<span class="o">}{</span><span class="si">${</span><span class="nv">if</span><span class="p"> eq {</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">4</span><span class="o">}{</span>unknown<span class="o">}{</span><span class="si">${</span><span class="nv">if</span><span class="p"> eq {</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">6</span><span class="o">}{</span>none<span class="o">}{</span>error<span class="o">}}}}}}}}}}</span>  
+<span class="nv">condition</span> <span class="o">=</span> <span class="si">${</span><span class="nv">if</span><span class="p"> &lt;={</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">6</span><span class="o">}{</span>yes<span class="o">}{</span>no<span class="o">}}</span>
+
+warn  
+<span class="nv">log_message</span> <span class="o">=</span> <span class="o">[</span>SPF<span class="o">]</span> Unexpected error in SPF check.  
+<span class="nv">condition</span> <span class="o">=</span> <span class="si">${</span><span class="nv">if</span><span class="p"> &gt;{</span><span class="nv">$runrc</span><span class="si">}</span><span class="o">{</span><span class="m">6</span><span class="o">}{</span>yes<span class="o">}{</span>no<span class="o">}}</span>
+</pre></div>
+
+
+<p>I'll monitor my logfiles closely the next days, but even after a couple of hours the result looks promising.  </p>
+<p>May this piece of information help somebody else. :-)</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

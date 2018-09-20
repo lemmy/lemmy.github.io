@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>p2 metadata generation embedded into classic update site building - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="Many of us have probably written their PDE build around the famous build automation article. With Galiloe's must do to provide p2 metadata, many projects are forced to update their build now. We at ECF want to stick to our classic update site and keep build changes minimal though. So …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>p2 metadata generation embedded into classic update site building</h1>
+		
+<div class="metadata">
+  <time datetime="2009-02-04T08:12:49+01:00" pubdate>Wed 04 February 2009</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>Many of us have probably written their PDE build around the <a href="http://www.eclipse.org/articles/Article-PDE-Automation/automation.html#discussionUpdateSiteBuild">famous build automation article</a>. With Galiloe's <a href="https://bugs.eclipse.org/252804">must do </a> to provide p2 metadata, many projects are forced to update their build now.
+We at <a href="http://www.eclipse.org/ecf">ECF</a> want to stick to our classic update site and keep build changes minimal though. So here's how we've done our integration. Technically, it simply creates p2 metadata from pre build classic update site. You could also move generation out of PDE build if required.</p>
+<p>`
+//customBuild.xml</p>
+<p>`</p>
+<p>And just before everything is zipped in site/build.xml, let p2 generate metadata from bits at ${updateSiteStagingLocation} and you're done.</p>
+<p>`
+//site/build.xml</p>
+<p>// build classic update site
+...</p>
+<p>// zip update site
+...</p>
+<p>`</p>
+<p>Until <a href="https://bugs.eclipse.org/263449">the fix to bug #263449</a> hits the grounds, "inplace" has to be used instead of "updateSite".</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

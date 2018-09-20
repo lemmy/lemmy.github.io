@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Remotely check if XBMC (>=Frodo) is playing content with curl - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="XBMC exposes a JSON API that allows you to query its status and remotely control it. I need the API to check if XBMC is currently playing content (manifesting itself in a running player) and if not, automatically shut down the living room pc to save energy. Fortunately, the API …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Remotely check if XBMC (>=Frodo) is playing content with curl</h1>
+		
+<div class="metadata">
+  <time datetime="2013-06-01T08:30:51+02:00" pubdate>Sat 01 June 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p><a href="http://www.xbmc.org/">XBMC</a> exposes a <a href="http://wiki.xbmc.org/index.php?title=JSON-RPC_API/v4">JSON API</a> that allows you to query its status and remotely control it. I need the API to check if XBMC is currently playing content (manifesting itself in a running player) and if not, automatically shut down the living room pc to save energy. Fortunately, the API comes with the <a href="http://wiki.xbmc.org/index.php?title=JSON-RPC_API/v4#Player.GetActivePlayers">Player.GetActivePlayers</a> call. As the name indicates, it returns the currently active players meaning no players no activity and thus the machine can shut down. Combining curl with a few simple python parsing returns a number for active players.</p>
+<div class="highlight"><pre><span></span>curl -s -u xbmc:xbmc -X POST -H <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
+-d <span class="s1">&#39;{&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;method&quot;: &quot;Player.GetActivePlayers&quot;, &quot;id&quot;: 1}&#39;</span> <span class="se">\</span>
+http://localhost:8080/jsonrpc <span class="p">|</span> <span class="se">\</span>
+python -c <span class="s1">&#39;import json,sys;obj=json.load(sys.stdin);print len(obj[&quot;result&quot;])&#39;</span>
+</pre></div>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

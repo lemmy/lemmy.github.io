@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux) - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="When running platform tests on Linux (and Mac?) one might encounter the following exception: org.eclipse.swt.SWTError: No more handles [gtk_init_check() failed] at org.eclipse.swt.SWT.error(SWT.java:4445) at org.eclipse.swt.widgets.Display.createDisplay(Display.java:929) at org.eclipse.swt.widgets.Display.create(Display …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux)</h1>
+		
+<div class="metadata">
+  <time datetime="2013-12-19T11:16:41+01:00" pubdate>Thu 19 December 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>When running platform tests on Linux (and Mac?) one might encounter the following exception:</p>
+<div class="highlight"><pre><span></span>org.eclipse.swt.SWTError: No more handles [gtk_init_check() failed]
+at org.eclipse.swt.SWT.error(SWT.java:4445)
+at org.eclipse.swt.widgets.Display.createDisplay(Display.java:929)
+at org.eclipse.swt.widgets.Display.create(Display.java:913)
+at org.eclipse.swt.graphics.Device.&lt;init&gt;(Device.java:157)
+at org.eclipse.swt.widgets.Display.&lt;init&gt;(Display.java:509)
+at org.eclipse.swt.widgets.Display.&lt;init&gt;(Display.java:500)
+at org.eclipse.swt.widgets.Display.getDefault(Display.java:1719)
+at org.eclipse.e4.ui.tests.workbench.InjectionThreadDomainTest.setUp(InjectionThreadDomainTest.java:84)
+at junit.framework.TestCase.runBare(TestCase.java:139)
+at junit.framework.TestResult$1.protect(TestResult.java:122)
+at junit.framework.TestResult.runProtected(TestResult.java:142)
+at junit.framework.TestResult.run(TestResult.java:125)
+at junit.framework.TestCase.run(TestCase.java:129)
+at junit.framework.TestSuite.runTest(TestSuite.java:255)
+at junit.framework.TestSuite.run(TestSuite.java:250)
+at junit.framework.TestSuite.runTest(TestSuite.java:255)
+at junit.framework.TestSuite.run(TestSuite.java:250)
+at org.eclipse.jdt.internal.junit.runner.junit3.JUnit3TestReference.run(JUnit3TestReference.java:131)
+at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:459)
+at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:675)
+at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:382)
+at org.eclipse.pde.internal.junit.runtime.RemotePluginTestRunner.main(RemotePluginTestRunner.java:62)
+at org.eclipse.pde.internal.junit.runtime.CoreTestApplication.run(CoreTestApplication.java:23)
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+at java.lang.reflect.Method.invoke(Method.java:606)
+at org.eclipse.equinox.internal.app.EclipseAppContainer.callMethodWithException(EclipseAppContainer.java:587)
+at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:198)
+at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:109)
+at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:80)
+at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:372)
+at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:226)
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+at java.lang.reflect.Method.invoke(Method.java:606)
+at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:636)
+at org.eclipse.equinox.launcher.Main.basicRun(Main.java:591)
+at org.eclipse.equinox.launcher.Main.run(Main.java:1450)
+at org.eclipse.equinox.launcher.Main.main(Main.java:1426)
+</pre></div>
+
+
+<p>The underlying cause isn't found in SWT though, but in the .launch configuration's environment setting. In order to run the tests on a dedicated DISPLAY to avoid interferences, tests set the DISPLAY env var explicitly. Thus, an X instance has to be made available. This is easily done by installing Xvfb the <a href="http://en.wikipedia.org/wiki/Xvfb">X virtual frame buffer</a> (e.g. "sudo apt-get install xvfb") and starting it on 1:0 with "Xvfb :1 &amp;". Voilà, this magically increases the number of handles. ;-)</p>
+<p><a href="/uploads/EnvironmentTabEclipseWithDisplay.png"><img alt="Launch config Environment Tab Eclipse with Display" src="/uploads/EnvironmentTabEclipseWithDisplay-300x256.png"></a></p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	<h2>Comment by: Mickael Istria Date: 2013-12-19 15:23:17</h2>
+<p>Xvfb is not the best choice IMO.</p>
+<p>Locally, I recommend to use Xephyr, which creates a new DISPLAY and opens a dedicated window in your desktop where you can see and interact with what’s happening in this display (without taking focus on your current DISPLAY).
+Remotely, I would recommend using Xvnc which will allow to connect to and interact locally with the remote display and application with any VNC client.
+By allowing to see what is happening, those X servers make it easier to debug tests.</p>
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

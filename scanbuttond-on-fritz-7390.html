@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>scanbuttond on fritz 7390 - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="A recent commit integrates my pull request to incorporate scanbuttond into freetz, a custom firmware for Fritz Box 7390. scanbuttond's job description is, to trigger a script whenever a button is pressed on a scanner. This is all I need in order to turn my 7390 and an old (three …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>scanbuttond on fritz 7390</h1>
+		
+<div class="metadata">
+  <time datetime="2013-06-03T08:33:14+02:00" pubdate>Mon 03 June 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>A recent <a href="https://github.com/olistudent/freetz/commit/ac4707b3c543a211c94fb0cf1965cd94c11a20d2">commit</a> integrates my pull request to incorporate <a href="http://scanbuttond.sourceforge.net/">scanbuttond</a> into <a href="http://freetz.org/">freetz</a>, a custom firmware for Fritz Box 7390. scanbuttond's job description is, to trigger a script whenever a button is pressed on a scanner. This is all I need in order to turn my 7390 and an old (three button) USB scanner into an always on snail mail to email converter (think paperless office). Once a freetz image with scanbuttond &amp; sane for your scanner model has been backed, “sane-find-scanner” is uncommented in the upper box on the <a href="http://fritz.box:81/cgi-bin/conf/scanbuttond">freetz webfrontend</a>. The script below is pasted into the lower “Script for button” box (adapt the email addresses EMAIL_* accordingly). If you find that you cannot paste it directly, insert the script into /mod/etc/conf/scanbuttond.cfg via ssh/telnet.</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+
+<span class="nv">TMPFILE</span><span class="o">=</span><span class="s2">&quot;scan.pnm&quot;</span>
+<span class="nv">LOCKFILE</span><span class="o">=</span><span class="s2">&quot;/var/media/ftp/tmp/copy.lock&quot;</span>
+
+<span class="nv">RECEIPIENT_FILE</span><span class="o">=</span><span class="s2">&quot;/var/media/ftp/tmp/receipient.txt&quot;</span>
+<span class="nv">MODE_FILE</span><span class="o">=</span><span class="s2">&quot;/var/media/ftp/tmp/mode.txt&quot;</span>
+<span class="nv">PAGE_NUM_FILE</span><span class="o">=</span><span class="s2">&quot;/var/media/ftp/tmp/page_num.txt&quot;</span>
+
+<span class="c1"># to in notification mails (mapped to button A and B)</span>
+<span class="nv">EMAIL_A</span><span class="o">=</span>email1@example.com
+<span class="nv">EMAIL_B</span><span class="o">=</span>email2@example.com
+
+<span class="c1"># from header in notification mails</span>
+<span class="nv">EMAIL_FROM</span><span class="o">=</span>scanner@example.com
+
+<span class="k">case</span> <span class="nv">$1</span> in
+    <span class="m">1</span><span class="o">)</span>
+                <span class="c1"># Set color mode to &quot;gray&quot; and exit</span>
+                <span class="k">if</span> <span class="o">[</span> ! -e <span class="nv">$MODE_FILE</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+                 logger <span class="s2">&quot;button 1 has been pressed on </span><span class="nv">$2</span><span class="s2">, setting color mode&quot;</span>
+                 <span class="nb">echo</span> <span class="s2">&quot;Color&quot;</span> &gt; <span class="nv">$MODE_FILE</span> <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="m">0</span>
+                <span class="k">fi</span>
+
+                <span class="c1"># Set receipient to EMAIL_A and exit</span>
+                <span class="k">if</span> <span class="o">[</span> ! -e <span class="nv">$RECEIPIENT_FILE</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+                 logger <span class="s2">&quot;button 1 has been pressed on </span><span class="nv">$2</span><span class="s2">, setting receiver&quot;</span>
+                 <span class="nb">echo</span> <span class="nv">$EMAIL_A</span> &gt; <span class="nv">$RECEIPIENT_FILE</span> <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="m">0</span>
+                <span class="k">fi</span>
+                <span class="p">;;</span>
+        <span class="m">2</span><span class="o">)</span>
+                <span class="c1"># Set color mode to &quot;Color&quot;</span>
+                <span class="k">if</span> <span class="o">[</span> ! -e <span class="nv">$MODE_FILE</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+                 logger <span class="s2">&quot;button 2 has been pressed on </span><span class="nv">$2</span><span class="s2">, setting color mode&quot;</span>
+                 <span class="nb">echo</span> <span class="s2">&quot;Gray&quot;</span> &gt; <span class="nv">$MODE_FILE</span> <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="m">0</span>
+                <span class="k">fi</span>
+
+                <span class="c1"># Set receipient to EMAIL_B and exit</span>
+                <span class="k">if</span> <span class="o">[</span> ! -e <span class="nv">$RECEIPIENT_FILE</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+                 logger <span class="s2">&quot;button 2 has been pressed on </span><span class="nv">$2</span><span class="s2">, setting receiver&quot;</span>
+                 <span class="nb">echo</span> <span class="nv">$EMAIL_B</span> &gt; <span class="nv">$RECEIPIENT_FILE</span> <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="m">0</span>
+                <span class="k">fi</span>
+
+                logger <span class="s2">&quot;button 1 has been pressed on </span><span class="nv">$2</span><span class="s2">&quot;</span>
+                <span class="k">if</span> ! mkdir -p <span class="nv">$LOCKFILE</span><span class="p">;</span> <span class="k">then</span>
+                 logger <span class="s2">&quot;Error: scanning already in progress for </span><span class="nv">$2</span><span class="s2">&quot;</span>
+                 <span class="nb">exit</span>
+                <span class="k">fi</span>
+
+                mkdir -p /var/media/ftp/tmp/scans
+
+                <span class="c1"># Find out last page number and increment or initialize to 0</span>
+                <span class="nb">test</span> ! -e <span class="nv">$PAGE_NUM_FILE</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="m">0</span> &gt; <span class="nv">$PAGE_NUM_FILE</span>
+                <span class="nv">PAGE_NUM</span><span class="o">=</span><span class="sb">`</span>cat <span class="nv">$PAGE_NUM_FILE</span><span class="sb">`</span>
+                <span class="nb">let</span> <span class="s2">&quot;PAGE_NUM += 1&quot;</span>
+                <span class="nb">echo</span> <span class="nv">$PAGE_NUM</span> &gt; <span class="nv">$PAGE_NUM_FILE</span>
+
+                logger <span class="s2">&quot;Starting to scan document&quot;</span>
+                <span class="nv">SCAN_OPTIONS</span><span class="o">=</span><span class="s2">&quot;--resolution 600 --contrast 10 --brightness 0 --format=pnm&quot;</span>
+                scanimage --verbose --device-name <span class="nv">$2</span> <span class="se">\</span>
+                          --mode Gray -x <span class="m">210</span> -y <span class="m">297</span> <span class="nv">$SCAN_OPTIONS</span> &gt; /var/media/ftp/tmp/scans/<span class="nv">$PAGE_NUM$TMPFILE</span>
+
+                <span class="nb">echo</span> <span class="s2">&quot;Releasing lock file&quot;</span>
+                rm -rf <span class="nv">$LOCKFILE</span>
+                <span class="p">;;</span>
+        <span class="m">3</span><span class="o">)</span>
+                <span class="c1"># convert each page to pdf</span>
+                <span class="k">for</span> f in <span class="sb">`</span>find /var/media/ftp/tmp/scans/*.pnm<span class="sb">`</span><span class="p">;</span> <span class="k">do</span>
+                 logger <span class="s2">&quot;Converting pnm documents to jpg&quot;</span>
+                 pnmtojpeg --quality <span class="m">25</span> <span class="nv">$f</span> &gt; <span class="si">${</span><span class="nv">f</span><span class="p">/pnm/jpg</span><span class="si">}</span>
+                 <span class="nv">FILES</span><span class="o">=</span><span class="nv">$FILES</span>,<span class="si">${</span><span class="nv">f</span><span class="p">/pnm/jpg</span><span class="si">}</span>
+                <span class="k">done</span>
+
+        <span class="c1"># Archive pnm files</span>
+                logger <span class="s2">&quot;Archiving pnm documents&quot;</span>
+        <span class="nv">NOW</span><span class="o">=</span><span class="sb">`</span>date +%s<span class="sb">`</span>
+        mkdir -p /var/media/ftp/scans/<span class="nv">$NOW</span>
+        mv /var/media/ftp/tmp/scans/*.pnm /var/media/ftp/scans/<span class="nv">$NOW</span>
+
+                <span class="c1"># send final concatenated pdf page to receipient</span>
+                <span class="nv">RECEIPIENT</span><span class="o">=</span><span class="sb">`</span>cat <span class="nv">$RECEIPIENT_FILE</span><span class="sb">`</span>
+                logger <span class="s2">&quot;Sending document to </span><span class="nv">$RECEIPIENT</span><span class="s2">&quot;</span>
+        <span class="nb">echo</span> sftp://fritz.box/var/media/ftp/scans/<span class="nv">$NOW</span> &gt; /var/media/ftp/tmp/body.txt
+        <span class="nb">echo</span> <span class="s2">&quot;for i in \`ls\`; do cd \$i &amp;&amp; pnm2pdf.sh &amp;&amp; cd ..; done&quot;</span> &gt;&gt; /var/media/ftp/tmp/body.txt
+        mailer -s Scan -f <span class="nv">$EMAIL_FROM</span> -t <span class="nv">$RECEIPIENT</span> -i /var/media/ftp/tmp/body.txt -d <span class="nv">$FILES</span>
+
+                logger <span class="s2">&quot;Cleaning up intermediate files&quot;</span>
+        <span class="nb">test</span> -e /var/media/ftp/tmp/body.txt <span class="o">&amp;&amp;</span> rm /var/media/ftp/tmp/body.txt
+                <span class="nb">test</span> -e <span class="nv">$MODE_FILE</span> <span class="o">&amp;&amp;</span> rm <span class="nv">$MODE_FILE</span>
+                <span class="nb">test</span> -e <span class="nv">$RECEIPIENT_FILE</span> <span class="o">&amp;&amp;</span> rm <span class="nv">$RECEIPIENT_FILE</span>
+                <span class="nb">test</span> -e <span class="nv">$PAGE_NUM_FILE</span> <span class="o">&amp;&amp;</span> rm <span class="nv">$PAGE_NUM_FILE</span>
+                <span class="nb">test</span> -d /var/media/ftp/tmp/scans/ <span class="o">&amp;&amp;</span> rm -rf /var/media/ftp/tmp/scans/
+                <span class="p">;;</span>
+<span class="k">esac</span>
+</pre></div>
+</td></tr></table>
+
+<p>The following finite state machine/automata shows how the buttons are programmed:</p>
+<p><a href="http://www.lemmster.de/uploads/scanbuttond.png"><img alt="scanbuttond" src="http://www.lemmster.de/uploads/scanbuttond.png"></a></p>
+<p>If you occasionally find yourself forgetting to press the end button (#3) after the last page has been scanned, using cron to periodically check for stale tmp/ folders does the job for you. Assuming crond is part of your freetz image, just add a the following line on the <a href="http://fritz.box:81/cgi-bin/file/mod/crontab">crond webfrontend</a>.</p>
+<div class="highlight"><pre><span></span>*/45 * * * * if [ `find /var/media/ftp/tmp/scans/ \
+  -iname *.pnm -type f -mmin +15  2&gt;/dev/null | wc -l` -gt 0 ]; \
+  then /var/mod/etc/scanbuttond/buttonpressed.sh 3; fi
+</pre></div>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	<h2>Comment by Russel | 2014/01/16 at 15:02:17</h2>
+<p>Hi,</p>
+<p>wie funktioniert diese Zeile auf der Freetz.box:</p>
+<pre><code>“echo “for i in \`ls\`; do cd \$i &amp;&amp; pnm2pdf.sh &amp;&amp; cd ..; done” &gt;&gt; /var/media/ftp/tmp/body.txt”
+</code></pre>
+<p>pnm2pdf.sh kann ich in keinem Paket finden?</p>
+<h2>Comment by Markus Alexander Kuppe | 2014/01/16 at 18:55:49</h2>
+<p>Hi Russel,</p>
+<p>mein Setup hat sich dahingehend geändert, dass ich die Konvertierung von PNM in PDF &amp; DJVU auf meinem Desktop durchführe. Dort stehen deutlich leistungsfähigere OCR Software bereit. Anbei das Script:</p>
+<pre><code>markus@coconut:~ $ cat /usr/local/bin/pnm2pdf.sh
+#!/bin/bash
+#
+# – Converts a gray-scale PNM document to an ocr’ed PDF
+# – Concatenates all pages into a single PDF document
+# – Assumes German documents
+# – Convert the PDF into DJVU (more space efficient)
+
+# The commandline tools required are:
+# – pdftk
+# – cuneiform
+# – ImageMagick (convert)
+# – pdf2djvu
+# – exactimage (hocr2pdf)
+
+# TODO
+# – OCR does not handle rotated images well (not at all)
+# – Doesn’t cleanup temp files afterwards
+
+OCR_LANG=”ger”
+
+for file in `find *.pnm`; do
+LINEART_FILE=${file/.pnm/-lineart.pnm}
+OCR_FILE=${file/.pnm/.hocr}
+OUT_FILE=${file/.pnm/.pdf}
+
+convert $file -colorspace gray -level 10%,90%,1 -blur 2 +dither -monochrome $LINEART_FILE
+
+# Scaling to 75% is done to work around a bug in cuneiform https://bugs.launchpad.net/cuneiform-linux/+bug/609482
+while [ ! -e $OCR_FILE ]; do
+cuneiform -l $OCR_LANG -f hocr -o $OCR_FILE $LINEART_FILE || convert -scale 75% $LINEART_FILE $LINEART_FILE
+done
+
+hocr2pdf -i $file -s -o $OUT_FILE &lt; $OCR_FILE
+done
+
+# concatenate pages
+pdftk *.pdf output out.pdf
+
+# optionally `pdf2djvu –lines -o out.djvu out.pdf` converts the pdf to a much smaller djvu while sacrificing OCR to scan text alignment
+pdf2djvu –lines -o out.djvu out.pdf
+</code></pre>
+<h2>Comment by Russel | 2014/01/17 at 08:43:53</h2>
+<p>Hallo Markus,</p>
+<p>danke für die Info.
+Wie sieht dann aber jetzt dein scanbutton.cfg aus?
+Meine Hoffnung lag darin, keinen Desktop parallel laufen zu lassen.</p>
+<h2>Comment by Markus Alexander Kuppe | 2014/01/17 at 11:55:49</h2>
+<p>Der Desktop läuft nicht parallel, sondern konvertiert die auf der FritzBox gespeicherten PNMs on-demand. Die FritzBox schickt allerdings direkt nach dem Scan JPEGs per E-Mail an. Darin findet sich auch die Cmdline (…pnm2pdf.sh…), die nach dem Kopieren der PNMs auf den Desktop ausgeführt werden muss.
+Das Konvertieren ließe sich natürlich auch automatisieren, für mich ist die aktuelle on-demand Lösung in Batches vollkommen ausreichend.</p>
+<h2>Comment by Russel | 2014/01/17 at 12:14:22</h2>
+<p>:-)
+Ah jetzt habe ich endlich die beiden “echo” Zeilen verstanden</p>
+<p>Danke nochmal</p>
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="Serving p2 build artifacts from Jenkins is complicated if builds from multiple Jenkins jobs should be aggregated into a master p2 composite repository. A rather simple approach to this problem is listed below, that uses Apache to generate compositeArtifacts.xml and compositeContent.xml on the fly. We (vogella) uses this …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly</h1>
+		
+<div class="metadata">
+  <time datetime="2013-03-27T11:42:59+01:00" pubdate>Wed 27 March 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>Serving p2 build artifacts from Jenkins is complicated if builds from multiple Jenkins jobs should be aggregated into a master <a href="http://www.vogella.com/blog/2010/04/06/eclipse-p2-composite-repository/">p2 composite repository</a>. A rather simple approach to this problem is listed below, that uses Apache to generate compositeArtifacts.xml and compositeContent.xml on the fly.
+We (vogella) uses this to generate <a href="http://download.vogella.com/p2/">repos</a> for our various Jenkins jobs (e.g the content of compositeArtifacts.xml is generated).</p>
+<ul>
+<li>
+<p>Install Apache and point DocumentRoot to Jenkin's jobs/ directory</p>
+<ul>
+<li>
+<p>Enable cgi scripts in Apache</p>
+</li>
+<li>
+<p>On Debian or Ubuntu this is <code>a2enmod cgid</code></p>
+</li>
+<li>
+<p>AllowOverride all for the jobs/ directory (needed in order for .htaccess to work)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Clone <a href="https://github.com/lemmy/p2CompositeRepoGenerator">https://github.com/lemmy/p2CompositeRepoGenerator</a>into jobs/ and fix file ownership/permissions</p>
+<ul>
+<li>
+<p>Cloning into a non-empty directory isn't allowed, thus move the content of p2CompositeRepoGenerator/ into jobs/ (including .git)</p>
+</li>
+<li>
+<p><code>chmod +x composite*.xml</code></p>
+</li>
+<li>
+<p><code>chown jenkins:nogroup composite*.xml .htaccess p2.index</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Symlinking composite*.xml from individual jobs generates a p2 composite repository for all builds of that Jenkins jobs (contrary to all builds of all jobs)</p>
+</li>
+<li>
+<p>Open a browser on the corresponding DocumentRoot url and check the content of compositeArtifacts.xml and compositeContent.xml</p>
+<ul>
+<li>
+<p>If no repositories show up, check that Jenkins even archives non-zipped p2 repository artifacts during the post build action</p>
+</li>
+<li>
+<p>An internal server errors can best be diagnosed by opening the Apache error log</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The final directory structure should look similar to (the second part lists the structure for our I-build of the eclipse.platform.releng.aggregator) :</p>
+<div class="highlight"><pre><span></span>jenkins@build:~$ ls -lA jobs/
+total <span class="m">72</span>
+drwxr-xr-x  <span class="m">8</span> jenkins nogroup <span class="m">4096</span> Mar <span class="m">27</span> <span class="m">10</span>:18 .git
+-rw-r--r--  <span class="m">1</span> jenkins nogroup   <span class="m">28</span> Mar <span class="m">27</span> <span class="m">09</span>:06 .gitignore
+-rw-r--r--  <span class="m">1</span> jenkins nogroup  <span class="m">402</span> Mar <span class="m">27</span> <span class="m">09</span>:02 .htaccess
+drwxr-xr-x  <span class="m">5</span> jenkins nogroup <span class="m">4096</span> Mar <span class="m">27</span> <span class="m">10</span>:42 C-MASTER-e4tools-0.14
+drwxr-xr-x  <span class="m">5</span> jenkins nogroup <span class="m">4096</span> Mar <span class="m">27</span> <span class="m">10</span>:42 I-MASTER-eclipse.platform.releng.aggregator
+-rwxr-xr-x  <span class="m">1</span> jenkins nogroup <span class="m">3192</span> Mar <span class="m">27</span> <span class="m">10</span>:18 compositeArtifacts.xml
+lrwxrwxrwx  <span class="m">1</span> jenkins nogroup   <span class="m">22</span> Mar <span class="m">27</span> <span class="m">09</span>:02 compositeContent.xml
+    -&gt; compositeArtifacts.xml
+-rw-r--r--  <span class="m">1</span> jenkins nogroup  <span class="m">129</span> Mar <span class="m">27</span> <span class="m">09</span>:02 p2.index
+
+jenkins@build:~$ ls -lA jobs/I-MASTER-eclipse.platform.releng.aggregator/
+total <span class="m">68</span>
+drwxr-xr-x   <span class="m">5</span> jenkins nogroup  <span class="m">4096</span> Mar <span class="m">27</span> <span class="m">10</span>:32 builds
+lrwxrwxrwx   <span class="m">1</span> jenkins nogroup    <span class="m">44</span> Mar <span class="m">26</span> <span class="m">13</span>:14 compositeArtifacts.xml
+    -&gt; /var/lib/jenkins/jobs/compositeArtifacts.xml
+lrwxrwxrwx   <span class="m">1</span> jenkins nogroup    <span class="m">42</span> Mar <span class="m">26</span> <span class="m">13</span>:16 compositeContent.xml
+    -&gt; /var/lib/jenkins/jobs/compositeContent.xml
+-rw-r--r--   <span class="m">1</span> jenkins nogroup  <span class="m">6458</span> Mar <span class="m">26</span> <span class="m">11</span>:57 config.xml
+-rw-r--r--   <span class="m">1</span> jenkins nogroup     <span class="m">3</span> Mar <span class="m">26</span> <span class="m">11</span>:57 nextBuildNumber
+lrwxrwxrwx   <span class="m">1</span> jenkins nogroup    <span class="m">11</span> Mar <span class="m">27</span> <span class="m">10</span>:42 p2.index -&gt; ../p2.index
+</pre></div>
+
+
+</li>
+</ul>
+<p>Disclaimer: This is probably not the best idea for busy p2 repositories. The script a) scans the directory tree for every invocation and b) sets the timestamp to $now (messing up caches). <a href="http://wiki.eclipse.org/Eclipse_b3/aggregator/manual">b3aggr</a> is a much better tool for frequently used repositories.</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

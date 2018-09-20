@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Quick'n'dirty twitter2xmbc hack to show #tatort related tweets on Sunday night - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="Download ttytter (command line twitter client): # Get recent version of ttytter (old versions fail to auth) wget http://www.floodgap.com/software/ttytter/ttytter.txt -O /usr/local/bin/ttytter && chmod +x /usr/local/bin/ttytter Create the following script: 1 2 3 4 5 6 7 8 9 10 …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Quick'n'dirty twitter2xmbc hack to show #tatort related tweets on Sunday night</h1>
+		
+<div class="metadata">
+  <time datetime="2013-11-27T21:24:16+01:00" pubdate>Wed 27 November 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>Download ttytter (command line twitter client):</p>
+<div class="highlight"><pre><span></span># Get recent version of ttytter (old versions fail to auth)
+wget http://www.floodgap.com/software/ttytter/ttytter.txt -O /usr/local/bin/ttytter &amp;&amp; chmod +x /usr/local/bin/ttytter
+</pre></div>
+
+
+<p>Create the following script:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="c1"># Get list of search result</span>
+<span class="nv">TWEET</span><span class="o">=</span><span class="sb">`</span>ttytter -runcommand<span class="o">=</span><span class="s2">&quot;/search #tatort&quot;</span><span class="p">|</span> tail -1 <span class="p">|</span> python -c <span class="s1">&#39;import json,sys; print json.dumps(sys.stdin.read())&#39;</span><span class="sb">`</span>
+
+<span class="c1"># Prepare json request</span>
+<span class="nb">echo</span> <span class="s2">&quot;{\&quot;id\&quot;:1,\&quot;jsonrpc\&quot;:\&quot;2.0\&quot;,\&quot;method\&quot;:\&quot;GUI.ShowNotification\&quot;,\&quot;params\&quot;:{\&quot;title\&quot;:\&quot;Tatort\&quot;,\&quot;displaytime\&quot;:20000,\&quot;message\&quot;:TWEET}}&quot;</span> <span class="p">|</span> sed <span class="s1">&#39;s/TWEET/&#39;</span><span class="s2">&quot;</span><span class="nv">$TWEET</span><span class="s2">&quot;</span><span class="s1">&#39;/g&#39;</span> &gt; /tmp/tmp.json
+
+<span class="c1"># Send request</span>
+curl -u xbmc:xbmc -H <span class="s2">&quot;Accept: application/json&quot;</span> -H <span class="s2">&quot;Content-type: application/json&quot;</span> -X POST --data @/tmp/tmp.json http://localhost:8080/jsonrpc
+</pre></div>
+</td></tr></table>
+
+<p>Btw. it is trivial to read the currently playing title from xbmc via curl as well to adapt to whatever one watches.</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

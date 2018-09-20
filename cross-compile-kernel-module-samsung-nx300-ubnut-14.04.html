@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04 - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="Manually download ’NX300 1.4 NX300.zip’ from http://opensource.samsung.com/reception/receptionSub.do?method=sub&sub=F&searchValue=nx300 # Extract nx300.zip and nested nx300.tar.gz root@melanogaster:/tmp/# unzip nx300.zip && tar xfz nx300.tar.gz # Install necessary packages root@melanogaster:/tmp/# apt-get install gcc-arm-linux-gnueabi u-boot-tools …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04</h1>
+		
+<div class="metadata">
+  <time datetime="2014-06-09T15:27:16+02:00" pubdate>Mon 09 June 2014</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>Manually download ’NX300 1.4 NX300.zip’ from <a href="http://opensource.samsung.com/reception/receptionSub.do?method=sub&amp;sub=F&amp;searchValue=nx300">http://opensource.samsung.com/reception/receptionSub.do?method=sub&amp;sub=F&amp;searchValue=nx300</a></p>
+<div class="highlight"><pre><span></span><span class="c1"># Extract nx300.zip and nested nx300.tar.gz</span>
+root@melanogaster:/tmp/# unzip nx300.zip <span class="o">&amp;&amp;</span> tar xfz nx300.tar.gz
+
+<span class="c1"># Install necessary packages</span>
+root@melanogaster:/tmp/# apt-get install gcc-arm-linux-gnueabi u-boot-tools libncurses5-dev
+
+<span class="c1"># Create symlinks to gcc-arm-linux-gnueabi binaries because Makefiles refer to arm-none-linux...</span>
+<span class="c1"># See http://stackoverflow.com/a/13798214 for background info</span>
+root@melanogaster:/tmp/# <span class="k">for</span> f in /usr/bin/arm-linux-gnueabi-*<span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$f</span> <span class="o">&amp;&amp;</span> <span class="nv">BASE</span><span class="o">=</span><span class="sb">`</span>basename <span class="nv">$f</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> ln -s <span class="nv">$f</span> /usr/local/bin/<span class="si">${</span><span class="nv">BASE</span><span class="p">/arm-linux/arm-none-linux</span><span class="si">}</span><span class="p">;</span> <span class="k">done</span>
+
+root@melanogaster:/tmp/TIZEN/build# make nx300_config <span class="o">&amp;&amp;</span> make
+<span class="o">[</span>...<span class="o">]</span>
+
+root@melanogaster:/tmp/TIZEN/build# <span class="nb">cd</span> ../packages/linux
+root@melanogaster:/tmp/TIZEN/packages/linux# make menuconfig 
+<span class="c1">## 1. Set ext2 to be compiled as module &quot;&lt;M&gt;&quot;</span>
+<span class="c1">## 2. Set CONFIG_LOCALVERSION=&quot;+&quot; to make the module&#39;s &#39;vermagic&#39; (see modinfo /path/to/compiled/ext2.ko) match the nx300&#39;s in .config (thx to http://www.cnx-software.com/2012/09/11/building-kernel-modules-for-allwinner-a10-devices-android/)</span>
+
+root@melanogaster:/tmp/TIZEN/packages/linux# make <span class="o">&amp;&amp;</span> make modules
+<span class="o">[</span>...<span class="o">]</span>
+
+root@melanogaster:/tmp/TIZEN/packages/linux# find . -iname *.ko
+./drivers/video/backlight/backlight.ko
+./drivers/video/backlight/generic_bl.ko
+./drivers/net/wireless/ath/ath.ko
+./drivers/net/wireless/ath/ath6kl/ath6kl_sdio.ko
+./drivers/usb/gadget/g_ffs.ko
+./fs/ext2/ext2.ko
+
+<span class="c1"># Copy ext2.ko to nx300</span>
+</pre></div>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

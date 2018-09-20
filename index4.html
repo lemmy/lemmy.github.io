@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+
+
+
+      <article>
+        <h1><a href="./tla-in-lyx.html">Include TLA+ in LyX documents and export it pretty-printed to PDF</a></h1>
+        <p>Create a wrapper script for tla2tex.TeX (part of tlatools), put it onto $PATH and name it tla2tex.sh:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="nv">OUTPUT</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">INPUT</span><span class="o">=</span><span class="nv">$2</span>
+
+<span class="c1">## Creating dummy file ${OUTPUT%.*}.tex for tla2tex to remove. It apparently needs this.</span>
+touch <span class="si">${</span><span class="nv">OUTPUT</span><span class="p">%.*</span><span class="si">}</span>.tex
+
+<span class="c1">## Running tla2tex.TeX on $INPUT and writing output to ${OUTPUT%.*}.tex. Expects the TLA+Toolbox to</span>
+<span class="c1">## be installed to /opt/TLA+Toolbox</span>
+java -cp /opt/TLA+Toolbox/plugins/org.lamport.tlatools_1.0.0.*/ tla2tex.TeX -out <span class="si">${</span><span class="nv">OUTPUT</span><span class="p">%.*</span><span class="si">}</span>.tex <span class="nv">$INPUT</span>
+
+<span class="c1">## Converting ${OUTPUT%.*}.tex back to $OUTPUT for LyX to read it</span>
+<span class="c1">#cp ${OUTPUT%.*}.tex $OUTPUT</span>
+<span class="c1">## tla2tex.TeX does not accept &quot;\label{...}&quot; as a lexem and fails. To still be able to use \label</span>
+<span class="c1">## within algorithms, they get wrapped into a TLA+ line comment (&quot;\*...&quot;). Despite being an empty</span>
+<span class="c1">## comment, the resulting PDF shows a grayish box for each \label iff comment shading is enabled.</span>
+<span class="c1">## The regexp below removes all boxes created by TLA+ line comments with \label{...}.</span>
+cat <span class="si">${</span><span class="nv">OUTPUT</span><span class="p">%.*</span><span class="si">}</span>.tex <span class="p">|</span>perl -0777 -pe <span class="s1">&#39;s/\\\@y\{%\n (\\label\{[:a-zA-Z0-9]+})\n}%/$1/igs&#39;</span> &gt; <span class="nv">$OUTPUT</span>
+</pre></div>
+</td></tr></table>
+
+<p>Open up LyX and create two new "File Formats" under Tools &gt; Preferences &gt; File Handling &gt; File Formats:</p>
+<div class="highlight"><pre><span></span><span class="n">Format</span><span class="o">:</span> <span class="n">LaTeX</span> <span class="o">(</span><span class="n">tla2tex</span><span class="o">)</span>
+<span class="n">Short</span> <span class="n">name</span><span class="o">:</span> <span class="n">tla2tex</span>
+<span class="n">Extensions</span><span class="o">:</span> <span class="n">tex</span>
+
+<span class="n">Format</span><span class="o">:</span> <span class="n">PDF</span> <span class="o">(</span><span class="n">tla2tex</span><span class="o">)</span>
+<span class="o">(</span><span class="n">Check</span> <span class="s2">&quot;Document format&quot;</span><span class="o">,</span> <span class="s2">&quot;Show in export menu&quot;</span><span class="o">,</span> <span class="s2">&quot;Vector graphics format&quot;</span><span class="o">)</span>
+<span class="n">Short</span> <span class="n">name</span><span class="o">:</span> <span class="n">pdf4tla2tex</span>
+<span class="n">Extensions</span><span class="o">:</span> <span class="n">pdf</span>
+<span class="n">Shortcut</span><span class="o">:</span> <span class="n">T</span>
+<span class="n">Viewer</span><span class="o">:</span> <span class="n">qpdfview</span> <span class="o">--</span><span class="n">unique</span>
+</pre></div>
+
+
+<p>Also create two new LyX "Converters" under Tools &gt; Preferences &gt; File Handling &gt; Converters:</p>
+<div class="highlight"><pre><span></span>From/To: LaTeX (plain) -&gt; LaTeX (tla2tex)
+Converter: tla2tex.sh $$o $$i
+
+From/To: LaTeX (tla2tex) -&gt; PDF (tla2tex)
+Converter: pdflatex $$i
+Extra flag: latex=pdflatex
+</pre></div>
+
+
+<p>Afterwards run Tools &gt; reconfigure and restart LyX. TLA+ statements can then be included in LyX documents
+inside LyX's <a href="https://wiki.lyx.org/FAQ/ERT"><img alt="\ERT" src="https://wiki.lyx.org/FAQ/ERT"></a> within a "tla" or "pcal"
+environment provided the document's LaTeX preamble declares a \usepackage{tlatex} as explained in the 
+<a href="https://github.com/tlaplus/tlaplus/blob/master/tlatools/src/tla2tex/texinfo.txt"><img alt="tla2tex help" src="https://github.com/tlaplus/tlaplus/blob/master/tlatools/src/tla2tex/texinfo.txt"></a> and be exported via File &gt; Export &gt; PDF (tla2tex):</p>
+<div class="highlight"><pre><span></span>\begin{tla}
+(***********************************************)
+(* A standard definition of spec.              *)
+(***********************************************)
+Spec == Init /\ [][Next]_vars /\ WF_vars(Next)
+\end{tla}
+</pre></div>
+
+
+<p>Ideally, the excerpts were sourced from the .tla file directly so that one wouldn't need to copy&amp;paste
+parts of a specification into the .tex document. Someone might want to look into This. The <a href="https://www.ctan.org/pkg/catchfilebetweentags"><img alt="catchfilebetweentags" src="https://www.ctan.org/pkg/catchfilebetweentags"></a> packages seems to be a viable candidate.</p>
+<hr>
+<p>An incompatibility with the algorithm2e package surfaced that screws up \ref pointing to a \label whichis attached to a section/subsection.
+If secnumdepth is set to be lower than the label'ed section/subsection, the \ref fails to show the number of the parent secton if
+interleaved with a TLA+/PlusCal algorithm. Instead, it shows the last line number of the interleaved algorithm. If anybody cares
+about it, the .tex below reproduces it.</p>
+<div class="highlight"><pre><span></span><span class="x">\batchmode</span>
+<span class="x">\makeatletter</span>
+<span class="x">\def\input@path</span><span class="cp">{{</span><span class="o">/</span><span class="nv">home</span><span class="o">/</span><span class="nv">foobar</span><span class="o">/</span><span class="cp">}}</span><span class="x"></span>
+<span class="x">\makeatother</span>
+<span class="x">\documentclass[english]{scrreprt}</span>
+<span class="x">\usepackage[T1]{fontenc}</span>
+<span class="x">\usepackage[utf8]{inputenc}</span>
+<span class="x">\setcounter{secnumdepth}{1}</span>
+<span class="x">\setcounter{tocdepth}{1}</span>
+<span class="x">\usepackage{algorithm2e}</span>
+
+<span class="x">\makeatletter</span>
+<span class="x">\usepackage{tlatex}</span>
+<span class="x">\RestyleAlgo{ruled}</span>
+<span class="x">\LinesNumbered</span>
+
+<span class="x">\makeatother</span>
+
+<span class="x">\usepackage{babel}</span>
+<span class="x">\begin{document}</span>
+
+<span class="x">\chapter{Chap}</span>
+
+<span class="x">\section{Sec}</span>
+
+<span class="x">\begin{algorithm}</span>
+<span class="x">\begin{tla}</span>
+<span class="x">Line</span>
+<span class="x">Line</span>
+<span class="x">Line</span>
+<span class="x">\end{tla}</span>
+<span class="x">\begin{tlatex}</span>
+<span class="x">\@x{ Line}%</span>
+<span class="x">\@x{ Line}%</span>
+<span class="x">\@x{ Line}%</span>
+<span class="x">\end{tlatex}</span>
+<span class="x">\centering{}\caption{caption}</span>
+<span class="x">\end{algorithm}</span>
+
+
+<span class="x">\subsection{Subsec\label{subsec:subsection}}</span>
+
+<span class="x">\chapter{Broken Ref Below}</span>
+
+<span class="x">\ref{subsec:subsection} &lt;= incorrectly shows last line number of</span>
+<span class="x">algorithm instead of ``1.1&#39;&#39;.</span>
+<span class="x">\begin{itemize}</span>
+<span class="x">\item If line numbers are omitted (no \textbackslash{}LinesNumbered in Preamble),</span>
+<span class="x">the bug disappears.</span>
+<span class="x">\item If secnumdepth includes subsections, the bug disappears.</span>
+<span class="x">\end{itemize}</span>
+
+<span class="x">\end{document}</span>
+</pre></div>
+      </article>
+
+      <hr />
+
+        <div>
+          <h3>Last posts</h3>
+          <ol class="archive">
+    
+
+
+      <li>
+<a href="./2015-03-02-forcefully-reresolve-a-targetplatform.md.html" rel="bookmark" title="Permalink to Forcefully re-resolve a stale PDE target definition">Forcefully re-resolve a stale PDE target definition</a>
+  <time datetime="2015-03-02T11:16:41+01:00" pubdate>Mon 02 March 2015</time>
+</a>      </li>
+
+
+      <li>
+<a href="./cross-compile-kernel-module-samsung-nx300-ubnut-14.04.html" rel="bookmark" title="Permalink to Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04">Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04</a>
+  <time datetime="2014-06-09T15:27:16+02:00" pubdate>Mon 09 June 2014</time>
+</a>      </li>
+
+
+      <li>
+<a href="./auto-backup-from-nx300-via-ftp.html" rel="bookmark" title="Permalink to Auto backup files from the Samsung NX300 camera in the background">Auto backup files from the Samsung NX300 camera in the background</a>
+  <time datetime="2014-06-07T21:16:16+02:00" pubdate>Sat 07 June 2014</time>
+</a>      </li>
+
+
+      <li>
+<a href="./2013-12-19-swterror-no-more-handles-gtk_init_check-failed-running-platform-tests-on-linux.html" rel="bookmark" title="Permalink to SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux)">SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux)</a>
+  <time datetime="2013-12-19T11:16:41+01:00" pubdate>Thu 19 December 2013</time>
+</a>      </li>
+
+
+      <li>
+<a href="./apache-felix-http-whiteboard-pattern-on-equinox.html" rel="bookmark" title="Permalink to Apache Felix HTTP whiteboard pattern on Equinox">Apache Felix HTTP whiteboard pattern on Equinox</a>
+  <time datetime="2013-12-11T08:54:40+01:00" pubdate>Wed 11 December 2013</time>
+</a>      </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </ol>
+        </div>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Auto backup files from the Samsung NX300 camera in the background - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="This would not have been possible without Georg Lukas' work! Always-On wifi Connect the camera to the wifi the regular way (for me only 2.4ghz wifi worked to automatically connect) Find the corresponding settings file in /mnt/ubi1/data/var/lib/connman/*/settings (note down the folder name for …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Auto backup files from the Samsung NX300 camera in the background</h1>
+		
+<div class="metadata">
+  <time datetime="2014-06-07T21:16:16+02:00" pubdate>Sat 07 June 2014</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>This would not have been possible without <a href="http://op-co.de/blog/posts/rooting_the_nx300/">Georg Lukas' work</a>!</p>
+<ul>
+<li>
+<p>Always-On wifi</p>
+<ul>
+<li>
+<p>Connect the camera to the wifi the regular way (for me only 2.4ghz wifi worked to automatically connect)</p>
+</li>
+<li>
+<p>Find the corresponding settings file in /mnt/ubi1/data/var/lib/connman/<span>*</span>/settings (note down the folder name for the connection you automatically want to connect to)</p>
+</li>
+<li>
+<p>Create the wpa_supplicant.conf file in /mnt/mmc/:</p>
+<div class="highlight"><pre><span></span>nx300:/mnt/mmc# cat /tmp/wpa_supplicant.conf 
+ctrl_interface=DIR=/var/run/wifi
+device_name=NX300-CAMERA
+manufacturer=SAMSUNG
+model_name=NX300
+model_number=RAE011112-00CS
+serial_number=XXXXXXXXXX
+config_methods=physical_display virtual_push_button keypad
+country=NL
+</pre></div>
+
+
+</li>
+<li>
+<p>Append the following to autoexec.sh</p>
+<div class="highlight"><pre><span></span># Always on wifi
+cp /mnt/mmc/wpa_supplicant.conf /tmp/
+/usr/bin/wlan.sh start NL 0x8210 &gt;&gt; /mnt/mmc/wifi.log 2&gt;&amp;1
+/usr/sbin/connmand -W nl80211 -r
+/usr/sbin/net-config 
+sleep 2
+#dbus-send --system --type=method_call --print-reply --dest=net.connman / net.connman.Manager.GetServices|grep service &gt;&gt; /mnt/mmc/wifi.log 2&gt;&amp;1 
+dbus-send --system --type=method_call --print-reply --dest=net.connman /net/connman/service/wifi_a0219572b25b_7777772e6c656d6d737465722e6465_managed_psk net.connman.Service.Connect &gt;&gt; /mnt/mmc/wifi.log 2&gt;&amp;1
+</pre></div>
+
+
+</li>
+</ul>
+</li>
+<li>
+<p>FTPd (started via inetd)</p>
+<ul>
+<li>
+<p>Make inetd start ftpd automatically by appending the following to autoexec.sh:</p>
+<div class="highlight"><pre><span></span># Create inetd config file that activates ftpd
+echo &quot;21 stream tcp nowait root ftpd /usr/sbin/ftpd /mnt/mmc/DCIM/&quot; &gt; /mnt/mmc/inetd.conf
+# start inetd (in background) that spawns ftpd on demand
+/usr/sbin/inetd /mnt/mmc/inetd.conf
+</pre></div>
+
+
+</li>
+<li>
+<p>On a remote host periodically poll (less elegant) for new files (if the camera is on-line). The second line purges the mirrored files from the camera so that they do not get downloaded again if deleted from the backup:</p>
+<div class="highlight"><pre><span></span><span class="nt">while</span> <span class="nt">true</span><span class="o">;</span> <span class="nt">do</span> <span class="nt">sleep</span> <span class="nt">5</span> <span class="o">&amp;&amp;</span> <span class="nt">ping</span> <span class="nt">-q</span> <span class="nt">-c</span> <span class="nt">3</span> <span class="nt">nx300</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nt">dev</span><span class="o">/</span><span class="nt">null</span> <span class="o">&amp;&amp;</span> <span class="nt">wget</span> <span class="nt">-q</span> <span class="nt">-m</span> <span class="nt">ftp</span><span class="o">://</span><span class="nt">nx300</span><span class="o">/</span> <span class="o">;</span> <span class="nt">done</span>
+<span class="err">#</span><span class="o">(</span><span class="nt">sleep</span> <span class="nt">1</span><span class="o">;</span> <span class="nt">echo</span> <span class="nt">-e</span> <span class="s2">&quot;cd /mnt/mmc/DCIM/100Photo/ &amp;&amp; rm SAM_0158.JPG SAM_0159.JPG&quot;</span><span class="o">;)</span> <span class="o">|</span> <span class="nt">nc</span> <span class="nt">-q</span> <span class="nt">5</span> <span class="nt">nx300</span> <span class="nt">23</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>If you additionally want to only mirror files that are newer than a sentinel file (e.g. because you might want to be allowed to delete files locally without re-mirroring the file again), run:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1">##</span>
+<span class="c1">## Mirrors files from the nx300 samsung camera to the local machine. The set of files mirrored is the subset of files newer than the given sentinel.</span>
+<span class="c1">##</span>
+<span class="c1">## License see http://unlicense.org/</span>
+<span class="c1">##</span>
+
+<span class="c1">## mirrorers the files from the camera stored in the 100PHOTO/ folder int the local 100PHOTO/ folder</span>
+lftp nx300 -e <span class="s2">&quot;set ftp:use-feat off; mirror --newer-than=100PHOTO/.sentinel 100PHOTO 100PHOTO; quit&quot;</span>
+
+<span class="c1">## Keep the last (newest) mirrored file at a sentinel.</span>
+<span class="c1">## (Do not just store the name of the file because the original file can be touched (e.g. modified by an image editing program) on the local end</span>
+cp -a 100PHOTO/<span class="sb">`</span>ls -tp 100PHOTO/ <span class="p">|</span> grep -v /$ <span class="p">|</span> head -1<span class="sb">`</span> 100PHOTO/.sentinel
+</pre></div>
+</td></tr></table>
+
+</li>
+<li>
+<p>However, I have found that ftpd/lftpd do not correctly preserve the ctime/mtime/... when transfering the file. Thus, the sentinal approach does not work reliably.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>inotifywait</p>
+<ul>
+<li>
+<p>Download following squeeze (oldstable) armel deb packages from packages.debian.org:</p>
+</li>
+<li>
+<p><a href="https://packages.debian.org/squeeze/libinotifytools0">https://packages.debian.org/squeeze/libinotifytools0</a></p>
+</li>
+<li>
+<p><a href="https://packages.debian.org/squeeze/inotify-tools">https://packages.debian.org/squeeze/inotify-tools</a></p>
+</li>
+<li>
+<p><a href="http://www.g-loaded.eu/2008/01/28/how-to-extract-rpm-or-deb-packages/">Extract the data bits of both .deb files with 'ar p <em>notify</em> data.tar.gz | tar zx'</a> and flatten libinotifytools.so.0, libinotifytools.so.0.4.1 inotifywait and inotifywatch from the resulting usr/* to /mnt/mmc </p>
+</li>
+<li>
+<p>Start /mnt/mmc/mirror.sh via /mnt/mmc/autoexec.sh</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+
+<span class="c1">## make sure to find libinotify in current directory            </span>
+<span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/mnt/mmc/:<span class="nv">$LD_LIBRARY_PATH</span>
+
+<span class="c1">## directory to watch for images</span>
+<span class="nv">DIR</span><span class="o">=</span>/mnt/mmc/DCIM/100PHOTO
+
+<span class="c1">## target to ftpput files to</span>
+<span class="nv">TARGET</span><span class="o">=</span>strawberry
+
+<span class="c1">## watch for new files and immediately copy to remote and delete afterwards</span>
+<span class="k">while</span> <span class="nv">F</span><span class="o">=</span><span class="k">$(</span>/mnt/mmc/inotifywait -e create <span class="nv">$DIR</span> --format %f .<span class="k">)</span>
+   <span class="k">do</span> <span class="o">(</span> ftpput <span class="nv">$TARGET</span> /incoming/<span class="nv">$F</span> <span class="nv">$DIR</span>/<span class="nv">$F</span> <span class="o">&amp;&amp;</span> rm <span class="nv">$DIR</span>/<span class="nv">$F</span> <span class="o">)</span> <span class="p">&amp;</span>
+<span class="k">done</span>
+</pre></div>
+</td></tr></table>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Install vsftpd on a raspberry pi</p>
+<ul>
+<li>
+<p>apt-get install vsftpd &amp;&amp; mkdir -p /var/ftp/incoming &amp;&amp; chown root:root /var/ftp &amp;&amp; chown ftp:ftp /var/ftp/incoming</p>
+</li>
+<li>
+<p>Add anon_upload_enable=YES, write_enable=YES, anonymous_enable=YES, anon_root=/var/ftp and anon_umask=022 to /etc/vsftpd and restart vsftpd</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The final autoexe.sh looks like:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+
+<span class="nv">TARGET</span><span class="o">=</span>strawberry
+
+mkdir -p /dev/pts
+mount -t devpts none /dev/pts
+
+<span class="c1"># Start telnet server</span>
+telnetd -l /bin/bash -F &gt; /mnt/mmc/telnetd.log <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+
+<span class="c1"># Create inetd config file that activates ftpd</span>
+<span class="nb">echo</span> <span class="s2">&quot;21 stream tcp nowait root ftpd /usr/sbin/ftpd /mnt/mmc/DCIM/&quot;</span> &gt; /mnt/mmc/inetd.conf
+
+<span class="c1"># start inetd (in background) that spawns ftpd on demand</span>
+/usr/sbin/inetd /mnt/mmc/inetd.conf
+
+<span class="c1"># automatically start wifi</span>
+cp /mnt/mmc/wpa_supplicant.conf /tmp/
+/usr/bin/wlan.sh start NL 0x8210
+/usr/sbin/connmand -W nl80211 -r
+/usr/sbin/net-config
+sleep <span class="m">2</span>
+dbus-send --system --type<span class="o">=</span>method_call --print-reply --dest<span class="o">=</span>net.connman /net/connman/service/wifi_a0219572b25b_7777772e6c656d6d737465722e6465_managed_psk net.connman.Service.Connect
+
+<span class="c1"># start mirror.sh</span>
+<span class="c1"># (TODO: inline the mirror.sh script?)</span>
+/mnt/mmc/mirror.sh &gt; /mnt/mmc/mirror.log <span class="p">&amp;</span> <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+
+<span class="c1"># copy any file the mirror.sh script might have missed in previous runs</span>
+<span class="k">for</span> f in /mnt/mmc/DCIM/100PHOTO/*.JPG<span class="p">;</span> <span class="k">do</span> <span class="nv">file</span><span class="o">=</span><span class="sb">`</span>basename <span class="nv">$f</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> ftpput <span class="nv">$TARGET</span> incoming/<span class="nv">$file</span> <span class="nv">$f</span> <span class="o">&amp;&amp;</span> rm <span class="nv">$f</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+</td></tr></table>
+
+</li>
+</ul>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	<h2>Comment by: Bill Hart Date: 2014-09-29 09:57:17</h2>
+<p>Hi,</p>
+<p>Just a couple of updates on hacking the Samsung NX cameras.  I'm using the NX300M so comments refer to them specifically.  Samsung have removed the autoexec.sh exploit from the last couple of firmware revisions - from 1.11 on.  However you can find and install older firmware  http://downloadcenter.samsung.com/content/FM/201407/20140707123850056/NX300M_FW_v1.11.zip and 'upgrade' to an older version.</p>
+<p>It looks like they have removed from '/etc/go.sh' the code which looked for and executed a autoexec.sh file on the SD card.  I would build a modified version of their firmware but the instructions from the developer site are fairly poor and it looks like a day or so's work to get it to build.</p>
+<p>Wifi stuff worked well for me (saved me a few hours at least), I'd wondered if you'd considered using rsync rather than ftp ?  Its supposed to be part of busybox.</p>
+<p>cheers
+Bill Hart</p>
+<h2>Comment by: Lee Olds Date: 2014-12-30 19:02:17</h2>
+<p>Hello,
+Thanks for describing how you did this. I have the NX300 (not NX300M).
+In response to Bill Hart's comment, I've tested the autoexec.sh hack
+on the latest NX300 firmware (1.45), and it still works fine there.
+Also, I've seen page describing how someone set up an auto-backup on
+NX300 using the ssh client that comes in the camera.
+https://cedarandthistle.wordpress.com/2014/11/01/autobackup-to-linux-from-the-samsung-nx300m/</p>
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Custom Twitter timeline rss feed after v1 API retirement - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="So Twitter has decided to retire its v1 API, breaking everybody's timeline rss feeds (which I happened to use for my blog). Fortunately my twitter client (znc on top of bitblee) logs all my tweets to a text file so create my own rss feed is almost trivial (I haven't …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Custom Twitter timeline rss feed after v1 API retirement</h1>
+		
+<div class="metadata">
+  <time datetime="2013-06-15T16:29:34+02:00" pubdate>Sat 15 June 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/hacks.html">hacks</a>
+</div>		
+		<p>So Twitter has decided to retire its v1 API, breaking everybody's timeline rss feeds (which I happened to use for my blog). Fortunately my twitter client (znc on top of bitblee) logs all my tweets to a text file so create my own rss feed is almost trivial (I haven't bothered to correctly link my tweets though. I plan to eventually migrate away from twitter anyway).</p>
+<div class="highlight"><pre><span></span>grep -h <span class="s1">&#39;&lt;markus&gt;&#39;</span> .znc/users/markus/moddata/log/<span class="se">\#</span>twitter_lemmster_*.log <span class="se">\</span>
+&gt; foo.tmp <span class="o">&amp;&amp;</span> tac foo.tmp <span class="p">|</span> head -3 <span class="p">|</span> sed <span class="s1">&#39;s/&lt;markus&gt; //g&#39;</span> <span class="p">|</span> <span class="se">\</span>
+~/bin/lines2rss.sh <span class="s1">&#39;tweets&#39;</span> <span class="s1">&#39;http://www.lemmster.de&#39;</span> <span class="s1">&#39;whatever&#39;</span> <span class="se">\</span>
+&gt; /var/www/tweets.xml
+</pre></div>
+
+
+<p>line2rss.sh:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;&#39;</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;rss version=&quot;2.0&quot; xmlns:atom=&quot;http://www.w3.org/2005/Atom&quot; xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;&#39;</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;channel&gt;&lt;title&gt;&#39;</span><span class="nv">$1</span><span class="s1">&#39;&lt;/title&gt;&lt;link&gt;&#39;</span><span class="nv">$2</span><span class="s1">&#39;&lt;/link&gt;&#39;</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;description&gt;&#39;</span><span class="nv">$3</span><span class="s1">&#39;&lt;/description&gt;&lt;language&gt;en&lt;/language&gt;&#39;</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;lastBuildDate&gt;&#39;</span><span class="k">$(</span>date -R<span class="k">)</span><span class="s1">&#39;&lt;/lastBuildDate&gt;&#39;</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;pubDate&gt;&#39;</span><span class="k">$(</span>date -R<span class="k">)</span><span class="s1">&#39;&lt;/pubDate&gt;&#39;</span>
+
+<span class="nv">i</span><span class="o">=</span><span class="m">0</span>
+<span class="k">while</span> <span class="nb">read</span> line <span class="p">;</span> <span class="k">do</span>
+<span class="nb">let</span> <span class="s2">&quot;i += 1&quot;</span>
+
+<span class="nb">echo</span> <span class="s1">&#39;&lt;item&gt;&lt;title&gt;&#39;</span><span class="nv">$line</span><span class="s1">&#39;&lt;/title&gt;&#39;</span>
+<span class="nb">echo</span> <span class="s2">&quot;&lt;guid&gt;`echo </span><span class="nv">$line</span><span class="s2"> | md5sum | cut -f 1 -d &#39; &#39;`&lt;/guid&gt;&quot;</span>
+<span class="nb">echo</span> <span class="s1">&#39;&lt;pubDate&gt;&#39;</span><span class="k">$(</span>date -d <span class="s2">&quot;-</span><span class="nv">$i</span><span class="s2"> min&quot;</span> -R<span class="k">)</span><span class="s1">&#39;&lt;/pubDate&gt;&lt;/item&gt;&#39;</span>
+
+<span class="k">done</span>
+
+<span class="nb">echo</span> <span class="s1">&#39;&lt;/channel&gt;&lt;/rss&gt;&#39;</span>
+<span class="nb">echo</span> <span class="s2">&quot;&quot;</span>
+</pre></div>
+</td></tr></table>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="./category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

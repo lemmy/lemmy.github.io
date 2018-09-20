@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Apache Felix HTTP whiteboard pattern on Equinox - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<meta name="description" content="Unless I am missing something obvious, using the Equinox HttpService requires one to: a) get the HttpService from the OSGi service registry b) register the HttpServlet on the HttpService via a call to registerServlet(..) This can be done however much more elegantly and - way more importantly - in a dynamic aware …">
+
+
+	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="./pages/gpg.html">gpg</a>
+-			  <a href="./pages/impressum.html">impressum</a>
+-			  <a href="./pages/publications.html">publications</a>
+-			  <a href="./pages/resume.html">resume</a>
+	      </nav>
+		<a href="." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+	<article class="full">
+			
+		<h1>Apache Felix HTTP whiteboard pattern on Equinox</h1>
+		
+<div class="metadata">
+  <time datetime="2013-12-11T08:54:40+01:00" pubdate>Wed 11 December 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/eclipse.html">eclipse</a>
+</div>		
+		<p>Unless I am missing something obvious, using the Equinox HttpService requires one to:</p>
+<ul>
+<li>
+<p>a) get the HttpService from the OSGi service registry</p>
+</li>
+<li>
+<p>b) register the HttpServlet on the HttpService via a call to registerServlet(..)</p>
+</li>
+</ul>
+<p>This can be done however much more elegantly and - way more importantly - in a <a href="http://books.google.de/books?id=xyffdhEOlAcC&amp;lpg=PT558&amp;ots=fYruSOvGTL&amp;dq=osgi%20dynamic%20awareness&amp;pg=PT558#v=onepage&amp;q&amp;f=false">dynamic aware</a> fashion meaning, that the <em>HttpServlet</em> that is registered survives life-cycle changes of the <em>HttpService</em>.</p>
+<p>E.g. consider the case where one registers the <em>HttpServlet</em> with <em>registerServlet</em>(..) and the <em>HttpService</em> is redeployed afterwards. Unless the <em>HttpService</em> maintains its internal state (which is rather unlikely if e.g. Tomcat gets replaced with Jetty), the <em>HttpServlet</em> won't be available anymore and consumer code will have to re-register the <em>HttpServlet</em> again (by listening to life-cycle changes of the <em>HttpService</em>).
+If, on the other hand the <em>HttpServlet</em> is simply registered with the OSGi service registry as a <em>javax.servlet.Servlet</em> <a href="http://blog.osgi.org/2010/03/services.html">μService</a> (SR never goes away), the <em>HttpService</em> itself (or an <a href="http://blog.osgi.org/2007/02/osgi-extender-model.html">extender</a> as a matter of fact) can lookup all services of the <em>javax.servlet.Servlet</em> type whenever its need to (read when the <em>HttpService</em> transitions through life-cycle changes).</p>
+<p>To leverage this on <a href="http://www.eclipse.org/equinox/">Equinox</a>, just follow the steps below:</p>
+<ol>
+<li>
+<p><a href="http://felix.apache.org/downloads.cgi#subprojects">Download</a> recent versions of both bundles 'HTTP Service API' and 'HTTP Service Whiteboard' to e.g. Eclipse's dropins/ folder</p>
+<ol>
+<li>It is version 2.2.2 as of writing</li>
+</ol>
+</li>
+<li>
+<p>Add also bundle <em>org.eclipse.equinox.http.jetty</em> and its dependencies to the launch configuration</p>
+<ol>
+<li>Alternatively use Felix's incarnation of Jetty called 'HTTP Service Jetty'</li>
+</ol>
+</li>
+<li>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">org.kuppe.exmpl</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChatServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">resp</span><span class="o">)</span>
+        <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+             <span class="n">resp</span><span class="o">.</span><span class="na">setStatus</span><span class="o">(</span><span class="n">HttpServletResponse</span><span class="o">.</span><span class="na">SC_OK</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+</li>
+<li>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;scr:component</span>
+    <span class="na">xmlns:scr=</span><span class="s">&quot;http://www.osgi.org/xmlns/scr/v1.1.0&quot;</span>
+    <span class="na">immediate=</span><span class="s">&quot;true&quot;</span>
+    <span class="na">name=</span><span class="s">&quot;org.kuppe.exmpl.chat.web&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;implementation/&gt;</span>
+    <span class="nt">&lt;service&gt;</span>
+      <span class="nt">&lt;provide</span> <span class="na">interface=</span><span class="s">&quot;javax.servlet.Servlet&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/service&gt;</span>
+
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&quot;alias&quot;</span> <span class="na">type=</span><span class="s">&quot;String&quot;</span> <span class="na">value=</span><span class="s">&quot;/chat&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/scr:component&gt;</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>Set 'Bundle-ActivationPolicy: lazy' and list the component xml as a Service-Component for the DS extender in the MANIFEST.MF</p>
+<ol>
+<li>Do not forget to explicitly add DS <em>org.eclipse.equinox.ds</em> to your launch until <a href="http://blog.osgi.org/2012/03/requirements-and-capabilities.html">capabilites</a> are available</li>
+</ol>
+</li>
+<li>
+<p>Optionally add -Dorg.eclipse.equinox.http.jetty.http.port=8181 to change the Jetty port to 8181</p>
+</li>
+</ol>
+<p>Also read the <a href="http://felix.apache.org/documentation/subprojects/apache-felix-http-service.html#using-the-whiteboard">generic Apache Felix Http whiteboard instructions</a>!</p>	
+
+	</article>
+
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li class="active"><a href="./category/eclipse.html">eclipse</a></li>
+	              <li ><a href="./category/hacks.html">hacks</a></li>
+	              <li ><a href="./category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>

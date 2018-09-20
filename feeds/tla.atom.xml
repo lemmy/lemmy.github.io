@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>l e m m s t e r . d e - TLA+</title><link href="http://www.lemmster.de/" rel="alternate"></link><link href="http://www.lemmster.de/feeds/tla.atom.xml" rel="self"></link><id>http://www.lemmster.de/</id><updated>2016-08-15T09:43:02+02:00</updated><entry><title>Include TLA+ in LyX documents and export it pretty-printed to PDF</title><link href="http://www.lemmster.de/tla-in-lyx.html" rel="alternate"></link><published>2016-08-15T09:43:02+02:00</published><updated>2016-08-15T09:43:02+02:00</updated><author><name>Markus A. Kuppe</name></author><id>tag:www.lemmster.de,2016-08-15:/tla-in-lyx.html</id><summary type="html">&lt;p&gt;Create a wrapper script for tla2tex.TeX (part of tlatools), put it onto $PATH and name it tla2tex.sh:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;OUTPUT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;
+&lt;span class="nv"&gt;INPUT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;
+
+&lt;span class="c1"&gt;## Creating dummy file ${OUTPUT%.*}.tex for …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</summary><content type="html">&lt;p&gt;Create a wrapper script for tla2tex.TeX (part of tlatools), put it onto $PATH and name it tla2tex.sh:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;OUTPUT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;
+&lt;span class="nv"&gt;INPUT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;
+
+&lt;span class="c1"&gt;## Creating dummy file ${OUTPUT%.*}.tex for tla2tex to remove. It apparently needs this.&lt;/span&gt;
+touch &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;OUTPUT&lt;/span&gt;&lt;span class="p"&gt;%.*&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.tex
+
+&lt;span class="c1"&gt;## Running tla2tex.TeX on $INPUT and writing output to ${OUTPUT%.*}.tex. Expects the TLA+Toolbox to&lt;/span&gt;
+&lt;span class="c1"&gt;## be installed to /opt/TLA+Toolbox&lt;/span&gt;
+java -cp /opt/TLA+Toolbox/plugins/org.lamport.tlatools_1.0.0.*/ tla2tex.TeX -out &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;OUTPUT&lt;/span&gt;&lt;span class="p"&gt;%.*&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.tex &lt;span class="nv"&gt;$INPUT&lt;/span&gt;
+
+&lt;span class="c1"&gt;## Converting ${OUTPUT%.*}.tex back to $OUTPUT for LyX to read it&lt;/span&gt;
+&lt;span class="c1"&gt;#cp ${OUTPUT%.*}.tex $OUTPUT&lt;/span&gt;
+&lt;span class="c1"&gt;## tla2tex.TeX does not accept &amp;quot;\label{...}&amp;quot; as a lexem and fails. To still be able to use \label&lt;/span&gt;
+&lt;span class="c1"&gt;## within algorithms, they get wrapped into a TLA+ line comment (&amp;quot;\*...&amp;quot;). Despite being an empty&lt;/span&gt;
+&lt;span class="c1"&gt;## comment, the resulting PDF shows a grayish box for each \label iff comment shading is enabled.&lt;/span&gt;
+&lt;span class="c1"&gt;## The regexp below removes all boxes created by TLA+ line comments with \label{...}.&lt;/span&gt;
+cat &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;OUTPUT&lt;/span&gt;&lt;span class="p"&gt;%.*&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.tex &lt;span class="p"&gt;|&lt;/span&gt;perl -0777 -pe &lt;span class="s1"&gt;&amp;#39;s/\\\@y\{%\n (\\label\{[:a-zA-Z0-9]+})\n}%/$1/igs&amp;#39;&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$OUTPUT&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Open up LyX and create two new "File Formats" under Tools &amp;gt; Preferences &amp;gt; File Handling &amp;gt; File Formats:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Format&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;LaTeX&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tla2tex&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Short&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;tla2tex&lt;/span&gt;
+&lt;span class="n"&gt;Extensions&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;tex&lt;/span&gt;
+
+&lt;span class="n"&gt;Format&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;PDF&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tla2tex&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Check&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Document format&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Show in export menu&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Vector graphics format&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Short&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;pdf4tla2tex&lt;/span&gt;
+&lt;span class="n"&gt;Extensions&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;pdf&lt;/span&gt;
+&lt;span class="n"&gt;Shortcut&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;T&lt;/span&gt;
+&lt;span class="n"&gt;Viewer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;qpdfview&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;unique&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Also create two new LyX "Converters" under Tools &amp;gt; Preferences &amp;gt; File Handling &amp;gt; Converters:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;From/To: LaTeX (plain) -&amp;gt; LaTeX (tla2tex)
+Converter: tla2tex.sh $$o $$i
+
+From/To: LaTeX (tla2tex) -&amp;gt; PDF (tla2tex)
+Converter: pdflatex $$i
+Extra flag: latex=pdflatex
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Afterwards run Tools &amp;gt; reconfigure and restart LyX. TLA+ statements can then be included in LyX documents
+inside LyX's &lt;a href="https://wiki.lyx.org/FAQ/ERT"&gt;&lt;img alt="\ERT" src="https://wiki.lyx.org/FAQ/ERT"&gt;&lt;/a&gt; within a "tla" or "pcal"
+environment provided the document's LaTeX preamble declares a \usepackage{tlatex} as explained in the 
+&lt;a href="https://github.com/tlaplus/tlaplus/blob/master/tlatools/src/tla2tex/texinfo.txt"&gt;&lt;img alt="tla2tex help" src="https://github.com/tlaplus/tlaplus/blob/master/tlatools/src/tla2tex/texinfo.txt"&gt;&lt;/a&gt; and be exported via File &amp;gt; Export &amp;gt; PDF (tla2tex):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;\begin{tla}
+(***********************************************)
+(* A standard definition of spec.              *)
+(***********************************************)
+Spec == Init /\ [][Next]_vars /\ WF_vars(Next)
+\end{tla}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ideally, the excerpts were sourced from the .tla file directly so that one wouldn't need to copy&amp;amp;paste
+parts of a specification into the .tex document. Someone might want to look into This. The &lt;a href="https://www.ctan.org/pkg/catchfilebetweentags"&gt;&lt;img alt="catchfilebetweentags" src="https://www.ctan.org/pkg/catchfilebetweentags"&gt;&lt;/a&gt; packages seems to be a viable candidate.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;An incompatibility with the algorithm2e package surfaced that screws up \ref pointing to a \label whichis attached to a section/subsection.
+If secnumdepth is set to be lower than the label'ed section/subsection, the \ref fails to show the number of the parent secton if
+interleaved with a TLA+/PlusCal algorithm. Instead, it shows the last line number of the interleaved algorithm. If anybody cares
+about it, the .tex below reproduces it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="x"&gt;\batchmode&lt;/span&gt;
+&lt;span class="x"&gt;\makeatletter&lt;/span&gt;
+&lt;span class="x"&gt;\def\input@path&lt;/span&gt;&lt;span class="cp"&gt;{{&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nv"&gt;home&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nv"&gt;foobar&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="cp"&gt;}}&lt;/span&gt;&lt;span class="x"&gt;&lt;/span&gt;
+&lt;span class="x"&gt;\makeatother&lt;/span&gt;
+&lt;span class="x"&gt;\documentclass[english]{scrreprt}&lt;/span&gt;
+&lt;span class="x"&gt;\usepackage[T1]{fontenc}&lt;/span&gt;
+&lt;span class="x"&gt;\usepackage[utf8]{inputenc}&lt;/span&gt;
+&lt;span class="x"&gt;\setcounter{secnumdepth}{1}&lt;/span&gt;
+&lt;span class="x"&gt;\setcounter{tocdepth}{1}&lt;/span&gt;
+&lt;span class="x"&gt;\usepackage{algorithm2e}&lt;/span&gt;
+
+&lt;span class="x"&gt;\makeatletter&lt;/span&gt;
+&lt;span class="x"&gt;\usepackage{tlatex}&lt;/span&gt;
+&lt;span class="x"&gt;\RestyleAlgo{ruled}&lt;/span&gt;
+&lt;span class="x"&gt;\LinesNumbered&lt;/span&gt;
+
+&lt;span class="x"&gt;\makeatother&lt;/span&gt;
+
+&lt;span class="x"&gt;\usepackage{babel}&lt;/span&gt;
+&lt;span class="x"&gt;\begin{document}&lt;/span&gt;
+
+&lt;span class="x"&gt;\chapter{Chap}&lt;/span&gt;
+
+&lt;span class="x"&gt;\section{Sec}&lt;/span&gt;
+
+&lt;span class="x"&gt;\begin{algorithm}&lt;/span&gt;
+&lt;span class="x"&gt;\begin{tla}&lt;/span&gt;
+&lt;span class="x"&gt;Line&lt;/span&gt;
+&lt;span class="x"&gt;Line&lt;/span&gt;
+&lt;span class="x"&gt;Line&lt;/span&gt;
+&lt;span class="x"&gt;\end{tla}&lt;/span&gt;
+&lt;span class="x"&gt;\begin{tlatex}&lt;/span&gt;
+&lt;span class="x"&gt;\@x{ Line}%&lt;/span&gt;
+&lt;span class="x"&gt;\@x{ Line}%&lt;/span&gt;
+&lt;span class="x"&gt;\@x{ Line}%&lt;/span&gt;
+&lt;span class="x"&gt;\end{tlatex}&lt;/span&gt;
+&lt;span class="x"&gt;\centering{}\caption{caption}&lt;/span&gt;
+&lt;span class="x"&gt;\end{algorithm}&lt;/span&gt;
+
+
+&lt;span class="x"&gt;\subsection{Subsec\label{subsec:subsection}}&lt;/span&gt;
+
+&lt;span class="x"&gt;\chapter{Broken Ref Below}&lt;/span&gt;
+
+&lt;span class="x"&gt;\ref{subsec:subsection} &amp;lt;= incorrectly shows last line number of&lt;/span&gt;
+&lt;span class="x"&gt;algorithm instead of ``1.1&amp;#39;&amp;#39;.&lt;/span&gt;
+&lt;span class="x"&gt;\begin{itemize}&lt;/span&gt;
+&lt;span class="x"&gt;\item If line numbers are omitted (no \textbackslash{}LinesNumbered in Preamble),&lt;/span&gt;
+&lt;span class="x"&gt;the bug disappears.&lt;/span&gt;
+&lt;span class="x"&gt;\item If secnumdepth includes subsections, the bug disappears.&lt;/span&gt;
+&lt;span class="x"&gt;\end{itemize}&lt;/span&gt;
+
+&lt;span class="x"&gt;\end{document}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content></entry></feed>

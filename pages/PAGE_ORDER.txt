@@ -1,0 +1,1 @@
+Page ordering is not supported by Pelican 3.3.0 provided by Ubuntu 14.04. Upstream seems to have it though: https://github.com/getpelican/pelican/issues/957

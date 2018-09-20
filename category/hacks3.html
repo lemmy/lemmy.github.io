@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>hacks - l e m m s t e r . d e</title>	
+	<meta name="author" content="Markus A. Kuppe">
+	
+
+	<link rel="top" href="#" /><link href='../theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
+	<link rel="stylesheet" href="../theme/css/main.css" type="text/css" />
+		
+
+</head>
+	
+<body>
+
+    <div class="container">
+	  
+	  <header role="banner">
+	    <div class="feeds">
+	    </div>
+	      <nav class="pages">
+			  <a href="../pages/gpg.html">gpg</a>
+-			  <a href="../pages/impressum.html">impressum</a>
+-			  <a href="../pages/publications.html">publications</a>
+-			  <a href="../pages/resume.html">resume</a>
+	      </nav>
+		<a href=".." class="title">l e m m s t e r . d e</a>
+      </header>
+	
+	  <div class="wrapper">
+
+		  <div role="main" class="content">
+
+<h1>Posts categorized under: hacks</h1>
+
+<article class="summary">
+<div class="metadata">
+  <time datetime="2007-05-19T09:53:14+02:00" pubdate>Sat 19 May 2007</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/hacks.html">hacks</a>
+</div>  <div>
+    <h2>
+      <a href="../debian-etch-exim4-greylistd-spf.html" rel="bookmark" title="Permalink to debian etch + exim4 + greylistd + spf">debian etch + exim4 + greylistd + spf</a>
+    </h2>
+    <p><p>Today I've spent some time implementing <a href="http://greylisting.org/">greylisting</a> on our smtp server continuing my endless fight against <a href="http://en.wikipedia.org/wiki/E-mail_spam">UCE (spam)</a>. Setting this up is as easy as running "aptitude install greylistd" and adding to the exim.conf:  </p>
+<div class="highlight"><pre><span></span>defer  
+<span class="nv">message</span> <span class="o">=</span> <span class="nv">$sender_host_address</span> is not yet authorized to deliver <span class="se">\ </span> 
+mail from &lt;<span class="nv">$sender_address</span>&gt; to &lt;<span class="nv">$local_part</span>@<span class="nv">$domain …</span></pre></div></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
+  <time datetime="2005-09-23T12:02:04+02:00" pubdate>Fri 23 September 2005</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/hacks.html">hacks</a>
+</div>  <div>
+    <h2>
+      <a href="../ip_conntrack_tcp_be_liberal.html" rel="bookmark" title="Permalink to ip_conntrack_tcp_be_liberal">ip_conntrack_tcp_be_liberal</a>
+    </h2>
+    <p><p>von beginn an bestand ein problem mit haengenden verbindungen in den xen domainen. ssh oder ftp verbindungen brachen gelegentlich ab, ohne einen hinweis in den logfiles zu hinterlassen. nachdem ich am heutigen vormittag das problem dann genauer untersucht habe und probleme mit der glibc ausschliessen konnte, richtete ich mein augenmerk …</p></p>
+  </div>
+</article>
+<div class="pagination">
+            <a href="../category/hacks2.html">&laquo;</a>
+    Page 3 / 3
+</div>
+
+		  </div>	
+		  
+		  <div class="sidebar">
+
+	        <nav>
+	          <h2>Categories</h2>
+	          <ul>
+	              <li ><a href="../category/eclipse.html">eclipse</a></li>
+	              <li class="active"><a href="../category/hacks.html">hacks</a></li>
+	              <li ><a href="../category/tla.html">TLA+</a></li>
+	          </ul>
+	        </nav>
+
+	          <aside>
+	          <h2>Social</h2>
+			    <ul class="social">
+				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
+				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
+				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
+				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
+				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
+			    </ul>
+			  </aside>
+
+
+		  </div>
+
+	  </div>
+
+      <footer>
+		<p role="contentinfo">
+		  © 2018 Markus A. Kuppe.
+    	</p>
+
+	  </footer>	
+
+	</div>
+	
+
+</body>
+</html>
