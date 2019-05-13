@@ -7,9 +7,9 @@ apt-get install bibtex2html
 Generate markdown style output compatible with pelican pages:
 ---------------------------
 
-echo "Title: publications" > ../../blog/content/pages/publications.md \
-&& bibtex2html -unicode -r -d -css /theme/css/main.css -o publications -nodoc personal.bib \
-&& cat publications.html >> ../../blog/content/pages/publications.md \
+echo "Title: talks" > ../../blog/content/pages/talks.md \
+&& bibtex2html -unicode -r -d -css /theme/css/main.css -o talks -nodoc personal.bib \
+&& cat talks.html >> ../../blog/content/pages/talks.md \
 && mv publications_bib.html ../../blog/content/pages/publications_bib.html \
 && rm *.html
 
