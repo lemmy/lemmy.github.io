@@ -71,7 +71,7 @@ Please try later.
 
 
 <p>But greylisting comes with one drawback that bugs me. It requires senders of legitimate mail to retry after some amount of time. This wouldn't be a problem with sane smtp servers but with potentially misconfigured servers, we can't be sure of it.  </p>
-<p>Therefore I whitelist a broad range of well known smtp servers for which I assume that they will always send legitimate mail. But maintaining a whitelist is tedious and takes a lot of effort (for postfix <a href="http://oc-co.org/p2pwl/">p2pwl</a> exists as a solution). That's why I decided to also whitelist hosts for which a <a href="http://www.openspf.org/">SPF</a> check passes. Even though its not yet widely used it reduces the chance to greylist especially big/high traffic smtp servers (I assume that those hosts return a valid SPF record).  </p>
+<p>Therefore I whitelist a broad range of well known smtp servers for which I assume that they will always send legitimate mail. But maintaining a whitelist is tedious and takes a lot of effort (for postfix <a href="http://oc-co.org/p2pwl/">p2pwl</a> exists as a solution). That's why I decided to also whitelist hosts for which a <a href="https://web.archive.org/web/20190225203208/http://www.openspf.org/">SPF</a> check passes. Even though its not yet widely used it reduces the chance to greylist especially big/high traffic smtp servers (I assume that those hosts return a valid SPF record).  </p>
 <p>Unfortunately <a href="http://exim.org/">exim4</a> doesn't come with spf enabled in <a href="http://www.debian.org/News/2007/20070408">debian etch</a> for <a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=377034">various reasons,</a> why it is necessary to do the spf check manually with <a href="http://packages.qa.debian.org/libmail-spf-query-perl">libmail-spf-query-perl</a> which is available via apt. The upstream example which is included doesn't serve this use case though. So I had to create my own:  </p>
 <div class="highlight"><pre><span></span>acl_check_spf:
 
@@ -102,7 +102,7 @@ warn
 	</article>
 
 	    <section id="comments" class="body">
-	    <hr><p>Want to comment? Send me an email to blog-comments-2018 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	    <hr><p>Want to comment? Send me an email to blog-comments-2019 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
 	
 	    </section>
 
@@ -125,7 +125,6 @@ warn
 				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
 				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
 				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
-				  <li><a href="https://www.codeplex.com/site/users/view/mku">Codeplex</a><i></i></li>
 				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
 			    </ul>
 			  </aside>
@@ -137,7 +136,7 @@ warn
 
       <footer>
 		<p role="contentinfo">
-		  © 2018 Markus A. Kuppe.
+		  © 2019 Markus A. Kuppe.
     	</p>
 
 	  </footer>	
