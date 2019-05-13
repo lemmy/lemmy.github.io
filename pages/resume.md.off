@@ -1,0 +1,200 @@
+title: resume
+
+résumé
+======
+
+Markus Alexander Kuppe [(resume-2018@lemmster.de)](mailto:resume-2018@lemmster.de)
+
+experience
+----------
+*   **Microsoft Research** (Germany)
+
+    Principal Software Development Engineer, Feb, 2015 - Present
+
+    -   TLA+ project [(http://s.lemmster.de/msr)](http://s.lemmster.de/msr)
+
+*   **Adobe GmbH** (Hamburg, Germany)
+
+    Cloud Software Engineer, Feb, 2014 - October, 2014
+
+    -   Shared Cloud team - PaaS layer for multiple Adobe SaaS offerings
+
+*   **vogella GmbH** (Hamburg, Germany)
+
+    Trainer & Engineer, Feb, 2013 – Dec, 2013
+
+    -   Eclipse RCP/e4 & OSGi training
+    -   Java trainings
+    -   Eclipse Consulting
+
+*   **Microsoft Research** (Silicon Valley Lab, Mountain View, USA)
+
+    Research intern (Supervisor Leslie Lamport), November, 2011 – February, 2012
+
+    -   The TLA Toolbox, an Eclipse based IDE for TLA+ [(http://s.lemmster.de/msr)](http://s.lemmster.de/msr)
+
+*   **Institut national de recherche en informatique et en automatique (INRIA)** (Paris, France)
+
+    Engineering expert, May, 2011 – October, 2011
+
+    -   Tools and methodologies for formal specifications and for proofs [(http://s.lemmster.de/inria)](http://s.lemmster.de/inria)
+
+*   **University of Hamburg** (Hamburg, Germany)
+
+    Graduate Teaching Assistant, October, 2010 – March, 2011
+
+    -   Distributed systems and information security (Verteilte Systeme und Informationssicherheit) seminar
+    -   OSGi Summerschool on remoting technologies
+
+*   **Google Summer of Code** (Google Open Source Program)
+
+    Student developer, 05 to 07, 2009 – 05 to 07, 2010
+
+    -   Distributed testing framework based on ECF RFC 119 D-OSGi [(http://s.lemmster.de/soc10)](http://s.lemmster.de/soc10)
+    -   DNS-SD based wide-area ECF discovery provider [(http://s.lemmster.de/soc09)](http://s.lemmster.de/soc09)
+
+    Co-Mentor, 05 to 07, 2012
+
+    -   OSGi Remote Services Testing framework for ECF [(http://s.lemmster.de/soc12)](http://s.lemmster.de/soc12)
+    -   Implementing generic in JFace viewers [(http://s.lemmster.de/soc13a)](http://s.lemmster.de/soc13a)
+
+    Mentor, 05 to 07, 2007 – 05 to 07, 2013
+
+    -   An auto-configuration plugin for Eclipse [(http://s.lemmster.de/soc07)](http://s.lemmster.de/soc07)
+    -   toString() generator [(http://s.lemmster.de/soc08)](http://s.lemmster.de/soc08)
+    -   ECF OSGI Remote Services Developemt and Testing tooling kit [(http://s.lemmster.de/soc13)](http://s.lemmster.de/soc13)
+
+*   **Versant GmbH** (Hamburg, Germany)
+
+    Software Engineer, August, 2007 – February, 2009
+
+    -   Versant Vitness: An Eclipse RCP based administration front-end for the Versant database
+<!--    -   Java Versant Interface (JVI): A proprietary Java API founded on Versant’s C client -->
+<!--    -   Versant Pure Managed Client (PMC): Java Data Objects (JDO) 2.0 compliant client-side binding for the Versant database -->
+    -   Planned, architected and implemented an Eclipse RCP based administration front-end for the Versant database
+    -   Designed and componentized a monolithic application to OSGi components
+<!--    -   Refactored a legacy Swing application to SWT -->
+    -   Designed and implemented an automated production system for Eclipse/OSGi based applications
+    -   Technical team recruiting
+
+*   **Versant Pvt. Ltd** (Poona, India)
+
+    Engineer, March, 2007 – July, 2007
+
+    -   Eclipse RCP/OSGi training for the Versant India team
+
+*   **Versant GmbH** (Hamburg, Germany)
+
+    Working Student, February, 2006 – December, 2006
+
+    - Developed a method to convert monolithic applications to components for use in component system
+
+*   **Germanischer Lloyd (GL Group)** (Hamburg, Germany)
+
+    Working Student, September, 2005 – December, 2005
+
+*   **NMMN New Media Markets and Networks** (Hamburg, Germany)
+
+    Intern, February, 2002 – July, 2002
+
+*   **b.e.k it-solutions boy.ernst.kuppe GbR** (Ahrensburg, Germany)
+
+    Partner, 2004 – Present
+
+*   **Ernst und Boy Computertechnik GbR** (Ahrensburg, Germany)
+
+    Intern & Working Student, January, 2001 – December, 2003
+
+education
+---------
+
+*   **University of Hamburg** (Hamburg, Germany)
+
+    Master of Science in Computer Science, Oct, 2017
+
+   - Complex Distributed Systems, IT-System Architecture (part-time student)
+   - Overall GPA 1.11
+
+*   **University of Applied Sciences** (Hamburg, Germany)
+
+    Bachelor of Science in Computer Science, January, 2007
+
+   - Thesis: Component-based software engineering applied to a consolidation using Eclipse
+   - Overall GPA: 2.0
+
+projects
+--------
+
+*   **TLA+ project**
+
+    Committer, May, 2011 – Present
+
+    [(http://s.lemmster.de/tla)](http://s.lemmster.de/tla)
+
+*   **Chaos Computer Club**
+
+    CmS speaker, January 2013 – 2015
+
+    -   Several presentations and workshops to improve media literacy in schools (“Chaos macht Schule“)
+
+*   **Eclipse e4tools**
+
+    Committer, Nov, 2013 – Present
+
+*   **Eclipse Communication Framework**
+
+    Committer, October, 2007 – Present
+
+    [(http://s.lemmster.de/ecf)](http://s.lemmster.de/ecf)
+
+*   **Eclipse RT Project management committee**
+
+    ECF representative, June, 2010 – Present
+
+*   **Eclipse Orbit**
+
+    Committer, January, 2009 – Present
+
+    [(http://s.lemmster.de/orbit)](http://s.lemmster.de/orbit)
+
+*   **jSLP**
+
+    Committer, March, 2008 – Present
+
+*   **Eclipse Dali**
+
+    Committer, February, 2006 – 2008
+
+    [(http://s.lemmster.de/dali)](http://s.lemmster.de/dali)
+
+*   **MLDonkey**
+
+    Developer, November, 2002 – January, 2005
+
+    -   G2Gui, a cross platform remote capable SWT Graphical User Interface to the MLDonkey p2p core
+    -   A build farm to compile the MLDonkey core for various platforms
+
+*   **Gentoo.de**
+
+    Maintainer, 2003 – 2004
+
+    -   Created several eBuilds for the Gentoo portage system
+
+talks & publications
+--------------------
+
+[(http://s.lemmster.de/publications)](http://s.lemmster.de/publications)
+
+memberships
+-----------
+
+*   Gesellschaft für Informatik, ACM German chapter, March, 2003 – Dec, 2014
+*   Chaos Computer Club e.V, Nov, 2013 – Present
+
+skills
+------
+
+*   German (native), English (fluent), Spanish (rudimentary), French (rudimentary), Latin (3 years’ experience)
+*   Technology agnostic
+
+
