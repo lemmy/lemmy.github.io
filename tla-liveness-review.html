@@ -2,9 +2,12 @@
 <html lang="">	
 <head>
 	<meta charset="utf-8"/>
-	<title>l e m m s t e r . d e</title>	
+	<title>Review of "Modeling Adversaries with TLA+" - l e m m s t e r . d e</title>	
 	<meta name="author" content="Markus A. Kuppe">
 	
+
+	<meta name="description" content="Hillel Wayne recently published a blog post titled "Modeling Adversaries with TLA+". The post does a good job showing how adversaries and environmental effects can be modeled in TLA+. The post is also subtly incorrect when it comes to two of the liveness properties. In other words, "Modeling Adversaries with …">
+
 
 	<link rel="top" href="#" /><link href='./theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
 	<link rel="stylesheet" href="./theme/css/main.css" type="text/css" />
@@ -45,12 +48,18 @@
 	  <div class="wrapper">
 
 		  <div role="main" class="content">
-
-
-
-      <article>
-        <h1><a href="./tla-liveness-review.html">Review of "Modeling Adversaries with TLA+"</a></h1>
-        <p>Hillel Wayne recently published a blog post titled "<a href="https://www.hillelwayne.com/post/adversaries/">Modeling Adversaries with TLA+</a>". The post does a <a href="https://twitter.com/lemmster/status/1125423627904544768">good job</a> showing how adversaries and environmental effects can be modeled in TLA<sup>+</sup>. The post is also subtly incorrect when it comes to two of the liveness properties. In other words, "Modeling Adversaries with TLA+" not only shows how to model adversaries but also comes with a spec to discuss the intricacies of temporal logic. :-)</p>
+	<article class="full">
+			
+		<h1>Review of "Modeling Adversaries with TLA+"</h1>
+		
+<div class="metadata">
+  <time datetime="2019-05-08T09:43:02+02:00" pubdate>Wed 08 May 2019</time>
+    <address class="vcard author">
+      by <a class="url fn" href="./author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="./category/tla.html">TLA+</a>
+</div>		
+		<p>Hillel Wayne recently published a blog post titled "<a href="https://www.hillelwayne.com/post/adversaries/">Modeling Adversaries with TLA+</a>". The post does a <a href="https://twitter.com/lemmster/status/1125423627904544768">good job</a> showing how adversaries and environmental effects can be modeled in TLA<sup>+</sup>. The post is also subtly incorrect when it comes to two of the liveness properties. In other words, "Modeling Adversaries with TLA+" not only shows how to model adversaries but also comes with a spec to discuss the intricacies of temporal logic. :-)</p>
 <p>Before we get started, let me make clear that the spec indeed satisfies all of the properties described in prose. The error is that some of the specified properties do not match their description but are instead trivially true. This is why Lamport - in e.g. the <a href="https://lamport.azurewebsites.net/video/video5.html">TLA<sup>+</sup> video lecture #5</a> - cautions us to "Always be suspicious of success". Reasoning about liveness is <a href="https://pron.github.io/posts/tlaplus_part3#a-bit-of-historical-background">delicate business</a> and easy to get wrong.</p>
 <p>To quickly recap, the spec models a system that converges to a set of goal states (<code>x \in Goal</code>) and an environment <code>World</code> that perturbs the system by knocking it out of the goal states. Below is a slightly simplified excerpt of the original spec:</p>
 <div class="highlight"><pre><span></span><span class="kn">VARIABLES</span> <span class="n">x</span>
@@ -165,175 +174,14 @@
 <p>Thanks to Leslie Lamport for a review of this post.</p>
 <hr>
 <p>([^1]: The <em>-continue</em> parameter is <a href="https://github.com/tlaplus/tlaplus/issues/79">not yet supported</a> by the TLA Toolbox.)</p>
-<p>([^2]: What does work for this spec is to use a <em>view</em> function <code>&lt;&lt;x&gt;&gt;</code> to retain the original size of the state space even with a history variable. This is however due to the particular shape of the state space and does not generalize. A <em>view</em> is great to shoot yourself in the foot!)</p>
-      </article>
+<p>([^2]: What does work for this spec is to use a <em>view</em> function <code>&lt;&lt;x&gt;&gt;</code> to retain the original size of the state space even with a history variable. This is however due to the particular shape of the state space and does not generalize. A <em>view</em> is great to shoot yourself in the foot!)</p>	
 
-      <hr />
+	</article>
 
-        <div>
-          <h3>Last posts</h3>
-          <ol class="archive">
-    
-
-
-      <li>
-<a href="./tla-in-lyx.html" rel="bookmark" title="Permalink to Include TLA+ in LyX documents and export it pretty-printed to PDF">Include TLA+ in LyX documents and export it pretty-printed to PDF</a>
-  <time datetime="2016-08-15T09:43:02+02:00" pubdate>Mon 15 August 2016</time>
-</a>      </li>
-
-
-      <li>
-<a href="./2015-03-02-forcefully-reresolve-a-targetplatform.md.html" rel="bookmark" title="Permalink to Forcefully re-resolve a stale PDE target definition">Forcefully re-resolve a stale PDE target definition</a>
-  <time datetime="2015-03-02T11:16:41+01:00" pubdate>Mon 02 March 2015</time>
-</a>      </li>
-
-
-      <li>
-<a href="./cross-compile-kernel-module-samsung-nx300-ubnut-14.04.html" rel="bookmark" title="Permalink to Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04">Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04</a>
-  <time datetime="2014-06-09T15:27:16+02:00" pubdate>Mon 09 June 2014</time>
-</a>      </li>
-
-
-      <li>
-<a href="./auto-backup-from-nx300-via-ftp.html" rel="bookmark" title="Permalink to Auto backup files from the Samsung NX300 camera in the background">Auto backup files from the Samsung NX300 camera in the background</a>
-  <time datetime="2014-06-07T21:16:16+02:00" pubdate>Sat 07 June 2014</time>
-</a>      </li>
-
-
-      <li>
-<a href="./2013-12-19-swterror-no-more-handles-gtk_init_check-failed-running-platform-tests-on-linux.html" rel="bookmark" title="Permalink to SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux)">SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux)</a>
-  <time datetime="2013-12-19T11:16:41+01:00" pubdate>Thu 19 December 2013</time>
-</a>      </li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          </ol>
-        </div>
+	    <section id="comments" class="body">
+	    <hr><p>Want to comment? Send me an email to blog-comments-2019 at lemmster d.t de and I'll paste it here (I won't publish your address). Why don't you use an external comment service like disqus, you ask? Well, I like to keep this site under my control, comments included. You can use markdown to format your comment.</p>
+	
+	    </section>
 
 		  </div>	
 		  
@@ -344,7 +192,7 @@
 	          <ul>
 	              <li ><a href="./category/eclipse.html">eclipse</a></li>
 	              <li ><a href="./category/hacks.html">hacks</a></li>
-	              <li ><a href="./category/tla.html">TLA+</a></li>
+	              <li class="active"><a href="./category/tla.html">TLA+</a></li>
 	          </ul>
 	        </nav>
 

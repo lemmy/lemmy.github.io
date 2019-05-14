@@ -50,6 +50,20 @@
 
 <article class="summary">
 <div class="metadata">
+  <time datetime="2013-06-04T17:35:17+02:00" pubdate>Tue 04 June 2013</time>
+    <address class="vcard author">
+      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
+    </address>
+  in <a href="../category/hacks.html">hacks</a>
+</div>  <div>
+    <h2>
+      <a href="../call-freetz-wake-on-lan-wol-via-curl.html" rel="bookmark" title="Permalink to Call freetz' wake on lan (wol) via curl">Call freetz' wake on lan (wol) via curl</a>
+    </h2>
+    <p><div class="highlight"><pre><span></span>curl -d <span class="s2">&quot;mac=AB:CD:EF:12:34:56*&amp;interf;=lan&quot;</span> http://fritz.box:84/cgi-bin/wake.cgi
+</pre></div></p>
+  </div>
+</article><article class="summary">
+<div class="metadata">
   <time datetime="2013-06-03T08:33:14+02:00" pubdate>Mon 03 June 2013</time>
     <address class="vcard author">
       by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
@@ -186,20 +200,6 @@
     </h2>
     <p><p>If you experince immediate logouts after successfully loging into roundcube, you have to follow the advice in /usr/share/doc/roundcube-code/NEWS.debian.gz and turn suhosin.session.enrypt off [1]. If you do not want to turn it off globally, it can easily be done for roundcube only:</p>
 <div class="highlight"><pre><span></span>/etc …</pre></div></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-03-27T11:42:59+01:00" pubdate>Wed 27 March 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../generate-p2-composite-repository-metadata-from-jenkins-hudson-jobs-on-the-fly.html" rel="bookmark" title="Permalink to Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly">Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly</a>
-    </h2>
-    <p><p>Serving p2 build artifacts from Jenkins is complicated if builds from multiple Jenkins jobs should be aggregated into a master <a href="http://www.vogella.com/blog/2010/04/06/eclipse-p2-composite-repository/">p2 composite repository</a>. A rather simple approach to this problem is listed below, that uses Apache to generate compositeArtifacts.xml and compositeContent.xml on the fly.
-We (vogella) uses this …</p></p>
   </div>
 </article>
 <div class="pagination">

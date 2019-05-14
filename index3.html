@@ -49,146 +49,123 @@
 
 
       <article>
-        <h1><a href="./tla-in-lyx.html">Include TLA+ in LyX documents and export it pretty-printed to PDF</a></h1>
-        <p>Create a wrapper script for tla2tex.TeX (part of tlatools), put it onto $PATH and name it tla2tex.sh:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+        <h1><a href="./tla-liveness-review.html">Review of "Modeling Adversaries with TLA+"</a></h1>
+        <p>Hillel Wayne recently published a blog post titled "<a href="https://www.hillelwayne.com/post/adversaries/">Modeling Adversaries with TLA+</a>". The post does a <a href="https://twitter.com/lemmster/status/1125423627904544768">good job</a> showing how adversaries and environmental effects can be modeled in TLA<sup>+</sup>. The post is also subtly incorrect when it comes to two of the liveness properties. In other words, "Modeling Adversaries with TLA+" not only shows how to model adversaries but also comes with a spec to discuss the intricacies of temporal logic. :-)</p>
+<p>Before we get started, let me make clear that the spec indeed satisfies all of the properties described in prose. The error is that some of the specified properties do not match their description but are instead trivially true. This is why Lamport - in e.g. the <a href="https://lamport.azurewebsites.net/video/video5.html">TLA<sup>+</sup> video lecture #5</a> - cautions us to "Always be suspicious of success". Reasoning about liveness is <a href="https://pron.github.io/posts/tlaplus_part3#a-bit-of-historical-background">delicate business</a> and easy to get wrong.</p>
+<p>To quickly recap, the spec models a system that converges to a set of goal states (<code>x \in Goal</code>) and an environment <code>World</code> that perturbs the system by knocking it out of the goal states. Below is a slightly simplified excerpt of the original spec:</p>
+<div class="highlight"><pre><span></span><span class="kn">VARIABLES</span> <span class="n">x</span>
 
-<span class="nv">OUTPUT</span><span class="o">=</span><span class="nv">$1</span>
-<span class="nv">INPUT</span><span class="o">=</span><span class="nv">$2</span>
+<span class="n">TotalInterval</span> <span class="ni">==</span> <span class="m">0</span><span class="o">..</span><span class="m">10</span>
+<span class="n">Goal</span> <span class="ni">==</span> <span class="m">2</span><span class="o">..</span><span class="m">4</span>
 
-<span class="c1">## Creating dummy file ${OUTPUT%.*}.tex for tla2tex to remove. It apparently needs this.</span>
-touch <span class="si">${</span><span class="nv">OUTPUT</span><span class="p">%.*</span><span class="si">}</span>.tex
+<span class="n">TypeInvariant</span> <span class="ni">==</span> <span class="n">x</span> <span class="s">\in</span> <span class="n">TotalInterval</span>
 
-<span class="c1">## Running tla2tex.TeX on $INPUT and writing output to ${OUTPUT%.*}.tex. Expects the TLA+Toolbox to</span>
-<span class="c1">## be installed to /opt/TLA+Toolbox</span>
-java -cp /opt/TLA+Toolbox/plugins/org.lamport.tlatools_1.0.0.*/ tla2tex.TeX -out <span class="si">${</span><span class="nv">OUTPUT</span><span class="p">%.*</span><span class="si">}</span>.tex <span class="nv">$INPUT</span>
+<span class="n">Init</span> <span class="ni">==</span> <span class="n">x</span> <span class="s">\in</span> <span class="n">TotalInterval</span>
 
-<span class="c1">## Converting ${OUTPUT%.*}.tex back to $OUTPUT for LyX to read it</span>
-<span class="c1">#cp ${OUTPUT%.*}.tex $OUTPUT</span>
-<span class="c1">## tla2tex.TeX does not accept &quot;\label{...}&quot; as a lexem and fails. To still be able to use \label</span>
-<span class="c1">## within algorithms, they get wrapped into a TLA+ line comment (&quot;\*...&quot;). Despite being an empty</span>
-<span class="c1">## comment, the resulting PDF shows a grayish box for each \label iff comment shading is enabled.</span>
-<span class="c1">## The regexp below removes all boxes created by TLA+ line comments with \label{...}.</span>
-cat <span class="si">${</span><span class="nv">OUTPUT</span><span class="p">%.*</span><span class="si">}</span>.tex <span class="p">|</span>perl -0777 -pe <span class="s1">&#39;s/\\\@y\{%\n (\\label\{[:a-zA-Z0-9]+})\n}%/$1/igs&#39;</span> &gt; <span class="nv">$OUTPUT</span>
-</pre></div>
-</td></tr></table>
+<span class="n">Machine</span> <span class="ni">==</span> <span class="k k-Conditional">IF</span> <span class="n">x</span> <span class="ni">&lt;</span> <span class="m">3</span> <span class="k k-Conditional">THEN</span> <span class="n">x</span><span class="s">&#39; = x + 1 ELSE x&#39;</span> <span class="ni">=</span> <span class="n">x</span> <span class="o">-</span> <span class="m">1</span>
 
-<p>Open up LyX and create two new "File Formats" under Tools &gt; Preferences &gt; File Handling &gt; File Formats:</p>
-<div class="highlight"><pre><span></span><span class="n">Format</span><span class="o">:</span> <span class="n">LaTeX</span> <span class="o">(</span><span class="n">tla2tex</span><span class="o">)</span>
-<span class="n">Short</span> <span class="n">name</span><span class="o">:</span> <span class="n">tla2tex</span>
-<span class="n">Extensions</span><span class="o">:</span> <span class="n">tex</span>
+<span class="n">World</span> <span class="ni">==</span> <span class="n">x</span><span class="err">&#39;</span> <span class="s">\in</span> <span class="n">TotalInterval</span>
 
-<span class="n">Format</span><span class="o">:</span> <span class="n">PDF</span> <span class="o">(</span><span class="n">tla2tex</span><span class="o">)</span>
-<span class="o">(</span><span class="n">Check</span> <span class="s2">&quot;Document format&quot;</span><span class="o">,</span> <span class="s2">&quot;Show in export menu&quot;</span><span class="o">,</span> <span class="s2">&quot;Vector graphics format&quot;</span><span class="o">)</span>
-<span class="n">Short</span> <span class="n">name</span><span class="o">:</span> <span class="n">pdf4tla2tex</span>
-<span class="n">Extensions</span><span class="o">:</span> <span class="n">pdf</span>
-<span class="n">Shortcut</span><span class="o">:</span> <span class="n">T</span>
-<span class="n">Viewer</span><span class="o">:</span> <span class="n">qpdfview</span> <span class="o">--</span><span class="n">unique</span>
+<span class="n">Next</span> <span class="ni">==</span> <span class="n">Machine</span> <span class="o">\/</span> <span class="n">World</span>
+
+<span class="n">Spec</span> <span class="ni">==</span> <span class="n">Init</span> <span class="o">/\</span> <span class="p">[][</span><span class="n">Next</span><span class="p">]</span><span class="n">_x</span> <span class="o">/\</span> <span class="n">WF_x</span><span class="p">(</span><span class="n">Machine</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Also create two new LyX "Converters" under Tools &gt; Preferences &gt; File Handling &gt; Converters:</p>
-<div class="highlight"><pre><span></span>From/To: LaTeX (plain) -&gt; LaTeX (tla2tex)
-Converter: tla2tex.sh $$o $$i
+<p>Several invariants and liveness properties are discussed that are satisfied by <code>Spec</code>. Two properties however are incorrect; <code>FiniteWorldStable</code> and <code>RareWorldResilient</code>.</p>
+<h2>FiniteWorldStable</h2>
+<p>The comment for the <code>FiniteWorldStable</code> property says:</p>
+<blockquote>
+<p>[...] If the world is only kicking things out of alignment a finite number of times, say one million, then it should still be stable. My argument is that after the millionth kick, we're now somewhere in TotalInterval and the spec is equivalent to one without the World. We can represent “finite World actions” by saying “it's not always eventually the case that World happens”, which we'd write in TLA+ as <code>~[]&lt;&gt;&lt;&lt;World&gt;&gt;_x</code>. Here the &lt;&lt;&gt;&gt; means “an action that changes x”, not sequence.</p>
+<p>While Stable still doesn't hold, FiniteWorldStable does.</p>
+</blockquote>
+<p>This is translated into the following TLA<sup>+</sup> property:</p>
+<div class="highlight"><pre><span></span><span class="n">Safe</span> <span class="ni">==</span> <span class="n">x</span> <span class="s">\in</span> <span class="n">Goal</span>
+<span class="n">Stable</span> <span class="ni">==</span> <span class="ni">&lt;&gt;</span><span class="p">[]</span><span class="n">Safe</span>
 
-From/To: LaTeX (tla2tex) -&gt; PDF (tla2tex)
-Converter: pdflatex $$i
-Extra flag: latex=pdflatex
+<span class="n">FiniteWorldStable</span> <span class="ni">==</span> <span class="o">~</span><span class="p">[]</span><span class="ni">&lt;&gt;&lt;&lt;</span><span class="n">World</span><span class="ni">&gt;&gt;</span><span class="n">_x</span> <span class="ni">=&gt;</span> <span class="n">Stable</span>
 </pre></div>
 
 
-<p>Afterwards run Tools &gt; reconfigure and restart LyX. TLA+ statements can then be included in LyX documents
-inside LyX's <a href="https://wiki.lyx.org/FAQ/ERT"><img alt="\ERT" src="https://wiki.lyx.org/FAQ/ERT"></a> within a "tla" or "pcal"
-environment provided the document's LaTeX preamble declares a \usepackage{tlatex} as explained in the 
-<a href="https://github.com/tlaplus/tlaplus/blob/master/tlatools/src/tla2tex/texinfo.txt"><img alt="tla2tex help" src="https://github.com/tlaplus/tlaplus/blob/master/tlatools/src/tla2tex/texinfo.txt"></a> and be exported via File &gt; Export &gt; PDF (tla2tex):</p>
-<div class="highlight"><pre><span></span>\begin{tla}
-(***********************************************)
-(* A standard definition of spec.              *)
-(***********************************************)
-Spec == Init /\ [][Next]_vars /\ WF_vars(Next)
-\end{tla}
+<p>The reasoning in the comment is correct. Checking <code>FiniteWorldStable</code> with TLC confirms that the property holds. Being suspicious of success though, let us alter <code>FiniteWorldStable</code> to <code>~[]&lt;&gt;&lt;&lt;World&gt;&gt;_x =&gt; ~&lt;&gt;[](x \in Goal)</code>; we negated the <a href="https://en.wikipedia.org/wiki/Truth_table#Logical_implication">implication's</a> consequent <code>Stable</code>. Unfortunately, this also holds! Even substituting the consequent with <code>23=42 /\ 23#42</code> holds. The reason is that <code>Spec =&gt; FiniteWorldStable</code> is <a href="https://en.wikipedia.org/wiki/Vacuous_truth#Scope_of_the_concept">vacuously true</a>. We will discuss why it is vacuously true later. First we will shift our attention to <code>RareWorldResilient</code>:</p>
+<h2>RareWorldResilient</h2>
+<blockquote>
+<p>[...] to get resilience we don't need to require World to only happen finite times. Instead, we only need to guarantee it happens finite times while we're out of equilibrium. If eventually the world only kicks x out of Goal when it's already in Goal, then we're giving our machine enough time to return x to Goal and we have resilience.</p>
+<p>Another way of looking at it: if World happens rarely enough, say one-tenth as often as Machine, then we'll return to Goal before the next World action pushes us out again.</p>
+<p>This property holds.</p>
+</blockquote>
+<p>This is translated into <code>RareWorldResilient</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">Resilient</span> <span class="ni">==</span> <span class="p">[]</span><span class="ni">&lt;&gt;</span><span class="n">Safe</span>
+<span class="n">RareWorldResilient</span> <span class="ni">==</span> <span class="ni">&lt;&gt;</span><span class="p">[][</span><span class="n">World</span> <span class="ni">=&gt;</span> <span class="n">Safe</span><span class="p">]</span><span class="n">_x</span> <span class="ni">=&gt;</span> <span class="n">Resilient</span>
 </pre></div>
 
 
-<p>Ideally, the excerpts were sourced from the .tla file directly so that one wouldn't need to copy&amp;paste
-parts of a specification into the .tex document. Someone might want to look into This. The <a href="https://www.ctan.org/pkg/catchfilebetweentags"><img alt="catchfilebetweentags" src="https://www.ctan.org/pkg/catchfilebetweentags"></a> packages seems to be a viable candidate.</p>
+<p>As with <code>FiniteWorldStable</code> above, the prose is convincing and TLC once again confirms that <code>RareWorldResilient</code> holds. But as we have now learned, implication can be tricky. Let us try and replace the consequent of the inner implication: <code>&lt;&gt;[][World =&gt; 23 # 42]_x =&gt; Resilient</code>. Checking the modified property with TLC should make us suspicious.</p>
+<h2>What is the problem?</h2>
+<p>At this point we will zoom out and discuss the underlying problem. For that we will first need Lamport's (<a href="https://lamport.azurewebsites.net/pubs/lamport-actions.pdf">see "The Temporal Logic of Actions" (section 4.1)</a>) definition of what an <em>action-step</em> is. Let <code>s,t</code> be a pair of states (a state <code>s</code> and its successor state <code>t</code> such as <code>x=8,x=7</code>). The pair <code>s,t</code> is a <code>World</code> step iff <code>s[[World]]t</code> equals true. We obtain <code>s[[World]]t</code> by replacing each unprimed variable <code>x</code> in <code>World</code> with the value of <code>x</code> in state <code>s</code> and each primed occurrence of the variable <code>x</code> with the value of <code>x</code> in the successor state <code>t</code>. For example, the pair <code>x=8,x=7</code> is a <code>World</code> step because <code>7 \in TotalInterval</code> equals true. However, the same argument applies to <code>s[[Machine]]t</code>  because <code>7 = 8 - 1</code>. Thus, the pair <code>x=8,x=7</code> is both a <code>World</code> and a <code>Machine</code> step. The pair <code>x=8,x=7</code> is not the only pair which is a <code>World</code> and <code>Machine</code> step. Due to the definitions of the <code>World</code> and <code>Machine</code> actions, the spec implies that any <code>Machine</code> step is also a <code>World</code> step (but not vice versa)! The only behaviors satisfying the spec and the property <code>~[]&lt;&gt;&lt;&lt;World&gt;&gt;_x</code> are ones with a (finite) prefix of <code>World</code> steps followed by infinite stuttering. The spec's <em>fairness</em> conjunct <code>WF_x(Machine)</code> however, asserts that there are infinitely many (non-stuttering) <code>Machine</code> steps. Thus <code>~[]&lt;&gt;&lt;&lt;World&gt;&gt;_x</code> never holds and <code>Spec =&gt; FiniteWorldStable</code> is vacuously true.</p>
+<p>To approach this from a different angle, we will substitute for the identifier <code>World</code> its definition <code>x' \in TotalInterval</code> in <code>FiniteWorldStable</code> to obtain <code>~[]&lt;&gt;&lt;&lt;x' \in TotalInterval&gt;&gt;_x =&gt; Stable</code>. This immediately looks funny. But can we verify it too? We can use TLC to verify that <code>[][x' \in TotalInterval]_x</code> (always) holds for all behaviors of spec (the type invariant <code>TypeInvariant</code> confirms it too) and therefore <code>~[]&lt;&gt;&lt;&lt;x' \in TotalInterval&gt;&gt;_x</code> has to be always false. To repeat, all steps of all behaviors satisfying <code>Spec</code> are always <code>World</code> steps regardless of whether a step "occurred" by taking a <code>Machine</code> or <code>World</code> <em>action</em>.</p>
+<p>The property <code>RareWorldResilient</code> suffers from the same flaw. By replacing <code>World</code> with its definition we obtain <code>&lt;&gt;[](x' \in TotalInterval =&gt; Safe]_x =&gt; []&lt;&gt;Safe</code>. By what we discussed in the previous paragraph, <code>RareWorldResilient</code> thus equals <code>&lt;&gt;[][TRUE =&gt; Safe]_x =&gt; []&lt;&gt;Safe</code> which can be reduced to <code>&lt;&gt;[][Safe]_x =&gt; []&lt;&gt;Safe</code>. The formula <code>&lt;&gt;[]P =&gt; []&lt;&gt;P</code> is a tautology in temporal logic. Semantically, if <code>Safe</code> is eventually always true - in any behavior of <code>Spec</code> - then it follows that <code>Safe</code> is also repeatedly true.</p>
+<p>How can we address this problem? We somehow have to make sure that <code>Spec</code> no longer implies that <code>Machine</code> steps are also <code>World</code> steps.</p>
+<h2>How do we fix this?</h2>
+<p>One approach would be to modify the definition of <code>World</code> to <code>x' \in (TotalInterval \ Goal)</code>. This causes <code>Machine</code> steps in the <code>Goal</code> set to not be <code>World</code> steps. For example <code>x=2,x=3</code> would be a <code>Machine</code> but not a <code>World</code> step. We can verify this by checking that <code>[][World]_x</code> is violated.</p>
+<p>Unfortunately, this approach has drawbacks: The original definition of <code>World</code> allows for behaviors (satisfying the spec) where the variable <code>x</code> non-deterministically changes in the <code>Goal</code> interval. Especially it allows behaviors with e.g. a <code>World</code> step such as <code>x=3,x=2</code>(all <code>Machine</code> steps are <code>World</code> steps but not vice versa). Semantically this models an adversary/environment that perturbs our <code>Machine</code> but that we define to "play by the rules" in certain states. This is upside down because we want to make as few assumptions about the adversary as possible. On a tangent, we could even argue that <code>x' \in TotalInterval</code> should be broadened to <code>x' \in Nat</code> to model all (type-correct) values and - for model checking - be redefined with a <em>Definition Override</em> to a <em>finite</em> set of e.g. <code>0..6</code>.</p>
+<p>There is a more subtly problem with changing the <code>World</code> action though. Let us use TLC to generate all steps of <code>Spec</code> that are not <code>World</code> steps. We again check the property <code>[][World]_x</code> but in order for TLC to print <em>all</em> violations (which correspond to the steps we are interested in), we use the <a href="https://lamport.azurewebsites.net/tla/tlc-options.html?back-link=tools.html">continue parameter</a>[^1]. TLC reports the following five violations:</p>
+<ul>
+<li>x=1,x=2</li>
+<li>x=2,x=3</li>
+<li>x=3,x=2</li>
+<li>x=4,x=3</li>
+<li>x=5,x=4</li>
+</ul>
+<p>As we can see, this is only a subset of the possible <code>Machine</code> steps of the specification. In other words, by modifying the <code>World</code> action to <code>x' \in (TotalWorld \ Goal)</code>, the <code>FiniteWorldStable</code> property <em>only</em> asserts that <code>Spec</code> is guaranteed to reach a <code>Goal</code> state if it already is in a <code>Goal</code> state or "on the brink" of it. The property still does not assert that - given no <code>World</code> steps from some point forward - <code>Spec</code> will eventually converge to stability when starting from <em>any</em> state in <code>TotalInterval</code>. If we for example are in a state <code>x=6</code>, the property <code>FiniteWorldStable</code> does not assert that the <code>Machine</code> will converge (we just happen to know it will because this is a toy example).</p>
+<p>To make this more explicit, we will temporarily introduce a "bug" in our specification by changing the <code>Machine</code> action to not converge to a stable state if the value of the variable <code>x</code> is greater than 6 (the upper bound <code>x &lt; 10</code> prevents the model from being infinite).</p>
+<div class="highlight"><pre><span></span><span class="n">ChangeX</span> <span class="ni">==</span>
+   <span class="o">/\</span> <span class="k k-Conditional">IF</span> <span class="n">x</span> <span class="ni">&lt;</span> <span class="m">3</span> <span class="k k-Conditional">THEN</span> <span class="n">x</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="n">x</span> <span class="o">+</span> <span class="m">1</span> <span class="k k-Conditional">ELSE</span> 
+                               <span class="k k-Conditional">IF</span> <span class="n">x</span> <span class="ni">&gt;</span> <span class="m">6</span> <span class="o">/\</span> <span class="n">x</span> <span class="ni">&lt;</span> <span class="m">10</span> <span class="k k-Conditional">THEN</span> <span class="n">x</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="n">x</span> <span class="o">+</span> <span class="m">1</span> 
+                               <span class="k k-Conditional">ELSE</span> <span class="n">x</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="n">x</span> <span class="o">-</span> <span class="m">1</span>
+</pre></div>
+
+
+<p>The property <code>FiniteWorldStable</code> still holds. Our "programming bug" above will go unnoticed!</p>
+<p>One might also try and remove <code>Machine</code> from the next-state relation to show that <code>FiniteWorldState</code> does not reveal violations even with the <code>TotalInteval \ Goal</code> modification. After all, if no <code>Machine</code> steps are possible and <code>World</code> no longer gets us into a stable state, <code>FiniteWorldState</code> should be violated. This however does not work for reasons beyond what this post can cover (Lamport calls this a "weird spec").</p>
+<h2>Another fix?</h2>
+<p>In <a href="https://arxiv.org/abs/1703.05121">"Auxiliary Variables in TLA+" (section 3.4)</a> Lamport and <a href="https://members.loria.fr/SMerz/">Merz</a> discuss how <em>history variables</em> serve as a "helper" to state properties that we want to show are satisfied by a spec. While being primarily used in the scope of <a href="https://lamport.azurewebsites.net/video/video10b.html">refinement mappings</a>, an auxiliary history variable will help us distinguish <code>World</code> from <code>Machine</code> steps. For <code>Spec</code> we simply amend the invariant <code>TypeInvariant</code>, the <em>state predicate</em> <code>Init</code> and the  two <code>World</code> and <code>Machine</code> actions:</p>
+<div class="highlight"><pre><span></span><span class="kn">VARIABLES</span> <span class="n">x</span><span class="p">,</span><span class="n">h</span>
+
+<span class="n">TypeInvariant</span> <span class="ni">==</span>
+  <span class="o">/\</span> <span class="n">x</span> <span class="s">\in</span> <span class="n">TotalInterval</span>
+  <span class="o">/\</span> <span class="n">h</span> <span class="s">\in</span> <span class="ni">{</span><span class="s">&quot;i&quot;</span><span class="p">,</span><span class="s">&quot;m&quot;</span><span class="p">,</span><span class="s">&quot;w&quot;</span><span class="ni">}</span>
+
+<span class="n">Machine</span> <span class="ni">==</span>
+  <span class="o">/\</span> <span class="k k-Conditional">IF</span> <span class="n">x</span> <span class="ni">&lt;</span> <span class="m">3</span> <span class="k k-Conditional">THEN</span> <span class="n">x</span><span class="s">&#39; = x + 1 ELSE x&#39;</span> <span class="ni">=</span> <span class="n">x</span> <span class="o">-</span> <span class="m">1</span>
+  <span class="o">/\</span> <span class="n">h</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="s">&quot;m&quot;</span>
+
+<span class="n">Init</span> <span class="ni">==</span>
+  <span class="o">/\</span> <span class="n">x</span> <span class="s">\in</span> <span class="n">TotalInterval</span>
+  <span class="o">/\</span> <span class="n">h</span> <span class="ni">=</span> <span class="s">&quot;i&quot;</span>
+
+<span class="n">World</span> <span class="ni">==</span> 
+  <span class="o">/\</span> <span class="n">x</span><span class="err">&#39;</span> <span class="s">\in</span> <span class="n">TotalInterval</span>
+  <span class="o">/\</span> <span class="n">h</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="s">&quot;w&quot;</span>
+</pre></div>
+
+
+<p>With this modification e.g. one behavior allowed by <code>Spec</code> will be <code>&lt;x=7,h="i"&gt;, &lt;x=6,h="m"&gt;, &lt;x=0,h="w"&gt;, &lt;x=1,h="m"&gt;, &lt;x=0,h="w"&gt;, ...</code> where <code>....</code> represents infinite more steps. The first step of the behavior has to be an <code>Init</code> step because <code>&lt;x=7,h="i"&gt;[[Init]]&lt;x=6,h="m"&gt;</code> equals true and false for <code>World</code> and <code>Machine</code>. Likewise the pair <code>&lt;x=0,h="m"&gt;, &lt;x=1,h="m"&gt;</code> is a <code>Machine</code> and not a <code>World</code> step and so on. With this change in place <code>FiniteWorldStable</code> and <code>RareWorldResilient</code> finally assert what is stated in their comments.</p>
+<div class="highlight"><pre><span></span><span class="n">FiniteWorldStable</span> <span class="ni">==</span> <span class="o">~</span><span class="p">[]</span><span class="ni">&lt;&gt;&lt;&lt;</span><span class="p">(</span><span class="n">x</span><span class="s">&#39; \in TotalInterval /\ h&#39;</span> <span class="ni">=</span> <span class="s">&quot;w&quot;</span><span class="p">)</span><span class="ni">&gt;&gt;</span><span class="n">_x</span> <span class="ni">=&gt;</span> <span class="n">Stable</span>
+
+<span class="n">RareWorldResilient</span> <span class="ni">==</span> <span class="ni">&lt;&gt;</span><span class="p">[][(</span><span class="n">x</span><span class="s">&#39; \in TotalInterval /\ h&#39;</span> <span class="ni">=</span> <span class="s">&quot;w&quot;</span><span class="p">))</span> <span class="ni">=&gt;</span> <span class="n">Safe</span><span class="p">]</span><span class="n">_x</span> <span class="ni">=&gt;</span> <span class="n">Resilient</span>
+</pre></div>
+
+
+<p>Having learned from past mistakes, we now experiment with the properties by e.g. negating the antecedent and/or the consequent to gain some confidence in their correctness.</p>
+<p>In general a history variables comes with an increase in the size of the state space. For the given spec the introduction of the history variable <code>h</code> almost triples the size from 11 to 31 (distinct) states. While this is not a problem here, it can be for real-world specs. Since we are checking liveness properties, we are barred from using the <a href="https://tla.msr-inria.inria.fr/tlatoolbox/doc/model/model-values.html#symmetry">symmetry reduction</a> technique; liveness checking and symmetry reduction are - <a href="https://github.com/tlaplus/tlaplus/blob/master/general/docs/contributions.md#liveness-checking-under-symmetry-difficulty-high-skills-java-tla">for now</a> - incompatible (TLC and the Toolbox will emit a warning if we try this)[^2].</p>
+<p>One might also argue that the introduction of a history variable has a second undesired consequence: How can we possibly expect an adversary to be so nice and properly "mark" his steps? Instead of assuming the adversary to mark steps, we can instead consider the history variable to represent <a href="https://en.wikipedia.org/wiki/Message_authentication_code">message authentication codes</a> i.e. <code>Machine</code> "messages" include an (unforgeable) signature (modeled above as <code>"m"</code>). We will stop here and ignore this problem because I wanted to constrain this post to leave the original properties untouched. The goal was to make the properties assert what the comments says. We might revisit modeling adversaries in a <a href="https://lemmster.de/feeds/tla.atom">future post</a> though to discuss alternative ways to state the properties. </p>
+<p>The primary purpose of this post is to remind us of two things: First, we should always be suspicious of success! "<a href="https://groups.google.com/d/msg/tlaplus/ox2AI3VqPbw/v7RIK4pQBQAJ"><em>Model checking [...] is most informative when it returns a counter-example, not when it says that the property holds, which may be vacuous</em></a>". Second, decomposing a next-state relation into (sub) actions makes a spec more comprehensible for a human. It however does not give us a higher-level concept to reason about. Or as Lamport puts it: "<a href="https://lamport.azurewebsites.net/pubs/lamport-eye-of-beholder.ps">Processes are in the eye of the beholder</a>".</p>
+<p>We end this post with a little puzzler: What hack does the linked <a href="https://gist.github.com/lemmy/5cae084db688c06fbcb5faaa2f630dec">BlockingQueue</a> spec "pull" to make the <code>NoPStarvation</code> property reveal that the spec does not guarantee <a href="https://en.wikipedia.org/wiki/Starvation_(computer_science)">starvation-freedom</a> for <em>producers</em>? Why doesn't the same hack work for <em>consumers</em>, i.e. <code>NoCStarvation</code> is not violated? <a href="https://twitter.com/lemmster">Let me know</a> what you find.</p>
+<p>Thanks to Leslie Lamport for a review of this post.</p>
 <hr>
-<p>An incompatibility with the algorithm2e package surfaced that screws up \ref pointing to a \label whichis attached to a section/subsection.
-If secnumdepth is set to be lower than the label'ed section/subsection, the \ref fails to show the number of the parent secton if
-interleaved with a TLA+/PlusCal algorithm. Instead, it shows the last line number of the interleaved algorithm. If anybody cares
-about it, the .tex below reproduces it.</p>
-<div class="highlight"><pre><span></span><span class="x">\batchmode</span>
-<span class="x">\makeatletter</span>
-<span class="x">\def\input@path</span><span class="cp">{{</span><span class="o">/</span><span class="nv">home</span><span class="o">/</span><span class="nv">foobar</span><span class="o">/</span><span class="cp">}}</span><span class="x"></span>
-<span class="x">\makeatother</span>
-<span class="x">\documentclass[english]{scrreprt}</span>
-<span class="x">\usepackage[T1]{fontenc}</span>
-<span class="x">\usepackage[utf8]{inputenc}</span>
-<span class="x">\setcounter{secnumdepth}{1}</span>
-<span class="x">\setcounter{tocdepth}{1}</span>
-<span class="x">\usepackage{algorithm2e}</span>
-
-<span class="x">\makeatletter</span>
-<span class="x">\usepackage{tlatex}</span>
-<span class="x">\RestyleAlgo{ruled}</span>
-<span class="x">\LinesNumbered</span>
-
-<span class="x">\makeatother</span>
-
-<span class="x">\usepackage{babel}</span>
-<span class="x">\begin{document}</span>
-
-<span class="x">\chapter{Chap}</span>
-
-<span class="x">\section{Sec}</span>
-
-<span class="x">\begin{algorithm}</span>
-<span class="x">\begin{tla}</span>
-<span class="x">Line</span>
-<span class="x">Line</span>
-<span class="x">Line</span>
-<span class="x">\end{tla}</span>
-<span class="x">\begin{tlatex}</span>
-<span class="x">\@x{ Line}%</span>
-<span class="x">\@x{ Line}%</span>
-<span class="x">\@x{ Line}%</span>
-<span class="x">\end{tlatex}</span>
-<span class="x">\centering{}\caption{caption}</span>
-<span class="x">\end{algorithm}</span>
-
-
-<span class="x">\subsection{Subsec\label{subsec:subsection}}</span>
-
-<span class="x">\chapter{Broken Ref Below}</span>
-
-<span class="x">\ref{subsec:subsection} &lt;= incorrectly shows last line number of</span>
-<span class="x">algorithm instead of ``1.1&#39;&#39;.</span>
-<span class="x">\begin{itemize}</span>
-<span class="x">\item If line numbers are omitted (no \textbackslash{}LinesNumbered in Preamble),</span>
-<span class="x">the bug disappears.</span>
-<span class="x">\item If secnumdepth includes subsections, the bug disappears.</span>
-<span class="x">\end{itemize}</span>
-
-<span class="x">\end{document}</span>
-</pre></div>
+<p>([^1]: The <em>-continue</em> parameter is <a href="https://github.com/tlaplus/tlaplus/issues/79">not yet supported</a> by the TLA Toolbox.)</p>
+<p>([^2]: What does work for this spec is to use a <em>view</em> function <code>&lt;&lt;x&gt;&gt;</code> to retain the original size of the state space even with a history variable. This is however due to the particular shape of the state space and does not generalize. A <em>view</em> is great to shoot yourself in the foot!)</p>
       </article>
 
       <hr />
@@ -197,6 +174,12 @@ about it, the .tex below reproduces it.</p>
           <h3>Last posts</h3>
           <ol class="archive">
     
+
+
+      <li>
+<a href="./tla-in-lyx.html" rel="bookmark" title="Permalink to Include TLA+ in LyX documents and export it pretty-printed to PDF">Include TLA+ in LyX documents and export it pretty-printed to PDF</a>
+  <time datetime="2016-08-15T09:43:02+02:00" pubdate>Mon 15 August 2016</time>
+</a>      </li>
 
 
       <li>
@@ -223,10 +206,6 @@ about it, the .tex below reproduces it.</p>
 </a>      </li>
 
 
-      <li>
-<a href="./apache-felix-http-whiteboard-pattern-on-equinox.html" rel="bookmark" title="Permalink to Apache Felix HTTP whiteboard pattern on Equinox">Apache Felix HTTP whiteboard pattern on Equinox</a>
-  <time datetime="2013-12-11T08:54:40+01:00" pubdate>Wed 11 December 2013</time>
-</a>      </li>
 
 
 
