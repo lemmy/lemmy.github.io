@@ -161,11 +161,99 @@
 <p>In general a history variables comes with an increase in the size of the state space. For the given spec the introduction of the history variable <code>h</code> almost triples the size from 11 to 31 (distinct) states. While this is not a problem here, it can be for real-world specs. Since we are checking liveness properties, we are barred from using the <a href="https://tla.msr-inria.inria.fr/tlatoolbox/doc/model/model-values.html#symmetry">symmetry reduction</a> technique; liveness checking and symmetry reduction are - <a href="https://github.com/tlaplus/tlaplus/blob/master/general/docs/contributions.md#liveness-checking-under-symmetry-difficulty-high-skills-java-tla">for now</a> - incompatible (TLC and the Toolbox will emit a warning if we try this)[^2].</p>
 <p>One might also argue that the introduction of a history variable has a second undesired consequence: How can we possibly expect an adversary to be so nice and properly "mark" his steps? Instead of assuming the adversary to mark steps, we can instead consider the history variable to represent <a href="https://en.wikipedia.org/wiki/Message_authentication_code">message authentication codes</a> i.e. <code>Machine</code> "messages" include an (unforgeable) signature (modeled above as <code>"m"</code>). We will stop here and ignore this problem because I wanted to constrain this post to leave the original properties untouched. The goal was to make the properties assert what the comments says. We might revisit modeling adversaries in a <a href="https://lemmster.de/feeds/tla.atom">future post</a> though to discuss alternative ways to state the properties. </p>
 <p>The primary purpose of this post is to remind us of two things: First, we should always be suspicious of success! "<a href="https://groups.google.com/d/msg/tlaplus/ox2AI3VqPbw/v7RIK4pQBQAJ"><em>Model checking [...] is most informative when it returns a counter-example, not when it says that the property holds, which may be vacuous</em></a>". Second, decomposing a next-state relation into (sub) actions makes a spec more comprehensible for a human. It however does not give us a higher-level concept to reason about. Or as Lamport puts it: "<a href="https://lamport.azurewebsites.net/pubs/lamport-eye-of-beholder.ps">Processes are in the eye of the beholder</a>".</p>
-<p>We end this post with a little puzzler: What hack does the linked <a href="https://gist.github.com/lemmy/5cae084db688c06fbcb5faaa2f630dec">BlockingQueue</a> spec "pull" to make the <code>NoPStarvation</code> property reveal that the spec does not guarantee <a href="https://en.wikipedia.org/wiki/Starvation_(computer_science)">starvation-freedom</a> for <em>producers</em>? Why doesn't the same hack work for <em>consumers</em>, i.e. <code>NoCStarvation</code> is not violated? <a href="https://twitter.com/lemmster">Let me know</a> what you find.</p>
+<p>We end this post with a little puzzler: What hack does the linked BlockingQueue spec below (<a href="https://gist.github.com/lemmy/5cae084db688c06fbcb5faaa2f630dec">gist with better syntax highlighting</a>) "pull" to make the <code>NoPStarvation</code> property reveal that the spec does not guarantee <a href="https://en.wikipedia.org/wiki/Starvation_(computer_science)">starvation-freedom</a> for <em>producers</em>? Why doesn't the same hack work for <em>consumers</em>, i.e. <code>NoCStarvation</code> is not violated? <a href="https://twitter.com/lemmster">Let me know</a> what you find.</p>
 <p>Thanks to Leslie Lamport for a review of this post.</p>
-<hr>
 <p>([^1]: The <em>-continue</em> parameter is <a href="https://github.com/tlaplus/tlaplus/issues/79">not yet supported</a> by the TLA Toolbox.)</p>
 <p>([^2]: What does work for this spec is to use a <em>view</em> function <code>&lt;&lt;x&gt;&gt;</code> to retain the original size of the state space even with a history variable. This is however due to the particular shape of the state space and does not generalize. A <em>view</em> is great to shoot yourself in the foot!)</p>
+<hr>
+<div class="highlight"><pre><span></span><span class="c c-PreProc">---------------------------</span> <span class="c c-PreProc">MODULE</span> <span class="c c-PreProc">BlockingQueueBlog</span> <span class="c c-PreProc">---------------------------</span>
+<span class="kn">EXTENDS</span> <span class="n">Naturals</span><span class="p">,</span> <span class="n">Sequences</span><span class="p">,</span> <span class="n">FiniteSets</span><span class="p">,</span> <span class="n">TLC</span>
+
+<span class="n">C</span> <span class="ni">==</span> <span class="ni">{</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="ni">}</span>   <span class="c">\* Two consumers and producers...</span>
+<span class="n">P</span> <span class="ni">==</span> <span class="ni">{</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;d&quot;</span><span class="ni">}</span>   <span class="c">\* ...which are usually better model as sets of model values.</span>
+<span class="n">K</span> <span class="ni">==</span> <span class="m">1</span>            <span class="c">\* Fix queue size to 1 element</span>
+
+<span class="c">\* We assume the following properties even though the spec doesn&#39;t use CONSTANTS.</span>
+<span class="n">ASSUME</span> <span class="o">/\</span> <span class="n">IsFiniteSet</span><span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="o">/\</span> <span class="n">IsFiniteSet</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="c">\* Finite sets</span>
+       <span class="o">/\</span> <span class="n">C</span> <span class="nb">\intersect</span> <span class="n">P</span> <span class="ni">=</span> <span class="ni">{}</span>              <span class="c">\* A producer is no consumer and vice versa</span>
+<span class="n">ASSUME</span> <span class="n">K</span> <span class="s">\in</span> <span class="p">(</span><span class="n">Nat</span> <span class="o">\</span> <span class="ni">{</span><span class="m">0</span><span class="ni">}</span><span class="p">)</span>                   <span class="c">\* K is a natural number without zero</span>
+
+<span class="o">------------------------------------------------------------------</span>
+
+<span class="c">\* Nondeterministically notify (wake) a process from the given waitset.</span>
+<span class="n">Notify</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="ni">==</span> <span class="k k-Conditional">IF</span> <span class="n">w</span> <span class="o">#</span> <span class="ni">{}</span>
+             <span class="k k-Conditional">THEN</span> <span class="s">\E</span> <span class="n">i</span> <span class="s">\in</span> <span class="n">w</span><span class="p">:</span> <span class="n">w</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="n">w</span> <span class="o">\</span> <span class="ni">{</span><span class="n">i</span><span class="ni">}</span>
+             <span class="k k-Conditional">ELSE</span> <span class="n">UNCHANGED</span> <span class="ni">&lt;&lt;</span> <span class="n">w</span> <span class="ni">&gt;&gt;</span>
+
+<span class="o">------------------------------------------------------------------</span>
+
+<span class="kn">VARIABLES</span> <span class="n">store</span><span class="p">,</span> <span class="c">\* The (internal) storage for the queue</span>
+          <span class="n">waitP</span><span class="p">,</span> <span class="c">\* A waitset for producers</span>
+          <span class="n">waitC</span>  <span class="c">\* A waitset for consumers</span>
+<span class="n">vars</span> <span class="ni">==</span> <span class="ni">&lt;&lt;</span> <span class="n">store</span><span class="p">,</span> <span class="n">waitP</span><span class="p">,</span> <span class="n">waitC</span> <span class="ni">&gt;&gt;</span>
+
+<span class="c">\* A type correctness invariant asserting that...</span>
+<span class="n">TypeOK</span> <span class="ni">==</span> <span class="o">/\</span> <span class="n">waitP</span> <span class="nb">\subseteq</span> <span class="n">P</span> <span class="c">\* only producers are in waitP</span>
+          <span class="o">/\</span> <span class="n">waitC</span> <span class="nb">\subseteq</span> <span class="n">C</span> <span class="c">\* only consumers are in waitC</span>
+          <span class="o">/\</span> <span class="n">DOMAIN</span> <span class="n">store</span> <span class="nb">\subseteq</span> <span class="m">0</span><span class="o">..</span><span class="n">K</span> <span class="c">\* store is a sequence for which the </span>
+                                         <span class="c">\* elements of the codomain are undefined.</span>
+
+<span class="cm">(***************************************************************************)</span>
+<span class="cm">(* Initially consumers and processes are alive and the queue is empty.     *)</span>
+<span class="cm">(***************************************************************************)</span>
+<span class="n">Init</span> <span class="ni">==</span> <span class="o">/\</span> <span class="n">store</span> <span class="ni">=</span> <span class="ni">&lt;&lt;&gt;&gt;</span>
+        <span class="o">/\</span> <span class="n">waitP</span> <span class="ni">=</span> <span class="ni">{}</span>
+        <span class="o">/\</span> <span class="n">waitC</span> <span class="ni">=</span> <span class="ni">{}</span>
+
+<span class="cm">(***************************************************************************)</span>
+<span class="cm">(* A producer either waits if the queue is full or appends an element.     *)</span>
+<span class="cm">(***************************************************************************)</span>
+<span class="n">p1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="ni">==</span> <span class="o">/\</span> <span class="n">Len</span><span class="p">(</span><span class="n">store</span><span class="p">)</span> <span class="ni">=</span> <span class="n">K</span>
+            <span class="o">/\</span> <span class="n">waitP</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="p">(</span><span class="n">waitP</span> <span class="nb">\cup</span> <span class="ni">{</span><span class="n">self</span><span class="ni">}</span><span class="p">)</span>
+            <span class="o">/\</span> <span class="n">UNCHANGED</span> <span class="ni">&lt;&lt;</span> <span class="n">store</span><span class="p">,</span> <span class="n">waitC</span> <span class="ni">&gt;&gt;</span>
+
+<span class="n">p2</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="ni">==</span> <span class="o">/\</span> <span class="n">Len</span><span class="p">(</span><span class="n">store</span><span class="p">)</span> <span class="o">#</span> <span class="n">K</span>
+            <span class="o">/\</span> <span class="n">Notify</span><span class="p">(</span><span class="n">waitC</span><span class="p">)</span>
+            <span class="o">/\</span> <span class="n">store</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="n">Append</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">self</span><span class="p">)</span>
+            <span class="o">/\</span> <span class="n">UNCHANGED</span> <span class="ni">&lt;&lt;</span> <span class="n">waitP</span> <span class="ni">&gt;&gt;</span>
+
+<span class="cm">(***************************************************************************)</span>
+<span class="cm">(* A consumer either waits if the queue is empty (c1) or picks one element *)</span>
+<span class="cm">(* (c2). c2 is the critical section from the perspective of the consumer.  *)</span>
+<span class="cm">(***************************************************************************)</span>
+<span class="n">c1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="ni">==</span> <span class="o">/\</span> <span class="n">Len</span><span class="p">(</span><span class="n">store</span><span class="p">)</span> <span class="ni">=</span> <span class="m">0</span>
+            <span class="o">/\</span> <span class="n">waitC</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="p">(</span><span class="n">waitC</span> <span class="nb">\cup</span> <span class="ni">{</span><span class="n">self</span><span class="ni">}</span><span class="p">)</span>
+            <span class="o">/\</span> <span class="n">UNCHANGED</span> <span class="ni">&lt;&lt;</span> <span class="n">store</span><span class="p">,</span> <span class="n">waitP</span> <span class="ni">&gt;&gt;</span>
+
+<span class="n">c2</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="ni">==</span> <span class="o">/\</span> <span class="n">Len</span><span class="p">(</span><span class="n">store</span><span class="p">)</span> <span class="o">#</span> <span class="m">0</span>
+            <span class="o">/\</span> <span class="n">Notify</span><span class="p">(</span><span class="n">waitP</span><span class="p">)</span>
+            <span class="o">/\</span> <span class="n">store</span><span class="err">&#39;</span> <span class="ni">=</span> <span class="n">Tail</span><span class="p">(</span><span class="n">store</span><span class="p">)</span>
+            <span class="o">/\</span> <span class="n">UNCHANGED</span> <span class="ni">&lt;&lt;</span> <span class="n">waitC</span> <span class="ni">&gt;&gt;</span>
+
+<span class="cm">(***************************************************************************)</span>
+<span class="cm">(* Let the scheduler non-deterministically schedule consumer and           *)</span>
+<span class="cm">(* producers processes.                                                    *)</span>
+<span class="cm">(***************************************************************************)</span>
+<span class="n">Next</span> <span class="ni">==</span> <span class="o">\/</span> <span class="p">(</span><span class="s">\E</span> <span class="n">self</span> <span class="s">\in</span> <span class="n">P</span><span class="p">:</span> <span class="n">p1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="o">\/</span> <span class="n">p2</span><span class="p">(</span><span class="n">self</span><span class="p">))</span>
+        <span class="o">\/</span> <span class="p">(</span><span class="s">\E</span> <span class="n">self</span> <span class="s">\in</span> <span class="n">C</span><span class="p">:</span> <span class="n">c1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="o">\/</span> <span class="n">c2</span><span class="p">(</span><span class="n">self</span><span class="p">))</span>
+
+
+<span class="n">Spec</span> <span class="ni">==</span> <span class="n">Init</span> <span class="o">/\</span> <span class="p">[][</span><span class="n">Next</span><span class="p">]</span><span class="n">_vars</span> <span class="o">/\</span> <span class="n">WF_vars</span><span class="p">(</span><span class="n">Next</span><span class="p">)</span>
+<span class="n">THEOREM</span> <span class="n">Spec</span> <span class="ni">=&gt;</span> <span class="p">[]</span><span class="n">TypeOK</span>
+
+<span class="o">------------------------------------------------------------------</span>
+
+<span class="c">\* Not all consumers and producers wait at once.</span>
+<span class="n">NoDeadLock</span> <span class="ni">==</span> <span class="p">(</span><span class="n">waitP</span> <span class="nb">\cup</span> <span class="n">waitC</span><span class="p">)</span> <span class="o">#</span> <span class="p">(</span><span class="n">C</span> <span class="nb">\cup</span> <span class="n">P</span><span class="p">)</span>
+<span class="n">THEOREM</span> <span class="n">Spec</span> <span class="ni">=&gt;</span> <span class="p">[]</span><span class="n">NoDeadLock</span>
+
+<span class="c">\* All consumers eventually dequeue elements.</span>
+<span class="n">NoCStarvation</span> <span class="ni">==</span> <span class="s">\A</span> <span class="n">c</span> <span class="s">\in</span> <span class="n">C</span><span class="p">:</span> <span class="p">[]</span><span class="ni">&lt;&gt;</span><span class="p">(</span><span class="ni">&lt;&lt;</span><span class="n">c2</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="ni">&gt;&gt;</span><span class="n">_</span><span class="ni">&lt;&lt;</span><span class="n">store</span><span class="ni">&gt;&gt;</span><span class="p">)</span>
+
+<span class="c">\* All producers eventually enqueue elements.</span>
+<span class="n">NoPStarvation</span> <span class="ni">==</span> <span class="s">\A</span> <span class="n">p</span> <span class="s">\in</span> <span class="n">P</span><span class="p">:</span> <span class="p">[]</span><span class="ni">&lt;&gt;</span><span class="p">(</span><span class="ni">&lt;&lt;</span><span class="n">p2</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="ni">&gt;&gt;</span><span class="n">_</span><span class="ni">&lt;&lt;</span><span class="n">store</span><span class="ni">&gt;&gt;</span><span class="p">)</span>
+<span class="c c-PreProc">=============================================================================</span>
+</pre></div>
       </article>
 
       <hr />
