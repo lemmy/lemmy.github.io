@@ -234,10 +234,12 @@
 <span class="cm">(***************************************************************************)</span>
 <span class="cm">(* Let the scheduler non-deterministically schedule consumer and           *)</span>
 <span class="cm">(* producers processes.                                                    *)</span>
+<span class="cm">(*                                                                         *)</span>
+<span class="cm">(* Correct Next to not schedule waiting processes. Thanks to Hillel for    *)</span>
+<span class="cm">(* making me aware of this issue.                                          *)</span>
 <span class="cm">(***************************************************************************)</span>
-<span class="n">Next</span> <span class="ni">==</span> <span class="o">\/</span> <span class="p">(</span><span class="s">\E</span> <span class="n">self</span> <span class="s">\in</span> <span class="n">P</span><span class="p">:</span> <span class="n">p1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="o">\/</span> <span class="n">p2</span><span class="p">(</span><span class="n">self</span><span class="p">))</span>
-        <span class="o">\/</span> <span class="p">(</span><span class="s">\E</span> <span class="n">self</span> <span class="s">\in</span> <span class="n">C</span><span class="p">:</span> <span class="n">c1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="o">\/</span> <span class="n">c2</span><span class="p">(</span><span class="n">self</span><span class="p">))</span>
-
+<span class="n">Next</span> <span class="ni">==</span> <span class="o">\/</span> <span class="p">(</span><span class="s">\E</span> <span class="n">self</span> <span class="s">\in</span> <span class="p">(</span><span class="n">P</span> <span class="o">\</span> <span class="n">waitP</span><span class="p">):</span> <span class="n">p1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="o">\/</span> <span class="n">p2</span><span class="p">(</span><span class="n">self</span><span class="p">))</span>
+        <span class="o">\/</span> <span class="p">(</span><span class="s">\E</span> <span class="n">self</span> <span class="s">\in</span> <span class="p">(</span><span class="n">C</span> <span class="o">\</span> <span class="n">waitC</span><span class="p">):</span> <span class="n">c1</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="o">\/</span> <span class="n">c2</span><span class="p">(</span><span class="n">self</span><span class="p">))</span>
 
 <span class="n">Spec</span> <span class="ni">==</span> <span class="n">Init</span> <span class="o">/\</span> <span class="p">[][</span><span class="n">Next</span><span class="p">]</span><span class="n">_vars</span> <span class="o">/\</span> <span class="n">WF_vars</span><span class="p">(</span><span class="n">Next</span><span class="p">)</span>
 <span class="n">THEOREM</span> <span class="n">Spec</span> <span class="ni">=&gt;</span> <span class="p">[]</span><span class="n">TypeOK</span>
