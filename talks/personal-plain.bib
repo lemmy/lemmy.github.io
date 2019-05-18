@@ -1,0 +1,398 @@
+
+
+@MastersThesis{Kuppe2017,
+  Title                    = {A Verified and Scalable Hash Table for the TLC Model Checker
+Towards an Order of Magnitude Speedup},
+  Author                   = {Kuppe, Markus A.},
+  School                   = {University of Hamburg},
+  Year                     = {2017},
+  Note                     = {Grade 1.0},
+
+  Abstract                 = {The applicability of explicit state model checking is restricted by the state space
+explosion problem which makes the verification of large scale models infeasible.
+An approach to mitigate state space explosion, is to scale up and benefit from today's
+multi-core computers. According to Gunther's universal scalability law, scalability is
+constrained by contention and coherence. For breadth-first model checking with TLC,
+contention is already minimal. Consequently, we analyze the effects of coherence on
+TLC's scalability and present a lock-free hash-table algorithm for a model checker's set
+of seen states. Contrary to most hash-table algorithms present in model checkers, ours
+is not memory bound. It can be extended to disk. We verify the correctness of our
+algorithm with TLC. We provide a production-ready implementation of the algorithm in Java for which we
+demonstrate and quantify superior performance and scalability over TLC's legacy set
+of seen states. We then propose two additional algorithms for the set of unseen states
+and the state forest, for which we also include prototypic implementations. When we
+combine all our proposed changes into TLC, its scalability then exceeds that of SPIN.
+Our work on TLC's scalability also reveals that the popular approach of lock-striping
+does not scale. This result is of interest as an argument in favor of lock-free programming,
+despite its inherent complexity.},
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/MSc_MarkusAKuppe_1497363471.pdf},
+  Timestamp                = {2017.06.15}
+}
+
+@Misc{Kuppe2018a,
+  author       = {Kuppe, Markus A.},
+  title        = {Mit TLA+ zum korrekten Parallelprogramm},
+  howpublished = {parallel 2018},
+  month        = {July},
+  year         = {2018},
+  abstract     = {Parallele Programmierung ist ein zentraler Baustein, um immer leistungsfähigere Software zu entwickeln. Parallele Programmierung ist aber auch komplex und fehleranfällig. Das Finden von Concurrency Bugs gleicht einer Suche nach der Nadel im sprichwörtlichen Heuhaufen; ein Heuhaufen der mit jeder Ausführung des Programms durchgewirbelt wird.
+
+Nachdem auf der Parallel18 mit Hilfe von TLA+ bereits ein sporadisch auftretendes Deadlock in einem BoundedBuffer analysiert und behoben wurde, werden in diesem Jahr – nach einer kurzen Einführung in die Grundlagen von TLA+ – die weiterführenden Konzepte von TLA+ vorgestellt. Insbesondere werden neben den Korrektheitsanforderungen, auch Lebendigkeitsanforderungen an den BoundedBuffer formuliert.
+
+Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines exemplarischen Entwicklungsablaufs wird der typische Einsatz von TLA+ anhand eines einfachen Programms gezeigt. Es werden sowohl der Einstieg als auch die weiterführenden Möglichkeiten von TLA+ vermittelt.},
+  owner        = {markus},
+  timestamp    = {2019-05-13},
+  url          = {http://www.lemmster.de/talks/Mit_TLAPlus_zum_korekten_Parallelprogram_-_Markus_Alexader_Kuppe.pdf},
+}
+
+@Misc{Kuppe2013,
+  Title                    = {Discover Remote Services},
+
+  Author                   = {Kuppe, Markus A.},
+  HowPublished             = {Eclipse Democamp Hamburg},
+  Month                    = {November},
+  Year                     = {2013},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Discover_Remote_Services_-_Democamp_HH_2013_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2013.11.27},
+  Url                      = {http://wiki.eclipse.org/Eclipse_DemoCamps_November_2013/Hamburg}
+}
+
+@Misc{Kuppe2012,
+  Title                    = {Current state of distributed TLC},
+
+  Author                   = {Kuppe, Markus. A.},
+  HowPublished             = {International Workshop on the TLA+ Method and Tools},
+  Month                    = {August},
+  Year                     = {2012},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/CurrentStateDistributedTLC_MarkusAKuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://tla2012.loria.fr/index.html, http://www.lemmster.de/uploads/CurrentStateDistributedTLC_MarkusAKuppe.pdf}
+}
+
+@Unpublished{Kuppe2010,
+  Title                    = {SOA Governance},
+  Author                   = {Kuppe, Markus. A.},
+
+  Month                    = {February},
+  Year                     = {2010},
+
+  Abstract                 = {Governance-Modelle spielen auf allen Ebenen eines Unternehmens eine immer staerker werdende Rolle. Sie dienen dabei sowohl der Optimierung der organisatorischen Ablaeufe als auch der optimalen Ausnutzung technischer (IT) Mittel. Die Autoren Weill und Ross (2004) haben gezeigt, dass Unternehmen mit einer funktionierenden (IT) Governance groesseere Gewinne erzielen, als Konkurrenten ohne (IT) Governance. Unter der Annah- me, dass diese Erkenntnis nicht nur fuer IT Governance gilt, sondern sich auch auf die SOA Governance uebertragen laesst, sollte die Einfaehrung eines SOA Governance Modells Hand in Hand mit der Einfaehrung einer SOA Initiative selbst gehen. Daher dient diese Seminararbeit der Vorstellung der Begriffe SOA und SOA Governance, sowie der konzep- tionellen Definition von SOA Governance Modellen. Weiterhin wird der Nutzen der SOA Governance als Meta-Architektur fuer die SOA typische verteilte Entwicklung dargelegt.},
+  Comment                  = {http://vsis-www.informatik.uni-hamburg.de/teaching/termine.php/195},
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/SOA_Governance_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14}
+}
+
+@Misc{Kuppe2010a,
+  Title                    = {Entwicklung verteilter Eclipse RCP \& OSGi Anwendungen mit dem Eclipse Communication Framework},
+
+  Author                   = {Kuppe, Markus A.},
+  HowPublished             = {Full day tutorial at University of Hamburg Summerschool},
+  Month                    = {October},
+  Year                     = {2010},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Entwicklung_verteilter_Eclipse_OSGi_Anwendungen_mit_ECF_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.15},
+  Url                      = {http://github.com/lemmy/org.eclipse.ecf.winterschool/raw/master/org.eclipse.ecf.winterschool/EclipseCommunicationFramework.odp}
+}
+
+@Misc{Kuppe2009,
+  Title                    = {Distributed OSGi - The ECF way},
+
+  Author                   = {Kuppe, Markus A.},
+  HowPublished             = {Presentation at Eclipse DemoCamp, Hamburg, Germany},
+  Month                    = {May},
+  Year                     = {2009},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Distributed_OSGi_-_The_ECF_way-DemoCamp_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://wiki.eclipse.org/Eclipse_DemoCamps_Galileo_2009/Hamburg}
+}
+
+@Misc{Kuppe2009a,
+  Title                    = {Kommunikationstalent Eclipse: Das ECF-Projekt},
+
+  Author                   = {Kuppe, Markus. A.},
+  HowPublished             = {Interview at Eclipse Magazin},
+  Month                    = {July},
+  Year                     = {2009},
+
+  Owner                    = {markus},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://entwickler.de/zonen/portale/psecom,id,101,online,2403.html}
+}
+
+@Unpublished{Kuppe2009b,
+  Title                    = {Multiagenten-Simulation und Werkzeuge},
+  Author                   = {Kuppe, Markus A.},
+
+  Month                    = {August},
+  Year                     = {2009},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Multiagenten-Simulation_und_Werkzeuge-Markus_A_Kuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://vsis-www.informatik.uni-hamburg.de/teaching/termine.php/179}
+}
+
+@MastersThesis{Kuppe2007,
+  Title                    = {Component-based software engineering applied to a consolidation using Eclipse},
+  Author                   = {Kuppe, Markus A.},
+  School                   = {University of Applied Sciences Hamburg},
+  Year                     = {2007},
+  Month                    = {January},
+  Note                     = {B.Sc. thesis},
+
+  Abstract                 = {This bachelor thesis deals with the consolidation of a pre-existing software application framed in the context of Component-based Software Engineering (CBSE). The aspects associated with software consolidation and the basic concepts behind CBSE are explained. A process for the conversion of an existing software application in the form of a prototype is then presented. This process covers the discovery of application knowledge in order to effectively extract components and integrate these into a component model. The implemen- tation is accomplished with Eclipse and the OSGi standard, using both in correlation with CBSE. The primary principles guiding this thesis are the presentation of the advantages provided by CBSE and the application of the CBSE paradigm to a consolidation.},
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/hawhhcsbsc.pdf},
+  Timestamp                = {2012.09.14}
+}
+
+@Unpublished{Kuppe2009c,
+  Title                    = {Secure service discovery in open networks with SLP},
+  Author                   = {Kuppe, Markus. A. and Amann, Vitali},
+
+  Month                    = {July},
+  Year                     = {2009},
+
+  Abstract                 = {Abstract Mobile Ad-Hoc networks become increasingly common due to the wide availability of mobile device technology. When such devices enter a network, they want to learn about services offered by other peers or advertise own services. Service discovery protocols have been around to answer this requirement for years. A most prominent and widely adopted one is Service Location Protocol (SLP). However, SLP has not been designed for MANETs, but for trustworhty and reliable networks. Thus the protocol has to undergo a renewal to make it fit for open networks.This paper focuses on the security implications that arise from SLP's usage in open networks and gives a detailed threat analysis. Afterwards security extensions are proposed to address the identified shortcomings.},
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Secure_service_discovery_in_open_networks_with_SLP_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14}
+}
+
+@Misc{Kuppe2008,
+  Title                    = {An Eclipse Toolchain for rapid Java development using transparent persistence},
+
+  Author                   = {Kuppe, Markus A. and Ernst, Christian},
+  HowPublished             = {Presentation at ICOODB, Berlin, Germany},
+  Month                    = {March},
+  Year                     = {2008},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Eclipse_Toolchain_for_rapid_Java_development_using_transparent_persistence_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://projekt.tfh-berlin.de/icoodb/icoodb-2008/}
+}
+
+@Misc{Kuppe2013a,
+  Title                    = {Discover Remote OSGi Services},
+
+  Author                   = {Kuppe, Markus A. and Jongman, Wim},
+  HowPublished             = {Presentation at EclipseCon Europe 2013, Ludwigsburg, Germany},
+  Month                    = {October},
+  Year                     = {2013},
+
+  Abstract                 = {The current state of Service Oriented Architecture (SOA) is intimidating. The set of standards invented to "make your life easier" has been growing like wildfire: xml, soap, wadl, widl, wsdl, rest, bics, wxscm, sscm, web.xml, ramp, etcetera etcetera. On top of these protocols you can use a wealth of tooling and frameworks to such an extend that even you, the tech, don't know what is going on... Sometimes you wish that remote services were simple. Just implement an API, expose this API as a service in your OSGi runtime and let network clients use this implementation. If you could only focus on the meat and not on the infrastructure then you could be on your way to solve your business problems instead of solving configurations. This talk explains how the ECF project will take your existing OSGi service and promote it to a network service. The network service will be peer to peer or it will be registered with a discovery server and advertised to any interested clients. The clients then can use the service as if it was a local service. ECF has implemented the new OSGi RSA specification in order to achieve this. ECF committers Markus Kuppe and Wim Jongman will entertrain you on this remote services discovery tour which will include live coding. We will demonstrate how to promote an OSGi service to a remote service. Together we will build a simple remote service and see how all the remote services will be consumed by our client.},
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Discover_Remote_OSGi_Services_-_Markus_Alexander_Kuppe-Wim_Jongman.pdf},
+  Timestamp                = {2013.11.01},
+  Url                      = {https://www.eclipsecon.org/europe2013/discover-remote-osgi-services}
+}
+
+@Misc{Kuppe2010b,
+  Title                    = {Fun with Remote Services},
+
+  Author                   = {Kuppe, Markus A. and Jongman, Wim},
+  HowPublished             = {Presentation at Eclipse Summit Europe},
+  Month                    = {November},
+  Year                     = {2010},
+
+  Abstract                 = {Two complex disciplines in Software Development are Service Architecture and Distributed Programming. Being able to quickly deliver robust applications that use these two techniques is difficult. And this in turn can reduce fun. In this short talk we are going to show you how the Eclipse Communication Framework Project (ECF) and OSGi have managed to simplify both techniques. It shows that even mortal programmers have the ability to quickly create applications that are both SOA and Distributed. This means more focus on the domain and less focus on the technique. We aim to demonstrate how easy it is to use the ECF implementations of the OSGi Remote Services Specification. After this we take it one step further and we will show you how you can add the ECF discovery mechanism. This will eliminate the need for wiring consumers and providers together which reduces overall system administration. During the talk we will also discuss Distributed Programming best practices, pitfalls and nice-to-knows. We will touch stuff like Timing, Async vs Sync calls, Futures and Callbacks. Confused about Eclipse Distributed Programming? You won't be after this episode of "Fun with Remote Services"},
+  Owner                    = {markus},
+  Timestamp                = {2012.09.14},
+  Url                      = {https://www.eclipsecon.org/submissions/ese2010/view_talk.php?id=1916}
+}
+
+@Misc{Kuppe2009d,
+  Title                    = {Distributed OSGi - The ECF way},
+
+  Author                   = {Kuppe, Markus A. and Lewis, Scott},
+  HowPublished             = {Tutorial at EclipseCon, Santa Clara, CA, USA},
+  Month                    = {March},
+  Year                     = {2009},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Distributed_OSGi_-_The_ECF_way_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://www.eclipsecon.org/2009/sessions?id=618}
+}
+
+@Misc{Kuppe2009e,
+  Title                    = {Best Practices for Distributed OSGi Services},
+
+  Author                   = {Kuppe, Markus A. and Lewis, Scott},
+  HowPublished             = {Presentation at EclipseCon, Santa Clara, CA, USA},
+  Month                    = {March},
+  Year                     = {2009},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Best_Practices_with_Distributed_OSGi_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://www.eclipsecon.org/2009/sessions?id=757}
+}
+
+@Misc{Kuppe2008a,
+  Title                    = {Distributed OSGi Services with the Eclipse Communication Framework},
+
+  Author                   = {Kuppe, Markus A. and Rellermeyer, Jan S.},
+  HowPublished             = {Presentation at OSGi Community Event, Berlin, Germany},
+  Month                    = {June},
+  Year                     = {2008},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Distributed_OSGi_Services_with_the_Eclipse_Communication_Framework_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://www.osgi.org/CommunityEvent2008/Program}
+}
+
+@Misc{Kuppe2008b,
+  Title                    = {Service Discovery and Remote Services with the Eclipse Communication Framework},
+
+  Author                   = {Kuppe, Markus A. and Rellermeyer, Jan S. and Lewis, Scott},
+  HowPublished             = {Presentation at Eclipse Summit Europe, Ludwigsburg, Germany},
+  Month                    = {November},
+  Year                     = {2008},
+
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Service_Discovery_and_Remote_Services_with_the_Eclipse_Communication_Framework_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://www.eclipsecon.org/summiteurope2008/sessions?id=89}
+}
+
+@Misc{Kuppe2008c,
+  Title                    = {Using ECF for Lightweight Distributed Team Collaboration},
+
+  Author                   = {Kuppe, Markus A. and Rellermeyer, Jan S. and Lewis, Scott},
+  HowPublished             = {Presentation at EclipseCon, Santa Clara, CA, USA},
+  Month                    = {March},
+  Year                     = {2008},
+
+  Abstract                 = {ECF provides a framework for building communications into Eclipse-the-IDE, as well as Eclipse RCP-based and Equinox-based applications. We'll talk about what technical areas to focus on in future work on ECF, and how to get there.},
+  Owner                    = {markus},
+  Timestamp                = {2012.09.14},
+  Url                      = {http://www.eclipsecon.org/2008/index.php?page=sub&id=610}
+}
+
+@Unpublished{Kuppe2009f,
+  Title                    = {Model-Checking mit SPIN},
+  Author                   = {Kuppe, Markus A. and Rockel, Sebastian},
+
+  Month                    = {December},
+  Year                     = {2009},
+
+  Comment                  = {Seminar Logik und Semantik von Programmen (FGI 3)},
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Model-Checking_mit_SPIN_-_Markus_Alexander_Kuppe.pdf},
+  Timestamp                = {2012.09.14}
+}
+
+@Misc{Vogel2013,
+  Title                    = {Become an Eclipse Committer in 20 min and fork the Eclipse IDE},
+
+  Author                   = {Vogel, Lars and Kuppe, Markus A.},
+  HowPublished             = {Presentation at EclipseCon Europe 2013, Ludwigsburg, Germany},
+  Month                    = {October},
+  Year                     = {2013},
+
+  Abstract                 = {The Eclipse SDK is available via Git and the common build infrastructure allows to build your own Eclipse IDE. Join this talk to learn how you can checkout the Eclipse IDE source code, modify it, commit your changes and build the Eclipse SDK using CBI and Maven / Tycho. If you follow the approach described in this talk can learn how to build your own Eclipse IDE flavor to test your own developments before contributing them back to Eclipse.},
+  Owner                    = {markus},
+  Pdf                      = {http://www.lemmster.de/talks/Become_Committer_in_20_minutes_-_Markus_Alexander_Kuppe-Lars_Vogel.pdf},
+  Timestamp                = {2013.11.01},
+  Url                      = {https://www.eclipsecon.org/europe2013/become-eclipse-committer-20-min-and-fork-eclipse-ide}
+}
+
+@Misc{Kuppe2014,
+  author       = {Kuppe, Markus A.},
+  title        = {Distributed TLC},
+  howpublished = {TLA+ Community Event (co-located with ABZ 2014)},
+  month        = {June},
+  year         = {2014},
+  note         = {http://tla2014.loria.fr/},
+  owner        = {markus},
+  timestamp    = {2014.06.08},
+  url          = {http://www.lemmster.de/talks/DistributedTLC_MarkusAKuppe.pdf},
+}
+
+@Misc{Kuppe2018d,
+  author       = {Kuppe, Markus A.},
+  title        = {State Space Explosion or: How To Fight An Uphill Battle (Tutorial)},
+  howpublished = {TLA+ Community Event (co-located with FM 2018)},
+  month        = {July},
+  year         = {2018},
+  note         = {http://tla2018.loria.fr/},
+  owner        = {markus},
+  timestamp    = {2014.06.08},
+  url          = {https://www.youtube.com/watch?v=zGIK2p6csAo&list=PLWLcqZLzY8u_3mDg2cHmduA5wl4J6hNX2&index=6},
+}
+
+@Misc{Kuppe2018c,
+  author       = {Kuppe, Markus A.},
+  title        = {Weeks of debugging can save you hours of TLA+},
+  howpublished = {Java User Group hamburg},
+  month        = {June},
+  year         = {2018},
+  abstract     = {Parallele Programmierung ist ein zentraler Baustein, um immer leistungsfähigere Software zu entwickeln. Parallele Programmierung ist aber auch komplex und fehleranfällig. Das Finden von Concurrency Bugs gleicht einer Suche nach der Nadel im sprichwörtlichen Heuhaufen; ein Heuhaufen der mit jeder Ausführung des Programms durchgewirbelt wird.
+
+Nachdem auf der Parallel18 mit Hilfe von TLA+ bereits ein sporadisch auftretendes Deadlock in einem BoundedBuffer analysiert und behoben wurde, werden in diesem Jahr – nach einer kurzen Einführung in die Grundlagen von TLA+ – die weiterführenden Konzepte von TLA+ vorgestellt. Insbesondere werden neben den Korrektheitsanforderungen, auch Lebendigkeitsanforderungen an den BoundedBuffer formuliert.
+
+Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines exemplarischen Entwicklungsablaufs wird der typische Einsatz von TLA+ anhand eines einfachen Programms gezeigt. Es werden sowohl der Einstieg als auch die weiterführenden Möglichkeiten von TLA+ vermittelt.},
+  owner        = {markus},
+  timestamp    = {2019-05-13},
+  url          = {https://www.meetup.com/jug-hamburg/events/250933411/},
+}
+
+@Misc{Kuppe2019,
+  author       = {Kuppe, Markus A.},
+  title        = {Debuggable Design with TLA+},
+  howpublished = {Hyperscale Verification},
+  month        = {March},
+  year         = {2019},
+  owner        = {markus},
+  timestamp    = {2019-05-13},
+  url          = {http://www.lemmster.de/talks/Hyperscale_Verification_-_Markus_Alexander_Kuppe.pdf},
+}
+
+@Misc{Kuppe2018b,
+  author       = {Kuppe, Markus A.},
+  title        = {Large Scale Model Checking 101},
+  howpublished = {TLA+ Workshop: Presentations},
+  month        = {April},
+  year         = {2018},
+  abstract     = {Parallele Programmierung ist ein zentraler Baustein, um immer leistungsfähigere Software zu entwickeln. Parallele Programmierung ist aber auch komplex und fehleranfällig. Das Finden von Concurrency Bugs gleicht einer Suche nach der Nadel im sprichwörtlichen Heuhaufen; ein Heuhaufen der mit jeder Ausführung des Programms durchgewirbelt wird.
+
+Nachdem auf der Parallel18 mit Hilfe von TLA+ bereits ein sporadisch auftretendes Deadlock in einem BoundedBuffer analysiert und behoben wurde, werden in diesem Jahr – nach einer kurzen Einführung in die Grundlagen von TLA+ – die weiterführenden Konzepte von TLA+ vorgestellt. Insbesondere werden neben den Korrektheitsanforderungen, auch Lebendigkeitsanforderungen an den BoundedBuffer formuliert.
+
+Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines exemplarischen Entwicklungsablaufs wird der typische Einsatz von TLA+ anhand eines einfachen Programms gezeigt. Es werden sowohl der Einstieg als auch die weiterführenden Möglichkeiten von TLA+ vermittelt.},
+  owner        = {markus},
+  timestamp    = {2019-05-13},
+  url          = {https://resnet.microsoft.com/video/40879},
+}
+
+@Misc{Kuppe2018e,
+  author       = {Kuppe, Markus A.},
+  title        = {Let TLA+ RiSE},
+  howpublished = {RiSE group all-hands meeting},
+  month        = {August},
+  year         = {2018},
+  owner        = {markus},
+  timestamp    = {2019-05-13},
+  url          = {http://www.lemmster.de/talks/Let_TLA_RiSE_-_Markus_Alexander_Kuppe.pdf},
+}
+
+@Misc{Kuppe2019b,
+  author       = {Kuppe, Markus A.},
+  title        = {#70 Intro To TLA+ \& Formal Smart Contract Design Specification},
+  howpublished = {Let's Talk ETC! Podcast},
+  month        = {March},
+  year         = {2019},
+  url          = {https://youtu.be/z-DyBFQzSVk?list=PLWLcqZLzY8u_ix-R-pikzj-4qTjJbqAil},
+}

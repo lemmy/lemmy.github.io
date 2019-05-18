@@ -1,16 +1,28 @@
-<!doctype html>
-<html lang="">	
-<head>
-	<meta charset="utf-8"/>
-	<title>hacks - l e m m s t e r . d e</title>	
-	<meta name="author" content="Markus A. Kuppe">
-	
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Markus A. Kuppe" />
 
-	<link rel="top" href="#" /><link href='../theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
-	<link rel="stylesheet" href="../theme/css/main.css" type="text/css" />
-		
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
 
-
+<meta property="og:title" content="l e m m s t e r . d e"/>
+<meta name="twitter:title" content="l e m m s t e r . d e">
+<meta property="og:url" content=".." />
+<meta property="og:site_name" content="l e m m s t e r . d e" />
+<meta property="og:article:author" content="Markus A. Kuppe" />
+        <title>l e m m s t e r . d e
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="../theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/custom.css" media="screen">
 <!-- Matomo -->
 <script type="text/javascript">
   var _paq = window._paq || [];
@@ -26,218 +38,177 @@
   })();
 </script>
 <!-- End Matomo Code -->
-</head>
-	
-<body>
 
-    <div class="container">
-	  
-	  <header role="banner">
-	    <div class="feeds">
-	    </div>
-	      <nav class="pages">
-			  <a href="../pages/impressum.html">impressum</a>
--			  <a href="../pages/talks.html">talks</a>
-	      </nav>
-		<a href=".." class="title">l e m m s t e r . d e</a>
-      </header>
-	
-	  <div class="wrapper">
 
-		  <div role="main" class="content">
 
-<h1>Posts categorized under: hacks</h1>
 
-<article class="summary">
-<div class="metadata">
-  <time datetime="2013-06-04T17:35:17+02:00" pubdate>Tue 04 June 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../call-freetz-wake-on-lan-wol-via-curl.html" rel="bookmark" title="Permalink to Call freetz' wake on lan (wol) via curl">Call freetz' wake on lan (wol) via curl</a>
-    </h2>
-    <p><div class="highlight"><pre><span></span>curl -d <span class="s2">&quot;mac=AB:CD:EF:12:34:56*&amp;interf;=lan&quot;</span> http://fritz.box:84/cgi-bin/wake.cgi
-</pre></div></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-06-03T08:33:14+02:00" pubdate>Mon 03 June 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../scanbuttond-on-fritz-7390.html" rel="bookmark" title="Permalink to scanbuttond on fritz 7390">scanbuttond on fritz 7390</a>
-    </h2>
-    <p><p>A recent <a href="https://github.com/olistudent/freetz/commit/ac4707b3c543a211c94fb0cf1965cd94c11a20d2">commit</a> integrates my pull request to incorporate <a href="http://scanbuttond.sourceforge.net/">scanbuttond</a> into <a href="http://freetz.org/">freetz</a>, a custom firmware for Fritz Box 7390. scanbuttond's job description is, to trigger a script whenever a button is pressed on a scanner. This is all I need in order to turn my 7390 and an old (three …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-06-02T10:56:01+02:00" pubdate>Sun 02 June 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../multiple-locations-for-opensshs-authorizedkeysfile-useful-in-combination-with-encrypted-home-dirs-ecryptfs.html" rel="bookmark" title="Permalink to Multiple locations for openssh's AuthorizedKeysFile useful in combination with encrypted home dirs (ecryptfs)">Multiple locations for openssh's AuthorizedKeysFile useful in combination with encrypted home dirs (ecryptfs)</a>
-    </h2>
-    <p><p>When using disk encryption (e.g. ecryptfs) to protect your private home dir data, ssh pubkey authentication breaks as a side effect. It breaks for obvious reasons though. Your authorized_keys file lives in ~/.ssh/ which is intentionally encrypted when you are not logged in.</p>
-<p>A trivial change to still allow …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-06-01T08:30:51+02:00" pubdate>Sat 01 June 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../remotely-check-if-xbmc-frodo-is-playing-content-with-curl.html" rel="bookmark" title="Permalink to Remotely check if XBMC (>=Frodo) is playing content with curl">Remotely check if XBMC (>=Frodo) is playing content with curl</a>
-    </h2>
-    <p><p><a href="http://www.xbmc.org/">XBMC</a> exposes a <a href="http://wiki.xbmc.org/index.php?title=JSON-RPC_API/v4">JSON API</a> that allows you to query its status and remotely control it. I need the API to check if XBMC is currently playing content (manifesting itself in a running player) and if not, automatically shut down the living room pc to save energy. Fortunately, the API …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-05-23T12:31:29+02:00" pubdate>Thu 23 May 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../monitor-avm-fritz-box-7390-with-munin.html" rel="bookmark" title="Permalink to Monitor AVM fritz box 7390 with Munin">Monitor AVM fritz box 7390 with Munin</a>
-    </h2>
-    <p><p>These days it apparently has become important again to monitor how much traffic one uses. Otherwise you might end up with pre-internet-era link speed (thanks to capital t here in Germany). So lets configure a (running) munin instance to monitor the bandwidth usage of your AVM fritz box (7390).</p>
-<ol>
-<li>
-<p>Download …</p></li></ol></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-05-20T17:37:09+02:00" pubdate>Mon 20 May 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../audiobooks2podcast.html" rel="bookmark" title="Permalink to Audiobooks2Podcast">Audiobooks2Podcast</a>
-    </h2>
-    <p><p>As an audiobook addict I have always hated the way audiobook mp3s are handled by the various players. This is because I get my fix from the local public library that rents countless audiobooks pressed on this legacy technology called CDs. Ripping audio CDs to mp3 isn't a problem (it …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-05-19T14:27:29+02:00" pubdate>Sun 19 May 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../roundcube-0-3-1-6-and-lighttpd-on-debian-squeeze-immediate-logout-after-login.html" rel="bookmark" title="Permalink to Roundcube (0.3.1-6) and lighttpd on Debian Squeeze (immediate logout after login)">Roundcube (0.3.1-6) and lighttpd on Debian Squeeze (immediate logout after login)</a>
-    </h2>
-    <p><p>If you experince immediate logouts after successfully loging into roundcube, you have to follow the advice in /usr/share/doc/roundcube-code/NEWS.debian.gz and turn suhosin.session.enrypt off [1]. If you do not want to turn it off globally, it can easily be done for roundcube only:</p>
-<div class="highlight"><pre><span></span>/etc …</pre></div></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-02-26T16:00:27+01:00" pubdate>Tue 26 February 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../export-to-docbook-xml-with-lyx-on-ubuntu-12-10.html" rel="bookmark" title="Permalink to Export to docbook xml with LyX (on Ubuntu 12.10)">Export to docbook xml with LyX (on Ubuntu 12.10)</a>
-    </h2>
-    <p><ol>
-<li>
-<p>Install LyX as well as the dependencies need to author docbook in LyX</p>
-<ol>
-<li>apt-get install docbook-dsssl sgmltools-lite jade docbook docbook-xml lyx jadetex</li>
-</ol>
-</li>
-<li>
-<p>It is commonly written on the web to tell LyX where to find the docbook catalogs by explicitly exporting SGML_CATALOG_FILES. This turned out to be not needed on …</p></li></ol></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-01-29T10:04:26+01:00" pubdate>Tue 29 January 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../permanently-remove-dropbox-client-from-autostarting-on-gnome.html" rel="bookmark" title="Permalink to Permanently remove dropbox client from autostart on Gnome">Permanently remove dropbox client from autostart on Gnome</a>
-    </h2>
-    <p><p>Dropbox Inc. seems to think that I want its client to start automatically, always! Even if I manually remove the dropbox entry from startup applications or turn it off, it will be "magically" re-added/-enabled simply by running the dropbox client once. Well, I still prefer to stay in control …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2012-03-04T13:11:43+01:00" pubdate>Sun 04 March 2012</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../generate-qr-for-wifi-network-with-qrencode-on-command-line.html" rel="bookmark" title="Permalink to Generate QR for Wifi network with qrencode on command line">Generate QR for Wifi network with qrencode on command line</a>
-    </h2>
-    <p><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;WIFI:S:aSSID;T:WPA;P:aPassword;;&quot;</span> <span class="p">|</span> qrencode -o wifi.png -s <span class="m">10</span>
-</pre></div></p>
-  </div>
-</article>
-<div class="pagination">
-            <a href="../category/hacks.html">&laquo;</a>
-    Page 2 / 3
-        <a href="../category/hacks3.html">&raquo;</a>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="../"><span class=site-name>l e m m s t e r . d e</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="..">Home</a></li>
+                            <li ><a href="../pages/impressum.html">impressum</a></li>
+                            <li ><a href="../pages/talks.html">talks</a></li>
+                            <li ><a href="../categories">Categories</a></li>
+                            <li ><a href="../tags">Tags</a></li>
+                            <li ><a href="../archives">Archives</a></li>
+                            <li><form class="navbar-search" action="../search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<div class="row-fluid">
+
+    <div class="row-fluid">
+
+    </div>
+
+    <div class="row-fluid">
+        <div class="span8 offset2">
+            <header>
+            <h1 id="recent-posts">Recent Posts <a id="allposts" href="../archives">all posts</a></h1>
+            </header>
+        <div class="recent-posts">
+            <article itemscope>
+                <a href="../cross-compile-kernel-module-samsung-nx300-ubnut-14.04.html">Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2014-06-09T15:27:16+02:00">Mon 09 June 2014</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../auto-backup-from-nx300-via-ftp.html">Auto backup files from the Samsung NX300 camera in the background  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2014-06-07T21:16:16+02:00">Sat 07 June 2014</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../quickndirty-twitter2xbmc-hack-to-show-tatort-related-tweets-on-sunday-night.html">Quick'n'dirty twitter2xmbc hack to show #tatort related tweets on Sunday night  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-11-27T21:24:16+01:00">Wed 27 November 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../lyx-export-to-markdown.html">LyX export to markdown  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-23T09:43:02+02:00">Sun 23 June 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../build-eyed3-from-source-on-debianubuntu.html">Build and run eyeD3 from source on Debian|Ubuntu with virtualenv  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-22T13:52:17+02:00">Sat 22 June 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../network-bonding-wlan-eth-on-linux-ubuntu.html">Network bonding (wlan & eth) on linux ubuntu  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-21T09:04:25+02:00">Fri 21 June 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../ghi-with-multiple-users.html">github issues with ghi and multiple users  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-17T16:24:13+02:00">Mon 17 June 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../check-jenkins-for-running-executors-remotely-via-curl.html">Check Jenkins for running executors ("busyExecutors") remotely via curl  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-17T07:37:06+02:00">Mon 17 June 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../custom-twitter-timeline-rss-feed-after-v1-api-retirement.html">Custom Twitter timeline rss feed after v1 API retirement  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-15T16:29:34+02:00">Sat 15 June 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../free-and-paid-for-raspberry-pi-hosting.html">Free and paid for Raspberry Pi hosting/colocation  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-15T13:37:18+02:00">Sat 15 June 2013</time>
+                </div>
+                </section>
+            </article>
+        </div>
+        </div>
+    </div>
 </div>
-
-		  </div>	
-		  
-		  <div class="sidebar">
-
-	        <nav>
-	          <h2>Categories</h2>
-	          <ul>
-	              <li ><a href="../category/eclipse.html">eclipse</a></li>
-	              <li class="active"><a href="../category/hacks.html">hacks</a></li>
-	              <li ><a href="../category/tla.html">TLA+</a></li>
-	          </ul>
-	        </nav>
-
-	          <aside>
-	          <h2>Social</h2>
-			    <ul class="social">
-				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
-				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
-				  <li><a href="https://www.linkedin.com/in/markus-kuppe-643559180/">LinkedIn</a><i></i></li>
-				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
-				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
-			    </ul>
-			  </aside>
-
-
-		  </div>
-
-	  </div>
-
-      <footer>
-		<p role="contentinfo">
-		  © 2019 Markus A. Kuppe.
-    	</p>
-
-	  </footer>	
-
-	</div>
-	
-
-</body>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="https://github.com/Pelican-Elegant/elegant/" title="Theme Elegant Home Page">Elegant</a></li>
+    </ul>
+</div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+    </body>
+    <!-- Theme: Elegant built for Pelican
+    License : MIT -->
 </html>

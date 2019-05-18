@@ -1,16 +1,28 @@
-<!doctype html>
-<html lang="">	
-<head>
-	<meta charset="utf-8"/>
-	<title>eclipse - l e m m s t e r . d e</title>	
-	<meta name="author" content="Markus A. Kuppe">
-	
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Markus A. Kuppe" />
 
-	<link rel="top" href="#" /><link href='../theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
-	<link rel="stylesheet" href="../theme/css/main.css" type="text/css" />
-		
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
 
-
+<meta property="og:title" content="l e m m s t e r . d e"/>
+<meta name="twitter:title" content="l e m m s t e r . d e">
+<meta property="og:url" content=".." />
+<meta property="og:site_name" content="l e m m s t e r . d e" />
+<meta property="og:article:author" content="Markus A. Kuppe" />
+        <title>l e m m s t e r . d e
+</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="../theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/custom.css" media="screen">
 <!-- Matomo -->
 <script type="text/javascript">
   var _paq = window._paq || [];
@@ -26,223 +38,177 @@
   })();
 </script>
 <!-- End Matomo Code -->
-</head>
-	
-<body>
 
-    <div class="container">
-	  
-	  <header role="banner">
-	    <div class="feeds">
-	    </div>
-	      <nav class="pages">
-			  <a href="../pages/impressum.html">impressum</a>
--			  <a href="../pages/talks.html">talks</a>
-	      </nav>
-		<a href=".." class="title">l e m m s t e r . d e</a>
-      </header>
-	
-	  <div class="wrapper">
 
-		  <div role="main" class="content">
 
-<h1>Posts categorized under: eclipse</h1>
 
-<article class="summary">
-<div class="metadata">
-  <time datetime="2013-05-22T15:50:30+02:00" pubdate>Wed 22 May 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../buckminster-rmap-to-p2-composite-repository-metadata-2.html" rel="bookmark" title="Permalink to Buckminster rmap to p2 (composite) repository metadata">Buckminster rmap to p2 (composite) repository metadata</a>
-    </h2>
-    <p><p>ECF has been using an <a href="http://git.eclipse.org/c/ecf/org.eclipse.ecf.git/tree/releng/org.eclipse.ecf.releng.bm/rmap2b3aggr.xsl">rmap to b3aggr</a> xslt stylesheet for a while now, and today I needed a similar stylesheet to convert to p2 composite repositories (single sourcing repositories feed from Buckminster to the p2 director). It takes an rmap and spits out composite repository metadata referring to all …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-03-27T11:42:59+01:00" pubdate>Wed 27 March 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../generate-p2-composite-repository-metadata-from-jenkins-hudson-jobs-on-the-fly.html" rel="bookmark" title="Permalink to Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly">Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly</a>
-    </h2>
-    <p><p>Serving p2 build artifacts from Jenkins is complicated if builds from multiple Jenkins jobs should be aggregated into a master <a href="http://www.vogella.com/blog/2010/04/06/eclipse-p2-composite-repository/">p2 composite repository</a>. A rather simple approach to this problem is listed below, that uses Apache to generate compositeArtifacts.xml and compositeContent.xml on the fly.
-We (vogella) uses this …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-03-01T15:06:31+01:00" pubdate>Fri 01 March 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../receive-e-mail-notifications-when-jenkin-plug-in-updates-are-available-2.html" rel="bookmark" title="Permalink to Receive E-Mail notifications when Jenkins plug-in updates are available">Receive E-Mail notifications when Jenkins plug-in updates are available</a>
-    </h2>
-    <p><ul>
-<li>
-<p>Install <a href="https://wiki.jenkins-ci.org/display/JENKINS/Groovy+plugin">Groovy script plug-in</a> via Jenkin UpdateCenter</p>
-</li>
-<li>
-<p>Create a new Jenkins job and name it e.g. zPluginCheck</p>
-<ul>
-<li>
-<p>Set to “Build periodically” with a reasonable schedule (once a day?!)</p>
-</li>
-<li>
-<p>Add “E-Mail notification” as a post build action</p>
-</li>
-<li>
-<p>Add an “Execute system Groovy script” build step:</p>
-<div class="highlight"><pre><span></span><span class="c1">// Explicitly checking for updates works …</span></pre></div></li></ul></li></ul></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-11-13T07:10:16+01:00" pubdate>Sat 13 November 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../mylyn-commit-message-templates-for-egit-with-gitlyn-hack.html" rel="bookmark" title="Permalink to 'Mylyn commit message templates for EGit with Gitlyn (hack) '">'Mylyn commit message templates for EGit with Gitlyn (hack) '</a>
-    </h2>
-    <p><p>As long as we are waiting for Mylyn commit message templates to appear in EGit (<a href="https://bugs.eclipse.org/329515">see bug #329515</a>), I have hacked an AspectJ/Equinox weaving based bundle that injects the current commit template into the EGit dialog. This is certainly something that breaks the second the CommitDialog implementation changes, but …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-07-08T09:44:01+02:00" pubdate>Thu 08 July 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../wontfix-run-junit-plug-in-tests-on-a-non-equinox-framework.html" rel="bookmark" title="Permalink to 'WONTFIX: Run JUnit Plug-in tests on a non-Equinox framework'">'WONTFIX: Run JUnit Plug-in tests on a non-Equinox framework'</a>
-    </h2>
-    <p><p>In case you want to make sure your code is interoperable between different OSGi frameworks, you will be interested in <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=319089">bug #319089</a>. It is about enhancing the JUnit Plug-in Launch config to support more than just Equinox as an OSGi framework.</p>
-<p>Unfortunately the PDE team has deemed non-Equinox frameworks not …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-05-29T09:06:10+02:00" pubdate>Sat 29 May 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../do-not-ask-what-the-committer-reps-can-do-for-you-ask-what-you-can-do-for-the-committer-reps.html" rel="bookmark" title="Permalink to Do not ask what the committer reps can do for you, ask what you can do for the committer reps">Do not ask what the committer reps can do for you, ask what you can do for the committer reps</a>
-    </h2>
-    <p><p>In a <a href="http://industrial-tsi-wim.blogspot.com/2010/05/opinion-class-of-projects.html">recent blog post by Wim</a>, he asked how the Eclipse Foundation (EF) can help solve the tragedy of the commons problem and <a href="https://bugs.eclipse.org/313479">bug #313479</a> follows up on this direction by requesting the EF to support individual projects do fund-raising (think Friends of Eclipse at the project level). The …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-02-16T22:08:56+01:00" pubdate>Tue 16 February 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../java-keytool-and-custom-certs.html" rel="bookmark" title="Permalink to Java keytool and custom certs">Java keytool and custom certs</a>
-    </h2>
-    <p><p>When upgrading a JDK, install custom CAs by running "keytool -import -trustcacerts -alias OSU -file /path/to/ca.crt -keystore ${jre.home}/lib/security/cacerts". Default password is "changeit"</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2009-05-25T09:35:35+02:00" pubdate>Mon 25 May 2009</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../distributed-osgi-the-ecf-way-at-democamp-hamburg.html" rel="bookmark" title="Permalink to Distributed OSGi - The ECF way at DemoCamp Hamburg">Distributed OSGi - The ECF way at DemoCamp Hamburg</a>
-    </h2>
-    <p><p>Following up on our presentations given at EclipseCon earlier this year [1][2], I will do a talk on ECF's implementation of distributed OSGi/RFC119 later today at the local <a href="http://wiki.eclipse.org/Eclipse_DemoCamps_Galileo_2009/Hamburg">Galileo DemoCamp  here in Hamburg</a>.
-Make sure to show up in case you are in the area. Not just to …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2009-02-19T12:32:44+01:00" pubdate>Thu 19 February 2009</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../git-anybody-not-so-fast.html" rel="bookmark" title="Permalink to Git anybody? - not so fast">Git anybody? - not so fast</a>
-    </h2>
-    <p><p>Git appears to gain <a href="http://douggaff.blogspot.com/2009/02/eclipse-board-of-directors.html">a lot</a> <a href="https://bugs.eclipse.org/257706">momentum</a> as the DVCS for Eclipse <a href="http://www.lunar-ocean.com/the-bpmn-modeler-is-hosted-on-github-fork-it-today/">recently.</a> Even our benevolent dictator <a href="http://dev.eclipse.org/blogs/mike/">Mike M.</a> deemed it important enough to <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=257706#c63">comment on <em>the</em> Git bug</a>. ;-) 
-While I am a strong supporter of Git myself (mostly because I lack experience with Mercurial, bzr, Darcs), we should take …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2009-02-04T08:12:49+01:00" pubdate>Wed 04 February 2009</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../p2-metadata-generation-embedded-into-classic-update-site-building.html" rel="bookmark" title="Permalink to p2 metadata generation embedded into classic update site building">p2 metadata generation embedded into classic update site building</a>
-    </h2>
-    <p><p>Many of us have probably written their PDE build around the <a href="http://www.eclipse.org/articles/Article-PDE-Automation/automation.html#discussionUpdateSiteBuild">famous build automation article</a>. With Galiloe's <a href="https://bugs.eclipse.org/252804">must do </a> to provide p2 metadata, many projects are forced to update their build now.
-We at <a href="http://www.eclipse.org/ecf">ECF</a> want to stick to our classic update site and keep build changes minimal though. So …</p></p>
-  </div>
-</article>
-<div class="pagination">
-            <a href="../category/eclipse.html">&laquo;</a>
-    Page 2 / 5
-        <a href="../category/eclipse3.html">&raquo;</a>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="../"><span class=site-name>l e m m s t e r . d e</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="..">Home</a></li>
+                            <li ><a href="../pages/impressum.html">impressum</a></li>
+                            <li ><a href="../pages/talks.html">talks</a></li>
+                            <li ><a href="../categories">Categories</a></li>
+                            <li ><a href="../tags">Tags</a></li>
+                            <li ><a href="../archives">Archives</a></li>
+                            <li><form class="navbar-search" action="../search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<div class="row-fluid">
+
+    <div class="row-fluid">
+
+    </div>
+
+    <div class="row-fluid">
+        <div class="span8 offset2">
+            <header>
+            <h1 id="recent-posts">Recent Posts <a id="allposts" href="../archives">all posts</a></h1>
+            </header>
+        <div class="recent-posts">
+            <article itemscope>
+                <a href="../2015-03-02-forcefully-reresolve-a-targetplatform.md.html">Forcefully re-resolve a stale PDE target definition  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2015-03-02T11:16:41+01:00">Mon 02 March 2015</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../2013-12-19-swterror-no-more-handles-gtk_init_check-failed-running-platform-tests-on-linux.html">SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux)  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-12-19T11:16:41+01:00">Thu 19 December 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../apache-felix-http-whiteboard-pattern-on-equinox.html">Apache Felix HTTP whiteboard pattern on Equinox  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-12-11T08:54:40+01:00">Wed 11 December 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../real-world-scale-greenhouse-temperature.html">Real word scale greenhouse (temperature)  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-11-29T09:15:49+01:00">Fri 29 November 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../save-the-date-hamburg-eclipse-hackathon-november-22-2013.html">Save the date - Hamburg Eclipse /ˈhakəθɒn/ - November 22. 2013  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-11-04T11:15:09+01:00">Mon 04 November 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../programatically-push-configuration-into-osgi-configurationadmin.html">Programatically push configuration into OSGi ConfigurationAdmin  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-10-23T05:28:06+02:00">Wed 23 October 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../speaking-at-eclipsecon-europe-2013.html">Speaking at EclipseCon Europe 2013  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-09-11T15:20:56+02:00">Wed 11 September 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../sending-events-to-e4-applications-from-outside-of-e4.html">Sending events to e4 applications from outside of e4  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-06-24T09:05:41+02:00">Mon 24 June 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../squid-proxy-and-p2.html">(Squid) proxy and p2  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-05-31T18:09:49+02:00">Fri 31 May 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../quickndirty-apache-felix-webconsole-on-recent-equinox-3.html">Quick'n'dirty Apache Felix webconsole on (recent) Equinox  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-05-24T16:24:50+02:00">Fri 24 May 2013</time>
+                </div>
+                </section>
+            </article>
+        </div>
+        </div>
+    </div>
 </div>
-
-		  </div>	
-		  
-		  <div class="sidebar">
-
-	        <nav>
-	          <h2>Categories</h2>
-	          <ul>
-	              <li class="active"><a href="../category/eclipse.html">eclipse</a></li>
-	              <li ><a href="../category/hacks.html">hacks</a></li>
-	              <li ><a href="../category/tla.html">TLA+</a></li>
-	          </ul>
-	        </nav>
-
-	          <aside>
-	          <h2>Social</h2>
-			    <ul class="social">
-				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
-				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
-				  <li><a href="https://www.linkedin.com/in/markus-kuppe-643559180/">LinkedIn</a><i></i></li>
-				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
-				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
-			    </ul>
-			  </aside>
-
-
-		  </div>
-
-	  </div>
-
-      <footer>
-		<p role="contentinfo">
-		  © 2019 Markus A. Kuppe.
-    	</p>
-
-	  </footer>	
-
-	</div>
-	
-
-</body>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="https://github.com/Pelican-Elegant/elegant/" title="Theme Elegant Home Page">Elegant</a></li>
+    </ul>
+</div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+    </body>
+    <!-- Theme: Elegant built for Pelican
+    License : MIT -->
 </html>

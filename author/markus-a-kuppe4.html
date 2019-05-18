@@ -1,16 +1,27 @@
-<!doctype html>
-<html lang="">	
-<head>
-	<meta charset="utf-8"/>
-	<title>Markus A. Kuppe - l e m m s t e r . d e</title>	
-	<meta name="author" content="Markus A. Kuppe">
-	
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Markus A. Kuppe" />
 
-	<link rel="top" href="#" /><link href='../theme/css/fonts.css' rel='stylesheet' type='text/css'></link>
-	<link rel="stylesheet" href="../theme/css/main.css" type="text/css" />
-		
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary">
 
-
+<meta property="og:title" content="l e m m s t e r . d e"/>
+<meta name="twitter:title" content="l e m m s t e r . d e">
+<meta property="og:url" content=".." />
+<meta property="og:site_name" content="l e m m s t e r . d e" />
+<meta property="og:article:author" content="Markus A. Kuppe" />
+        <title>l e m m s t e r . d e - Articles by Markus A. Kuppe</title>
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="../theme/css/pygments.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/tipuesearch/tipuesearch.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/elegant.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/admonition.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="../theme/css/custom.css" media="screen">
 <!-- Matomo -->
 <script type="text/javascript">
   var _paq = window._paq || [];
@@ -26,230 +37,177 @@
   })();
 </script>
 <!-- End Matomo Code -->
-</head>
-	
-<body>
 
-    <div class="container">
-	  
-	  <header role="banner">
-	    <div class="feeds">
-	    </div>
-	      <nav class="pages">
-			  <a href="../pages/impressum.html">impressum</a>
--			  <a href="../pages/talks.html">talks</a>
-	      </nav>
-		<a href=".." class="title">l e m m s t e r . d e</a>
-      </header>
-	
-	  <div class="wrapper">
 
-		  <div role="main" class="content">
 
-<h1>Posts published by: Markus A. Kuppe</h1>
 
-<article class="summary">
-<div class="metadata">
-  <time datetime="2013-03-27T11:42:59+01:00" pubdate>Wed 27 March 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../generate-p2-composite-repository-metadata-from-jenkins-hudson-jobs-on-the-fly.html" rel="bookmark" title="Permalink to Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly">Generate p2 composite repository metadata from Jenkins (Hudson) jobs on the fly</a>
-    </h2>
-    <p><p>Serving p2 build artifacts from Jenkins is complicated if builds from multiple Jenkins jobs should be aggregated into a master <a href="http://www.vogella.com/blog/2010/04/06/eclipse-p2-composite-repository/">p2 composite repository</a>. A rather simple approach to this problem is listed below, that uses Apache to generate compositeArtifacts.xml and compositeContent.xml on the fly.
-We (vogella) uses this …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-03-01T15:06:31+01:00" pubdate>Fri 01 March 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../receive-e-mail-notifications-when-jenkin-plug-in-updates-are-available-2.html" rel="bookmark" title="Permalink to Receive E-Mail notifications when Jenkins plug-in updates are available">Receive E-Mail notifications when Jenkins plug-in updates are available</a>
-    </h2>
-    <p><ul>
-<li>
-<p>Install <a href="https://wiki.jenkins-ci.org/display/JENKINS/Groovy+plugin">Groovy script plug-in</a> via Jenkin UpdateCenter</p>
-</li>
-<li>
-<p>Create a new Jenkins job and name it e.g. zPluginCheck</p>
-<ul>
-<li>
-<p>Set to “Build periodically” with a reasonable schedule (once a day?!)</p>
-</li>
-<li>
-<p>Add “E-Mail notification” as a post build action</p>
-</li>
-<li>
-<p>Add an “Execute system Groovy script” build step:</p>
-<div class="highlight"><pre><span></span><span class="c1">// Explicitly checking for updates works …</span></pre></div></li></ul></li></ul></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-02-26T16:00:27+01:00" pubdate>Tue 26 February 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../export-to-docbook-xml-with-lyx-on-ubuntu-12-10.html" rel="bookmark" title="Permalink to Export to docbook xml with LyX (on Ubuntu 12.10)">Export to docbook xml with LyX (on Ubuntu 12.10)</a>
-    </h2>
-    <p><ol>
-<li>
-<p>Install LyX as well as the dependencies need to author docbook in LyX</p>
-<ol>
-<li>apt-get install docbook-dsssl sgmltools-lite jade docbook docbook-xml lyx jadetex</li>
-</ol>
-</li>
-<li>
-<p>It is commonly written on the web to tell LyX where to find the docbook catalogs by explicitly exporting SGML_CATALOG_FILES. This turned out to be not needed on …</p></li></ol></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2013-01-29T10:04:26+01:00" pubdate>Tue 29 January 2013</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../permanently-remove-dropbox-client-from-autostarting-on-gnome.html" rel="bookmark" title="Permalink to Permanently remove dropbox client from autostart on Gnome">Permanently remove dropbox client from autostart on Gnome</a>
-    </h2>
-    <p><p>Dropbox Inc. seems to think that I want its client to start automatically, always! Even if I manually remove the dropbox entry from startup applications or turn it off, it will be "magically" re-added/-enabled simply by running the dropbox client once. Well, I still prefer to stay in control …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2012-03-04T13:11:43+01:00" pubdate>Sun 04 March 2012</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/hacks.html">hacks</a>
-</div>  <div>
-    <h2>
-      <a href="../generate-qr-for-wifi-network-with-qrencode-on-command-line.html" rel="bookmark" title="Permalink to Generate QR for Wifi network with qrencode on command line">Generate QR for Wifi network with qrencode on command line</a>
-    </h2>
-    <p><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;WIFI:S:aSSID;T:WPA;P:aPassword;;&quot;</span> <span class="p">|</span> qrencode -o wifi.png -s <span class="m">10</span>
-</pre></div></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-11-13T07:10:16+01:00" pubdate>Sat 13 November 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../mylyn-commit-message-templates-for-egit-with-gitlyn-hack.html" rel="bookmark" title="Permalink to 'Mylyn commit message templates for EGit with Gitlyn (hack) '">'Mylyn commit message templates for EGit with Gitlyn (hack) '</a>
-    </h2>
-    <p><p>As long as we are waiting for Mylyn commit message templates to appear in EGit (<a href="https://bugs.eclipse.org/329515">see bug #329515</a>), I have hacked an AspectJ/Equinox weaving based bundle that injects the current commit template into the EGit dialog. This is certainly something that breaks the second the CommitDialog implementation changes, but …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-07-08T09:44:01+02:00" pubdate>Thu 08 July 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../wontfix-run-junit-plug-in-tests-on-a-non-equinox-framework.html" rel="bookmark" title="Permalink to 'WONTFIX: Run JUnit Plug-in tests on a non-Equinox framework'">'WONTFIX: Run JUnit Plug-in tests on a non-Equinox framework'</a>
-    </h2>
-    <p><p>In case you want to make sure your code is interoperable between different OSGi frameworks, you will be interested in <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=319089">bug #319089</a>. It is about enhancing the JUnit Plug-in Launch config to support more than just Equinox as an OSGi framework.</p>
-<p>Unfortunately the PDE team has deemed non-Equinox frameworks not …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-05-29T09:06:10+02:00" pubdate>Sat 29 May 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../do-not-ask-what-the-committer-reps-can-do-for-you-ask-what-you-can-do-for-the-committer-reps.html" rel="bookmark" title="Permalink to Do not ask what the committer reps can do for you, ask what you can do for the committer reps">Do not ask what the committer reps can do for you, ask what you can do for the committer reps</a>
-    </h2>
-    <p><p>In a <a href="http://industrial-tsi-wim.blogspot.com/2010/05/opinion-class-of-projects.html">recent blog post by Wim</a>, he asked how the Eclipse Foundation (EF) can help solve the tragedy of the commons problem and <a href="https://bugs.eclipse.org/313479">bug #313479</a> follows up on this direction by requesting the EF to support individual projects do fund-raising (think Friends of Eclipse at the project level). The …</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2010-02-16T22:08:56+01:00" pubdate>Tue 16 February 2010</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../java-keytool-and-custom-certs.html" rel="bookmark" title="Permalink to Java keytool and custom certs">Java keytool and custom certs</a>
-    </h2>
-    <p><p>When upgrading a JDK, install custom CAs by running "keytool -import -trustcacerts -alias OSU -file /path/to/ca.crt -keystore ${jre.home}/lib/security/cacerts". Default password is "changeit"</p></p>
-  </div>
-</article><article class="summary">
-<div class="metadata">
-  <time datetime="2009-05-25T09:35:35+02:00" pubdate>Mon 25 May 2009</time>
-    <address class="vcard author">
-      by <a class="url fn" href="../author/markus-a-kuppe.html">Markus A. Kuppe</a>
-    </address>
-  in <a href="../category/eclipse.html">eclipse</a>
-</div>  <div>
-    <h2>
-      <a href="../distributed-osgi-the-ecf-way-at-democamp-hamburg.html" rel="bookmark" title="Permalink to Distributed OSGi - The ECF way at DemoCamp Hamburg">Distributed OSGi - The ECF way at DemoCamp Hamburg</a>
-    </h2>
-    <p><p>Following up on our presentations given at EclipseCon earlier this year [1][2], I will do a talk on ECF's implementation of distributed OSGi/RFC119 later today at the local <a href="http://wiki.eclipse.org/Eclipse_DemoCamps_Galileo_2009/Hamburg">Galileo DemoCamp  here in Hamburg</a>.
-Make sure to show up in case you are in the area. Not just to …</p></p>
-  </div>
-</article>
-<div class="pagination">
-            <a href="../author/markus-a-kuppe3.html">&laquo;</a>
-    Page 4 / 7
-        <a href="../author/markus-a-kuppe5.html">&raquo;</a>
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="../"><span class=site-name>l e m m s t e r . d e</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="..">Home</a></li>
+                            <li ><a href="../pages/impressum.html">impressum</a></li>
+                            <li ><a href="../pages/talks.html">talks</a></li>
+                            <li ><a href="../categories">Categories</a></li>
+                            <li ><a href="../tags">Tags</a></li>
+                            <li ><a href="../archives">Archives</a></li>
+                            <li><form class="navbar-search" action="../search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<div class="row-fluid">
+
+    <div class="row-fluid">
+
+    </div>
+
+    <div class="row-fluid">
+        <div class="span8 offset2">
+            <header>
+            <h1 id="recent-posts">Recent Posts <a id="allposts" href="../archives">all posts</a></h1>
+            </header>
+        <div class="recent-posts">
+            <article itemscope>
+                <a href="../tla-liveness-review.html">[]BeSuspiciousOfSuccess (Review of "Modeling Adversaries with TLA+")  </a>
+                <section>
+                    posted in
+                <a href="../categories#tla-ref">TLA+</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2019-05-14T09:43:02+02:00">Tue 14 May 2019</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../tla-in-lyx.html">Include TLA+ in LyX documents and export it pretty-printed to PDF  </a>
+                <section>
+                    posted in
+                <a href="../categories#tla-ref">TLA+</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2016-08-15T09:43:02+02:00">Mon 15 August 2016</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../2015-03-02-forcefully-reresolve-a-targetplatform.md.html">Forcefully re-resolve a stale PDE target definition  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2015-03-02T11:16:41+01:00">Mon 02 March 2015</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../cross-compile-kernel-module-samsung-nx300-ubnut-14.04.html">Cross-compile kernel module (ext2) for Samsung nx300 on Ubuntu 14.04  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2014-06-09T15:27:16+02:00">Mon 09 June 2014</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../auto-backup-from-nx300-via-ftp.html">Auto backup files from the Samsung NX300 camera in the background  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2014-06-07T21:16:16+02:00">Sat 07 June 2014</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../2013-12-19-swterror-no-more-handles-gtk_init_check-failed-running-platform-tests-on-linux.html">SWTError: No more handles [gtk_init_check() failed] running platform tests (on Linux)  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-12-19T11:16:41+01:00">Thu 19 December 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../apache-felix-http-whiteboard-pattern-on-equinox.html">Apache Felix HTTP whiteboard pattern on Equinox  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-12-11T08:54:40+01:00">Wed 11 December 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../real-world-scale-greenhouse-temperature.html">Real word scale greenhouse (temperature)  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-11-29T09:15:49+01:00">Fri 29 November 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../quickndirty-twitter2xbmc-hack-to-show-tatort-related-tweets-on-sunday-night.html">Quick'n'dirty twitter2xmbc hack to show #tatort related tweets on Sunday night  </a>
+                <section>
+                    posted in
+                <a href="../categories#hacks-ref">hacks</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-11-27T21:24:16+01:00">Wed 27 November 2013</time>
+                </div>
+                </section>
+            </article>
+            <article itemscope>
+                <a href="../save-the-date-hamburg-eclipse-hackathon-november-22-2013.html">Save the date - Hamburg Eclipse /ˈhakəθɒn/ - November 22. 2013  </a>
+                <section>
+                    posted in
+                <a href="../categories#eclipse-ref">eclipse</a>
+                <div class="recent-posts-time">
+                <time itemprop="dateCreated" datetime="2013-11-04T11:15:09+01:00">Mon 04 November 2013</time>
+                </div>
+                </section>
+            </article>
+        </div>
+        </div>
+    </div>
 </div>
-
-		  </div>	
-		  
-		  <div class="sidebar">
-
-	        <nav>
-	          <h2>Categories</h2>
-	          <ul>
-	              <li ><a href="../category/eclipse.html">eclipse</a></li>
-	              <li ><a href="../category/hacks.html">hacks</a></li>
-	              <li ><a href="../category/tla.html">TLA+</a></li>
-	          </ul>
-	        </nav>
-
-	          <aside>
-	          <h2>Social</h2>
-			    <ul class="social">
-				  <li><a href="https://github.com/lemmy">Github</a><i></i></li>
-				  <li><a href="https://twitter.com/lemmster">Twitter</a><i></i></li>
-				  <li><a href="https://www.linkedin.com/in/markus-kuppe-643559180/">LinkedIn</a><i></i></li>
-				  <li><a href="https://bitbucket.org/lemmster">Bitbucket</a><i></i></li>
-				  <li><a href="https://www.ohloh.net/accounts/lemmy">Ohloh</a><i></i></li>
-			    </ul>
-			  </aside>
-
-
-		  </div>
-
-	  </div>
-
-      <footer>
-		<p role="contentinfo">
-		  © 2019 Markus A. Kuppe.
-    	</p>
-
-	  </footer>	
-
-	</div>
-	
-
-</body>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+        <div id="push"></div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="https://github.com/Pelican-Elegant/elegant/" title="Theme Elegant Home Page">Elegant</a></li>
+    </ul>
+</div>
+</footer>        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+    </body>
+    <!-- Theme: Elegant built for Pelican
+    License : MIT -->
 </html>
