@@ -340,11 +340,6 @@ Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines e
   howpublished = {Java User Group hamburg},
   month        = {June},
   year         = {2018},
-  abstract     = {Parallele Programmierung ist ein zentraler Baustein, um immer leistungsfähigere Software zu entwickeln. Parallele Programmierung ist aber auch komplex und fehleranfällig. Das Finden von Concurrency Bugs gleicht einer Suche nach der Nadel im sprichwörtlichen Heuhaufen; ein Heuhaufen der mit jeder Ausführung des Programms durchgewirbelt wird.
-
-Nachdem auf der Parallel18 mit Hilfe von TLA+ bereits ein sporadisch auftretendes Deadlock in einem BoundedBuffer analysiert und behoben wurde, werden in diesem Jahr – nach einer kurzen Einführung in die Grundlagen von TLA+ – die weiterführenden Konzepte von TLA+ vorgestellt. Insbesondere werden neben den Korrektheitsanforderungen, auch Lebendigkeitsanforderungen an den BoundedBuffer formuliert.
-
-Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines exemplarischen Entwicklungsablaufs wird der typische Einsatz von TLA+ anhand eines einfachen Programms gezeigt. Es werden sowohl der Einstieg als auch die weiterführenden Möglichkeiten von TLA+ vermittelt.},
   owner        = {markus},
   timestamp    = {2019-05-13},
   url          = {https://www.meetup.com/jug-hamburg/events/250933411/},
@@ -367,11 +362,6 @@ Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines e
   howpublished = {TLA+ Workshop: Presentations},
   month        = {April},
   year         = {2018},
-  abstract     = {Parallele Programmierung ist ein zentraler Baustein, um immer leistungsfähigere Software zu entwickeln. Parallele Programmierung ist aber auch komplex und fehleranfällig. Das Finden von Concurrency Bugs gleicht einer Suche nach der Nadel im sprichwörtlichen Heuhaufen; ein Heuhaufen der mit jeder Ausführung des Programms durchgewirbelt wird.
-
-Nachdem auf der Parallel18 mit Hilfe von TLA+ bereits ein sporadisch auftretendes Deadlock in einem BoundedBuffer analysiert und behoben wurde, werden in diesem Jahr – nach einer kurzen Einführung in die Grundlagen von TLA+ – die weiterführenden Konzepte von TLA+ vorgestellt. Insbesondere werden neben den Korrektheitsanforderungen, auch Lebendigkeitsanforderungen an den BoundedBuffer formuliert.
-
-Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines exemplarischen Entwicklungsablaufs wird der typische Einsatz von TLA+ anhand eines einfachen Programms gezeigt. Es werden sowohl der Einstieg als auch die weiterführenden Möglichkeiten von TLA+ vermittelt.},
   owner        = {markus},
   timestamp    = {2019-05-13},
   url          = {https://resnet.microsoft.com/video/40879},
@@ -386,4 +376,141 @@ Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines e
   owner        = {markus},
   timestamp    = {2019-05-13},
   url          = {http://www.lemmster.de/talks/Let_TLA_RiSE_-_Markus_Alexander_Kuppe.pdf},
+}
+
+@Misc{Kuppe2019a,
+  author = {Kuppe, Markus A.},
+  title = {The TLA+ Toolbox},
+  howpublished = {F-IDE 2019},
+  month = {October},
+  year = {2019},
+  owner = {markus},
+  timestamp = {2019-05-13},
+  url = {https://easychair.org/smart-slide/slide/wvZm#}
+}
+
+@Misc{Kuppe2019b,
+  author       = {Kuppe, Markus A.},
+  title        = {#70 Intro To TLA+ \& Formal Smart Contract Design Specification},
+  howpublished = {Let's Talk ETC! Podcast},
+  month        = {March},
+  year         = {2019},
+  url          = {https://youtu.be/z-DyBFQzSVk?list=PLWLcqZLzY8u_ix-R-pikzj-4qTjJbqAil},
+}
+
+@Misc{Kuppe2019c,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+ meets Azure Bootcamp},
+  howpublished = {Microsoft Internal (BootCamp)},
+  month        = {November},
+  year         = {2019}
+}
+
+@article{Kuppe_2019,
+   title={The TLA+ Toolbox},
+   volume={310},
+   ISSN={2075-2180},
+   url={http://dx.doi.org/10.4204/EPTCS.310.6},
+   DOI={10.4204/eptcs.310.6},
+   journal={Electronic Proceedings in Theoretical Computer Science},
+   publisher={Open Publishing Association},
+   author={Kuppe, Markus Alexander and Lamport, Leslie and Ricketts, Daniel},
+   year={2019},
+   month={Dec},
+   pages={50–62}
+}
+
+@Misc{Kuppe2019d,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+ meets Java@Microsoft},
+  howpublished = {Microsoft Internal (BrownBag)},
+  month        = {December},
+  year         = {2019},
+  url          = {https://msit.microsoftstream.com/video/d4fe1577-be1f-4246-b256-24f29a24de0e},
+}
+
+@Misc{Kuppe2020,
+  author       = {Kuppe, Markus A.},
+  title        = {MSR Central Engineering Pitch Tank},
+  howpublished = {Microsoft Internal},
+  month        = {January},
+  year         = {2020},
+}
+
+@Misc{Kuppe2020b,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+ meets Microsoft Avere},
+  howpublished = {Microsoft Internal (BrownBag)},
+  month        = {February},
+  year         = {2020},
+  url          = {https://msit.microsoftstream.com/video/6fa6e119-5923-4b76-896a-3b12eb0c01d1},
+}
+
+@Misc{Kuppe2020c,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+: The Tools, The Language, The Application},
+  howpublished = {Invited Talk at University of Buffalo, Host: Prof Murat Demirbas},
+  month        = {February},
+  year         = {2020},
+}
+
+@Misc{Kuppe2020d,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+: The Tools, The Language, The Application},
+  howpublished = {Invited Talk at Penn State University, Host: Prof George Kesidis},
+  month        = {February},
+  year         = {2020},
+}
+
+@Misc{Kuppe2020e,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+ meets MRS Healthcare},
+  howpublished = {Microsoft Internal (BrownBag)},
+  month        = {June},
+  year         = {2020},
+  url          = {https://msit.microsoftstream.com/video/8855a1ff-0400-a521-7bf6-f1eaba41ede9},
+}
+
+@Misc{Kuppe2019f,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+ meets Azure Bootcamp},
+  howpublished = {Microsoft Internal (Bootcamp)},
+  month        = {July},
+  year         = {2020}
+}
+
+@Misc{Kuppe2019g,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+ meets Azure Bootcamp},
+  howpublished = {Microsoft Internal (BrownBag)},
+  month        = {July},
+  year         = {2020}
+}
+
+@Misc{Kuppe2019h,
+  author       = {Kuppe, Markus A.},
+  title        = {Weeks of debugging can save you hours of TLA+},
+  howpublished = {Usenix SRE Con West (Conference cancelled due to Covid19)},
+  month        = {March},
+  year         = {2020},
+  note         = {Talk accepted - Conference cancelled due to Covid19},
+}
+
+@Misc{Kuppe2019i,
+  author       = {Kuppe, Markus A.},
+  title        = {Weeks of debugging can save you hours of TLA+},
+  howpublished = {CodeStock (Conference cancelled due to Covid19)},
+  month        = {April},
+  year         = {2020},
+  note         = {Talk accepted - Conference cancelled due to Covid19},
+}
+
+@Misc{Kuppe2019j,
+  author       = {Kuppe, Markus A.},
+  title        = {TLA+ at TechFest},
+  howpublished = {Microsoft Internal (TechFest)},
+  month        = {April},
+  year         = {2020},
+  note         = {Accepted - Cancelled due to Covid19},
+  url          = {https://msit.microsoftstream.com/video/d61aa07c-2992-4075-8306-35d21faf9ad9},
 }
