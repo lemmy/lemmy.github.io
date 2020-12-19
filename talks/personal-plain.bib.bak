@@ -406,18 +406,18 @@ Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines e
   year         = {2019}
 }
 
-@article{Kuppe_2019,
-   title={The TLA+ Toolbox},
-   volume={310},
-   ISSN={2075-2180},
-   url={http://dx.doi.org/10.4204/EPTCS.310.6},
-   DOI={10.4204/eptcs.310.6},
-   journal={Electronic Proceedings in Theoretical Computer Science},
-   publisher={Open Publishing Association},
-   author={Kuppe, Markus Alexander and Lamport, Leslie and Ricketts, Daniel},
-   year={2019},
-   month={Dec},
-   pages={50–62}
+@Article{Kuppe_2019,
+  author    = {Kuppe, Markus Alexander and Lamport, Leslie and Ricketts, Daniel},
+  title     = {The TLA+ Toolbox},
+  journal   = {Electronic Proceedings in Theoretical Computer Science},
+  year      = {2019},
+  volume    = {310},
+  pages     = {50–62},
+  month     = {December},
+  issn      = {2075-2180},
+  doi       = {10.4204/eptcs.310.6},
+  publisher = {Open Publishing Association},
+  url       = {http://dx.doi.org/10.4204/EPTCS.310.6},
 }
 
 @Misc{Kuppe2019d,
@@ -490,7 +490,7 @@ Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines e
 @Misc{Kuppe2019h,
   author       = {Kuppe, Markus A.},
   title        = {Weeks of debugging can save you hours of TLA+},
-  howpublished = {Usenix SRE Con West (Conference cancelled due to Covid19)},
+  howpublished = {Usenix SRE Con West},
   month        = {March},
   year         = {2020},
   note         = {Talk accepted - Conference cancelled due to Covid19},
@@ -499,7 +499,7 @@ Dies erfordert die Einführung von Fairness-Garantien. Kurzum, im Rahmen eines e
 @Misc{Kuppe2019i,
   author       = {Kuppe, Markus A.},
   title        = {Weeks of debugging can save you hours of TLA+},
-  howpublished = {CodeStock (Conference cancelled due to Covid19)},
+  howpublished = {CodeStock},
   month        = {April},
   year         = {2020},
   note         = {Talk accepted - Conference cancelled due to Covid19},
